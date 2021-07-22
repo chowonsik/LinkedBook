@@ -11,7 +11,9 @@
   - 위의 명령은 새로운 브랜치 `feature/#26`을 생성하고 해당 브랜치로 이동하는 명령이다
 - 로컬에서 작업한 것을 해당 브랜치에 업로드한다.
 - `git status` : 변경사항 확인
-- `git add .` -> `git commit -m 'feat: <커밋 메시지> (#이슈번호)'`
+- `git add .` -> `git commit -m 'feat: <커밋 메시지> S05P12B307-26'`
+  - `S05P12B307-26`은 JIRA <-> GITLAB 연동을 위한 이슈 번호
+  - JIRA 접속 후 각각의 이슈에서 확인 가능
 - `git push origin feature/#26`
 - `add` -> `commit` -> `push` 완료 후 `gitlab`의 원격저장소에 접속한다.
 - 본인이 push한 커밋에 대해 `Merge Request`를 생성한다.
