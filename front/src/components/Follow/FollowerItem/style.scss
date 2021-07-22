@@ -1,0 +1,22 @@
+.follower-item {
+    display: flex;
+}
+
+.follower-item {
+    .profile-image {
+        flex: 1 1 40%;
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+    }
+
+    .follower-id {
+        flex: 1 1 40%;
+    }
+
+    .cancel-btn {
+        flex: 1 1 20%;
+    }
+}
