@@ -24,6 +24,9 @@ function FollowerList() {
             <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
             <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
             <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
             <Footer />
         </div>
     )
