@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SshConfigs">
-    <configs>
-      <sshConfig host="ec2-15-165-217-30.ap-northeast-2.compute.amazonaws.com" id="55e1bddc-7979-4dd2-8502-c9dc76cdc4fe" keyPath="$PROJECT_DIR$/../tax_app_aws_key.pem" port="22" nameFormat="DESCRIPTIVE" username="centos" />
-      <sshConfig host="ec2-3-35-56-21.ap-northeast-2.compute.amazonaws.com" id="c3a42572-1974-476c-a28e-bd03922fc973" keyPath="$PROJECT_DIR$/../tax_app_aws_key.pem" port="22" nameFormat="DESCRIPTIVE" username="centos" />
-    </configs>
-  </component>
-</project>
