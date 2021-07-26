@@ -1,5 +1,4 @@
 import React from 'react';
-import { withRouter } from 'react-router';
 import './style.scss';
 
 // 추후에 Link를 통해 페이지 이동할 수 있도록 구성하기

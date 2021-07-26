@@ -6,8 +6,6 @@ import './style.scss';
 function FollowerList() {
     // redux를 사용했을 때는 user 내의 follower 들을 불러오도록 함
     const [follower, setFollower] = useState({});
-    const [backBtn, setBackBtn] = useState(true);
-    const [title, setTitle] = useState('팔로워');
 
     useEffect(() => {
         handleSetFollower()
@@ -23,6 +21,11 @@ function FollowerList() {
     return (
         <div className="follower-list">
             <Header back={true} title={'팔로워'}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
             <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
             <Footer />
         </div>

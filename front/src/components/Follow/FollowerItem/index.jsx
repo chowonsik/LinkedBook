@@ -3,11 +3,11 @@ import './style.scss';
 function FollowerItem({profileImage, followerID}) {
     return (
         <div className="follower-item">
-            <div className="profile-image">
+            <div className="image-id">
                 <img src={profileImage} alt={followerID} />
-            </div>
-            <div className="follower-id">
-                <h3>{followerID}</h3>
+                <div className="follower-id">
+                    <h4>{followerID}</h4>
+                </div>
             </div>
             <div className="cancel-btn">
                 <button>삭제</button>
