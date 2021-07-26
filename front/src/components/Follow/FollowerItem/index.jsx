@@ -6,7 +6,7 @@ function FollowerItem({profileImage, followerID}) {
             <div className="image-id">
                 <img src={profileImage} alt={followerID} />
                 <div className="follower-id">
-                    <h3>{followerID}</h3>
+                    <h4>{followerID}</h4>
                 </div>
             </div>
             <div className="cancel-btn">
