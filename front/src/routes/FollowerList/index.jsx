@@ -19,6 +19,9 @@ function FollowerList() {
     return (
         <div className="follower-list">
             <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
+            <FollowerItem profileImage={follower.profileImage} followerID={follower.followerID}/>
         </div>
     )
 }
