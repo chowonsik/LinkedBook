@@ -1,0 +1,11 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--main-color);
+    padding: .5rem;
+    .back-btn {
+        i {
+            color: var(--color-black);
+        }
+    }
+}

@@ -1,13 +1,17 @@
-import { HashRouter as Router, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Route } from "react-router-dom";
 import "./App.css";
-import SignIn from "./routes/user/SignIn";
-import SignUp from "./routes/user/SignUp";
+import FollowerList from "./routes/FollowerList";
 
 function App() {
   return (
     <div className="App">
-      <SignIn />
-      {/* <SignUp /> */}
+      <Router>
+        <Route
+          to="/profile/follower/list"
+          exact={true}
+          component={FollowerList}
+        />
+      </Router>
     </div>
   );
 }
