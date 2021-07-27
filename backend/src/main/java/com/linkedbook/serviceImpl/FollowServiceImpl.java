@@ -2,7 +2,6 @@ package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.FollowRepository;
-import com.linkedbook.dto.follow.FollowInput;
 import com.linkedbook.dto.follow.FollowOutput;
 import com.linkedbook.dto.follow.FollowUser;
 import com.linkedbook.entity.FollowDB;
@@ -27,15 +26,14 @@ public class FollowServiceImpl implements FollowService {
     private final JwtService jwtService;
 
     @Override
-    public Response<List<FollowOutput>> getFollowList(FollowInput followInput) {
+    public Response<List<FollowOutput>> getFollowList(String info) {
         // 1. 값 형식 체크
-        if (followInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValidFollowInfo(followInput.getInfo()))
-            return new Response<>(BAD_FOLLOW_STATUS_VALUE);
+        if (info == null) return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValidFollowInfo(info))
+            return new Response<>(BAD_FOLLOW_INFO_VALUE);
 
         // 2. follow 유저 정보 가져오기
         List<FollowDB> followDBs;
-        String info = followInput.getInfo();
         try {
             int userId = jwtService.getUserId();
             if (info.equals("follower")) {

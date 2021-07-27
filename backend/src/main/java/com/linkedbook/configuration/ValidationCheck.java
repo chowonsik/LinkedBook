@@ -55,8 +55,6 @@ public class ValidationCheck {
      * @return info 값이 정상이면 true, 비정상이면 false
      */
     public static boolean isValidFollowInfo (String info) {
-        if(info == null || info.isEmpty()) return false;
-
         return (info.equals("follower")) || (info.equals("following"));
     }
 

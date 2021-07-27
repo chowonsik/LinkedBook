@@ -27,8 +27,6 @@ public class FollowController {
     @GetMapping("/{info}")
     public Response<List<FollowOutput>> getFollowList(@PathVariable("info") String info) {
         System.out.println("[GET] /follow/" + info);
-        FollowInput input = new FollowInput(info);
-        return followService.getFollowList(input);
+        return followService.getFollowList(info);
     }
-
 }
