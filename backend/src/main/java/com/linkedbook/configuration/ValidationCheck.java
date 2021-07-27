@@ -49,5 +49,16 @@ public class ValidationCheck {
         }
     }
 
+    /**
+     *
+     * @param info URL에 파라미터로 들어온 값
+     * @return info 값이 정상이면 true, 비정상이면 false
+     */
+    public static boolean isValidFollowInfo (String info) {
+        if(info == null || info.isEmpty()) return false;
+
+        return (info.equals("follower")) || (info.equals("following"));
+    }
+
     public static boolean isEmpty(List<?> list) { return (list == null) || list.isEmpty(); }
 }
