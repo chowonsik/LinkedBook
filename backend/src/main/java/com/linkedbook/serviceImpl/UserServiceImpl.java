@@ -1,6 +1,7 @@
 package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
+import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signup.SignUpInput;
 import com.linkedbook.entity.UserDB;
@@ -10,6 +11,7 @@ import com.linkedbook.service.UserService;
 import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,5 +104,19 @@ public class UserServiceImpl implements UserService {
         // 4. 결과 return
         SignUpOutput signUpOutput = new SignUpOutput(userDB.getId(), accessToken);
         return new Response<>(signUpOutput, CREATED_USER);
+    }
+
+    @Override
+    public Response<SelectProfileOutput> selectProfile(int id) {
+        SelectProfileOutput selectProfileOutput;
+        try {
+            // 유저 id 가져오기
+            int myId = jwtService.getUserId();
+            selectProfileOutput = userRepository.findUserProfile(id, myId);
+        } catch (Exception e) {
+            return new Response<>(DATABASE_ERROR);
+        }
+
+        return new Response<>(selectProfileOutput, SUCCESS_SELECT_PROFILE);
     }
 }
