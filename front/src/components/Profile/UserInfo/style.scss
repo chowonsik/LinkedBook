@@ -1,0 +1,57 @@
+.profile {
+  width: 100%;
+  height: auto;
+  padding: 1rem 2rem;
+
+  .profile-content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .profile-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-right: 3rem;
+    }
+    .profile-info {
+      .profile-title {
+        display: flex;
+        align-items: center;
+
+        .username {
+          font-size: var(--font-size-lg);
+          margin-right: 4px;
+        }
+
+        .bookmark {
+          color: var(--main-color);
+          margin-right: 4px;
+        }
+      }
+      .profile-detail {
+        text-align: right;
+        .location {
+          font-size: var(--font-size-sm);
+          margin-right: 4px;
+        }
+
+        .manner {
+          color: var(--color-blue);
+          font-size: var(--font-size-sm);
+
+          span {
+            margin-left: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  .profile-description {
+    width: 100%;
+    text-align: left;
+    padding: 10px 0;
+    font-size: small;
+  }
+}
