@@ -32,4 +32,4 @@ function FollowerList() {
     )
 }
 
-export default FollowerList
+export default FollowerList;
