@@ -16,4 +16,4 @@ function FollowerItem({profileImage, followerID}) {
     )
 }
 
-export default FollowerItem
+export default FollowerItem;

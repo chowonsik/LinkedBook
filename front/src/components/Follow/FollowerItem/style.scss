@@ -1,30 +1,30 @@
 .follower-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
 }
 
 .follower-item {
-    .image-id {
-        display: flex;
-        align-items: center;
-        img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
+  .image-id {
+    display: flex;
+    align-items: center;
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
     }
+  }
 
-    .follower-id {
-        margin-left: .5rem;
-    }
+  .follower-id {
+    margin-left: 0.5rem;
+  }
 
-    .cancel-btn button{
-      background-color: rgba(255, 255, 255, 0);
-      padding: 4px 6px;
-      border: 2px solid var(--color-black);
-      font-weight: bold;
-      border-radius: 10px;
-    }
+  .cancel-btn button {
+    background-color: rgba(255, 255, 255, 0);
+    padding: 4px 6px;
+    border: 2px solid var(--color-black);
+    font-weight: bold;
+    border-radius: 10px;
+  }
 }
