@@ -15,6 +15,7 @@ public enum  ResponseStatus {
     // 200 OK - 클라이언트의 요청을 서버가 정상적으로 처리했다.
     SUCCESS(200, 200, "요청에 성공하였습니다."),
     SUCCESS_SIGN_IN(200, 201, "로그인에 성공하였습니다."),
+    SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_HELLO(200, 299, "안녕하세요."),
     SUCCESS_SELECT_PROFILE(200, 200, "프로필 조회에 성공하였습니다."),
 
@@ -42,6 +43,7 @@ public enum  ResponseStatus {
     BAD_EMAIL_VALUE(400, 412, "올바른 이메일을 입력해주세요."),
     BAD_PASSWORD_VALUE(400, 413, "올바른 비밀번호를 입력해주세요."),
     BAD_NAME_VALUE(400, 414, "올바른 이름을 입력해주세요."),
+    BAD_FOLLOW_INFO_VALUE(400, 415, "올바른 상태를 입력해주세요."),
     BAD_REQUEST_IMPEACHED_PRESIDENT(400, 499, "탄핵된 대통령입니다."),
 
     // 401 Unauthorized - 클라이언트가 권한이 없기 때문에 작업을 진행할 수 없는 경우
