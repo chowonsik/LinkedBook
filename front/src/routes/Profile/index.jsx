@@ -1,13 +1,14 @@
 import React from "react";
 import UserInfo from "../../components/Profile/UserInfo";
 import UserActivity from "../../components/Profile/UserActivity";
-import UserActivityTab from "../../components/Profile/UserActivityTab";
-import UserDealItem from "../../components/Profile/UserDealItem";
+import DealItem from "../../components/Profile/DealItem";
+import CommentItem from "../../components/CommentItem";
 import "./style.scss";
 import { useState, useEffect } from "react";
 
 function Profile() {
   const [userObj, setUserObject] = useState({});
+  const [activeTab, setActiveTab] = useState({});
   const [tabInfo, setTabInfo] = useState([]);
   useEffect(() => {
     // 정보받아옴
@@ -15,12 +16,12 @@ function Profile() {
       nickname: "변대웅짱",
       image:
         "https://blog.kakaocdn.net/dn/0mySg/btqCUccOGVk/nQ68nZiNKoIEGNJkooELF1/img.jpg",
-      dongmyeonri: "덕명동",
-      manner: 3.5,
+      dong: "덕명동",
+      mannerScore: 3.5,
       info: "Lorem ipsum dolor, sit amet consec tetur adipisicing elit. sit amet consectetur adip isici ng elit ",
-      articles: 10,
-      following: 10,
-      follower: 11,
+      dealCnt: 10,
+      followerCnt: 10,
+      followingCnt: 11,
     });
     setTabInfo([
       {
@@ -75,21 +76,64 @@ function Profile() {
     ]);
   }, []);
 
+  const handleTabClick = (id) => {
+    if (activeTab !== id) {
+      setActiveTab(id);
+      handleTabInfo(id);
+    }
+  };
+
+  const handleTabInfo = (id) => {
+    // 내거래인지, 관심거래인지, 한줄평인지에 따라 api 받아서
+    if (id === 0) {
+      // api요청
+      // setTabInfo
+    } else if (id === 1) {
+      //api 요청
+      // setTabInfo
+    } else {
+      //api 요청
+      // setTabInfo
+    }
+  };
+
   return (
     <div>
       <UserInfo userObj={userObj} />
       <UserActivity
-        articles={userObj.articles}
-        following={userObj.following}
-        follower={userObj.follower}
+        dealCnt={userObj.dealCnt}
+        followingCnt={userObj.followerCnt}
+        followerCnt={userObj.followerCnt}
       />
-      {/*2) activitytab 에서 어떤게 클릭되었음을 쏴서 알려주고
-      그거에 맞춰 api 요청을 보내고? 혹은 저장해서 다시 userdealitem 혹은 다른 컴포넌트
-      보여주는 조건부 로직 짜기, 1)한줄평 보여주는 컴포넌트 만들기*/}
-      <UserActivityTab />
-      {tabInfo.map((article) => (
-        <UserDealItem key={article.id} articleObj={article} />
-      ))}
+      {/* 탭 */}
+      <div className="wrapper">
+        <ul className="tabs">
+          <li
+            onClick={() => handleTabClick(0)}
+            className={activeTab === 0 ? "active" : ""}
+          >
+            판매중
+          </li>
+          <li
+            onClick={() => handleTabClick(1)}
+            className={activeTab === 1 ? "active" : ""}
+          >
+            관심거래
+          </li>
+          <li
+            onClick={() => handleTabClick(2)}
+            className={activeTab === 2 ? "active" : ""}
+          >
+            한줄평
+          </li>
+        </ul>
+      </div>
+      {/* 탭에 따라 컴포넌트 교체 */}
+      {activeTab === 0 || activeTab === 1
+        ? tabInfo.map((deal) => <DealItem key={deal.id} dealObj={deal} />)
+        : tabInfo.map((comment) => (
+            <CommentItem key={comment.id} commentObj={comment} />
+          ))}
     </div>
   );
 }

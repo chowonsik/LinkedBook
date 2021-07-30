@@ -1,0 +1,28 @@
+.deal {
+  display: flex;
+  padding: 2rem;
+  .img {
+    width: 70px;
+    height: auto;
+    margin-right: 16px;
+  }
+  .content {
+    text-align: left;
+    .deal-title {
+      font-size: var(--font-size-lg);
+    }
+    .book-title {
+      font-size: var(--font-size-md);
+    }
+    .author {
+      display: block;
+      font-size: var(--font-size-sm);
+    }
+    .publisher {
+      font-size: var(--font-size-sm);
+    }
+    .created {
+      font-size: var(--font-size-sm);
+    }
+  }
+}
