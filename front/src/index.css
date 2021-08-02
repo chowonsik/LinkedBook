@@ -1,14 +1,18 @@
-:root {
-  --font-size-xl: 24px;
-  --font-size-lg: 20px;
-  --font-size-md: 16px;
-  --font-size-sm: 14px;
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap%27");
 
-  --main-color: #74b9ff;
-  --color-light-gray: #f2f2f2;
-  --color-black: #2d3436;
-  --color-red: #ed4956;
-  --color-blue: #3385ff;
+:root {
+  --font-size-xxl: 20px;
+  --font-size-xl: 18px;
+  --font-size-lg: 16px;
+  --font-size-md: 14px;
+  --font-size-sm: 12px;
+  --font-size-xs: 10px;
+
+  --main-color: #ffb142;
+  --color-black: #1f2d3d;
+  --color-gray: #8492a6;
+  --color-light-gray: #f6f8fa;
+  --color-red: #ff5252;
 }
 
 * {
@@ -19,9 +23,7 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -29,6 +31,25 @@ body {
 button {
   border: none;
   background-color: #fff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ol,
+ul,
+li {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+button,
+input,
+textarea {
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 code {
