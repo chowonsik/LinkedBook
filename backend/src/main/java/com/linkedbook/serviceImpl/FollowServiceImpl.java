@@ -77,32 +77,23 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public Response createFollowRelation(FollowInput followInput) {
+    public Response<Object> createFollowRelation(FollowInput followInput) {
         // 1. 값 형식 체크
-        if (followInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValidId(followInput.getFromUserId()) ||
-                !ValidationCheck.isValidId(followInput.getToUserId()))
-            return new Response<>(BAD_ID_VALUE);
-        if (followInput.getFromUserId() == followInput.getToUserId()) return new Response<>(BAD_ID_VALUE);
-        if (!ValidationCheck.isValid(followInput.getStatus())) return new Response<>(BAD_STATUS_VALUE);
+        Response<Object> isValid = validateInputValue(followInput, true);
+        if (isValid != null) return isValid;
 
         // 2. 팔로우 관계 생성
-        int to_user_id = followInput.getToUserId();
-        int from_user_id = followInput.getFromUserId();
+        int toUserId = followInput.getToUserId();
+        int fromUserId = followInput.getFromUserId();
 
         FollowDB followDB = FollowDB.builder()
-                .toUser(new UserDB(to_user_id))
-                .fromUser(new UserDB(from_user_id))
+                .toUser(new UserDB(toUserId))
+                .fromUser(new UserDB(fromUserId))
                 .status(FollowStatus.valueOf(followInput.getStatus()))
                 .build();
 
         try {
-            UserDB toUser = userRepository.findById(to_user_id).orElse(null);
-            UserDB fromUser = userRepository.findById(from_user_id).orElse(null);
-            if (toUser == null || fromUser == null) {
-                return new Response<>(BAD_ID_VALUE);
-            }
-            FollowDB existRelation = followRepository.findByFromUserIdAndToUserId(from_user_id, to_user_id);
+            FollowDB existRelation = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
             if (existRelation != null) {
                 return new Response<>(EXISTS_FOLLOW);
             }
@@ -116,4 +107,65 @@ public class FollowServiceImpl implements FollowService {
         // 3. 결과 return
         return new Response<>(null, CREATED_FOLLOW);
     }
+
+    @Override
+    public Response<Object> deleteFollowRelation(FollowInput followInput) {
+        // 1. 값 형식 체크
+        Response<Object> isValid = validateInputValue(followInput, false);
+        if (isValid != null) return isValid;
+
+        // 2. 팔로우 관계 상태 값을 ACTIVATE -> DELETED로 변경
+        try {
+            int toUserId = followInput.getToUserId();
+            int fromUserId = followInput.getFromUserId();
+
+            FollowDB followDB = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
+            if (followDB == null) {
+                return new Response<>(NOT_FOUND_FOLLOW);
+            } else {
+                followDB.setStatus(FollowStatus.DELETED);
+            }
+
+            followRepository.save(followDB); // ACTIVATE->DELETE 로 상태 업데이트
+
+        } catch (Exception e) {
+            return new Response<>(DATABASE_ERROR);
+        }
+
+        // 3. 결과 return
+        return new Response<>(null, SUCCESS_DELETE_FOLLOW);
+    }
+
+    private Response<Object> validateInputValue(FollowInput followInput, Boolean isCreatedMethod) {
+        if (followInput == null) return new Response<>(NO_VALUES);
+
+        if (!ValidationCheck.isValidId(followInput.getFromUserId()) ||
+                !ValidationCheck.isValidId(followInput.getToUserId()))
+            return new Response<>(BAD_ID_VALUE);
+
+        if (followInput.getFromUserId() == followInput.getToUserId()) return new Response<>(BAD_ID_VALUE);
+
+        if(isCreatedMethod) {
+            if (!ValidationCheck.isValid(followInput.getStatus())) return new Response<>(BAD_STATUS_VALUE);
+        }
+
+        // DB 접근 validation
+        try{
+            int toUserId = followInput.getToUserId();
+            int fromUserId = followInput.getFromUserId();
+
+            UserDB toUser = userRepository.findById(toUserId).orElse(null);
+            UserDB fromUser = userRepository.findById(fromUserId).orElse(null);
+
+            if (toUser == null || fromUser == null) {
+                return new Response<>(BAD_ID_VALUE);
+            }
+        } catch(Exception e) {
+            return new Response<>(DATABASE_ERROR);
+        }
+
+        return null;
+    }
+
+
 }

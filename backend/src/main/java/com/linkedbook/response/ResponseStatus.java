@@ -16,7 +16,8 @@ public enum  ResponseStatus {
     SUCCESS(200, 200, "요청에 성공하였습니다."),
     SUCCESS_SIGN_IN(200, 201, "로그인에 성공하였습니다."),
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
-    SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
+    SUCCESS_DELETE_FOLLOW(200, 203, "팔로우 관계를 삭제하는데 성공하였습니다."),
+    SUCCESS_SELECT_PROFILE(200, 204, "프로필 조회에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."),
@@ -59,6 +60,7 @@ public enum  ResponseStatus {
     // 404 Not Found - 클라이언트가 요청한 자원이 존재하지 않다.
     NOT_FOUND(404, 400, "NOT FOUND"),
     NOT_FOUND_USER(404, 405, "사용자 정보가 존재하지 않습니다."),
+    NOT_FOUND_FOLLOW(404, 406, "팔로우 관계 정보가 존재하지 않습니다."),
 
     // 405 Method Not Allowed - 클라이언트의 요청이 허용되지 않는 메소드인 경우
     METHOD_NOT_ALLOWED(405, 400, "허용되지 않는 HTTP Method 입니다."),

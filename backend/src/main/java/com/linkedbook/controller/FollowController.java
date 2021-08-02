@@ -33,13 +33,26 @@ public class FollowController {
     /**
      * 팔로우 생성 API
      * [POST] /follow
-     * @return Response
+     * @return Response<Object>
      */
     // Body
     @ResponseBody
     @PostMapping
-    public Response createFollowRelation(@RequestBody FollowInput followInput) {
+    public Response<Object> createFollowRelation(@RequestBody FollowInput followInput) {
         System.out.println("[POST] /follow");
         return followService.createFollowRelation(followInput);
+    }
+
+    /**
+     * 팔로우 삭제 API
+     * [PATCH] /follow
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @PatchMapping
+    public Response<Object> deleteFollowRelation(@RequestBody FollowInput followInput) {
+        System.out.println("[PATCH] /follow");
+        return followService.deleteFollowRelation(followInput);
     }
 }
