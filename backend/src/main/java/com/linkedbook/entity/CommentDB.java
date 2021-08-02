@@ -1,6 +1,5 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.follow.FollowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,24 +16,29 @@ import static javax.persistence.GenerationType.*;
 @DynamicInsert
 @NoArgsConstructor
 @Entity
-@Table(name = "follow")
-public class FollowDB {
+@Table(name = "comment")
+public class CommentDB {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "to_user_id", nullable = false)
-    private UserDB toUser;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserDB user;
 
     @ManyToOne
-    @JoinColumn(name = "from_user_id", nullable = false)
-    private UserDB fromUser;
+    @JoinColumn(name = "book_id", nullable = false)
+    private BookDB book;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 45, nullable = false)
-    private FollowStatus status;
+    @Column(name = "score", nullable = false)
+    private int score;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "status", nullable = false, length = 45)
+    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

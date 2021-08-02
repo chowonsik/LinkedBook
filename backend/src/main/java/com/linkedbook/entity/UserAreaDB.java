@@ -1,0 +1,36 @@
+package com.linkedbook.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import javax.persistence.*;
+
+import static javax.persistence.GenerationType.*;
+
+@Data
+@AllArgsConstructor
+@DynamicInsert
+@NoArgsConstructor
+@Entity
+@Table(name = "user_area")
+public class UserAreaDB {
+    @Id
+    @Column(name = "id", nullable = false, updatable = false)
+    @GeneratedValue(strategy = IDENTITY)
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserDB user;
+
+    @ManyToOne
+    @JoinColumn(name = "area_id", nullable = false)
+    private AreaDB area;
+
+    @Column(name = "order", nullable = false)
+    private int order;
+
+    @Column(name = "status", nullable = false, length = 45)
+    private String status;
+}
