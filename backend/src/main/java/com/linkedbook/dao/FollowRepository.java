@@ -11,4 +11,5 @@ import java.util.List;
 public interface FollowRepository extends JpaRepository<FollowDB, Integer> {
     List<FollowDB> findByFromUserIdAndStatus(int fromUserId, FollowStatus status);
     List<FollowDB> findByToUserIdAndStatus(int toUserId, FollowStatus status);
+    FollowDB findByFromUserIdAndToUserId(int fromUserId, int toUserId);
 }

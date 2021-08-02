@@ -21,6 +21,7 @@ public enum  ResponseStatus {
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."),
     CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
+    CREATED_FOLLOW(201, 202, "새로운 팔로우 관계 등록에 성공하였습니다."),
 
     // 202 Accepted - 클라이언트의 요청은 정상적이나, 서버가 아직 요청을 완료하지 못했다. 비동기
     ACCEPTED(202, 200, "요청에 성공하였습니다."),
@@ -37,12 +38,15 @@ public enum  ResponseStatus {
     FAILED_TO_CREATE_TOKEN(400, 402, "토큰 생성에 실패하였습니다."),
     FAILED_TO_SIGN_IN(400, 403, "로그인에 실패하였습니다."),
     EXISTS_EMAIL(400, 404, "이미 존재하는 이메일입니다."),
+    EXISTS_FOLLOW(400, 405, "이미 존재하는 팔로우 관계입니다."),
     NO_VALUES(400, 410, "입력되지 않은 값이 존재합니다."),
     BAD_ACCESS_TOKEN_VALUE(400, 411, "accessToken을 입력해주세요."),
     BAD_EMAIL_VALUE(400, 412, "올바른 이메일을 입력해주세요."),
     BAD_PASSWORD_VALUE(400, 413, "올바른 비밀번호를 입력해주세요."),
     BAD_NAME_VALUE(400, 414, "올바른 이름을 입력해주세요."),
-    BAD_FOLLOW_INFO_VALUE(400, 415, "올바른 상태를 입력해주세요."),
+    BAD_FOLLOW_INFO_VALUE(400, 415, "올바른 팔로우 관계를 입력해주세요."),
+    BAD_ID_VALUE(400, 416, "올바른 아이디를 입력해주세요."),
+    BAD_STATUS_VALUE(400, 417, "올바른 상태를 입력해주세요."),
 
     // 401 Unauthorized - 클라이언트가 권한이 없기 때문에 작업을 진행할 수 없는 경우
     UNAUTHORIZED(401, 400, "권한이 없습니다."),

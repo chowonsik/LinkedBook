@@ -9,7 +9,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class FollowOutput {
+public class FollowUserOutput {
     private int id;
     private FollowUser user;
     private FollowStatus status;
