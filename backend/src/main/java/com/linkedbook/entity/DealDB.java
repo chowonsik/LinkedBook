@@ -1,6 +1,5 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.follow.FollowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
@@ -17,24 +17,38 @@ import static javax.persistence.GenerationType.*;
 @DynamicInsert
 @NoArgsConstructor
 @Entity
-@Table(name = "follow")
-public class FollowDB {
+@Table(name = "deal")
+public class DealDB {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "to_user_id", nullable = false)
-    private UserDB toUser;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserDB user;
 
     @ManyToOne
-    @JoinColumn(name = "from_user_id", nullable = false)
-    private UserDB fromUser;
+    @JoinColumn(name = "book_id", nullable = false)
+    private BookDB book;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 45, nullable = false)
-    private FollowStatus status;
+    @OneToMany(mappedBy = "deal")
+    private List<DealImageDB> images;
+
+    @Column(name = "title", nullable = false, length = 45)
+    private String title;
+
+    @Column(name = "price", nullable = false)
+    private int price;
+
+    @Column(name = "quality", nullable = false, length = 45)
+    private String quality;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "status", nullable = false, length = 45)
+    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
