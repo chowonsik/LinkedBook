@@ -9,6 +9,7 @@ import {
   emailValidator,
   passwordValidator,
 } from "../../../validators.js";
+import { Link } from "react-router-dom";
 
 export default function SignUp() {
   const nickname = useInput("", nicknameValidator);
@@ -60,7 +61,9 @@ export default function SignUp() {
           isValid={passwordConfirm.isValid}
           errorMessage={passwordConfirm.errorMessage}
         />
-        <LocationButton placeholder={location} onClick={() => alert("ASD")} />
+        <Link to="/search/location">
+          <LocationButton placeholder={location} />
+        </Link>
       </Wrapper>
       <FooterButton value="회원가입" />
     </>
