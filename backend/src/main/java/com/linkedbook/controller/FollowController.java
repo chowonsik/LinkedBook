@@ -5,6 +5,7 @@ import com.linkedbook.dto.follow.FollowOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.FollowService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/follow")
 @AllArgsConstructor
+@Slf4j
 public class FollowController {
 
     private final FollowService followService;
@@ -26,12 +28,12 @@ public class FollowController {
     @ResponseBody
     @GetMapping("/{info}")
     public Response<List<FollowOutput>> getFollowList(@PathVariable("info") String info) {
-        System.out.println("[GET] /follow/" + info);
+        log.info("[GET] /follow/" + info);
         return followService.getFollowList(info);
     }
 
     /**
-     * 팔로우 생성 API
+     * 팔로우 상태 수정 API
      * [POST] /follow
      * @return Response<Object>
      */
@@ -39,20 +41,7 @@ public class FollowController {
     @ResponseBody
     @PostMapping
     public Response<Object> createFollowRelation(@RequestBody FollowInput followInput) {
-        System.out.println("[POST] /follow");
-        return followService.createFollowRelation(followInput);
-    }
-
-    /**
-     * 팔로우 삭제 API
-     * [PATCH] /follow
-     * @return Response<Object>
-     */
-    // Body
-    @ResponseBody
-    @PatchMapping
-    public Response<Object> deleteFollowRelation(@RequestBody FollowInput followInput) {
-        System.out.println("[PATCH] /follow");
-        return followService.deleteFollowRelation(followInput);
+        log.info("[POST] /follow");
+        return followService.changeFollowRelation(followInput);
     }
 }

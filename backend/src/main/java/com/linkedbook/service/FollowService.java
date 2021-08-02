@@ -8,6 +8,5 @@ import java.util.List;
 
 public interface FollowService {
     Response<List<FollowOutput>> getFollowList(String info);
-    Response<Object> createFollowRelation(FollowInput followInput);
-    Response<Object> deleteFollowRelation(FollowInput followInput);
+    Response<Object> changeFollowRelation(FollowInput followInput);
 }
