@@ -1,7 +1,7 @@
 package com.linkedbook.controller;
 
 import com.linkedbook.dto.follow.FollowInput;
-import com.linkedbook.dto.follow.FollowUserOutput;
+import com.linkedbook.dto.follow.FollowOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.FollowService;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class FollowController {
     // Body
     @ResponseBody
     @GetMapping("/{info}")
-    public Response<List<FollowUserOutput>> getFollowList(@PathVariable("info") String info) {
+    public Response<List<FollowOutput>> getFollowList(@PathVariable("info") String info) {
         System.out.println("[GET] /follow/" + info);
         return followService.getFollowList(info);
     }
