@@ -1,9 +1,9 @@
 package com.linkedbook.dto.follow;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class FollowInput {
     private int toUserId;
