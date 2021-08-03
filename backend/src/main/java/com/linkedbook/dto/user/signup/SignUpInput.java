@@ -13,5 +13,5 @@ public class SignUpInput {
     private String nickname;
     private String info;
     private String image;
-    private String oauth;
+    private int areaId;
 }
