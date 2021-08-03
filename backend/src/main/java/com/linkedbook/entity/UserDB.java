@@ -66,6 +66,9 @@ public class UserDB {
         this.image = signUpInput.getImage();
         this.oauth = signUpInput.getOauth();
         this.status = "ACTIVATE";
+    }
 
+    public UserDB(int id) {
+        this.id = id;
     }
 }

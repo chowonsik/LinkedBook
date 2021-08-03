@@ -2,13 +2,18 @@ package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.BookRepository;
-import com.linkedbook.dto.book.search.BookSearchInput;
+import com.linkedbook.dao.LikeBookRepository;
+import com.linkedbook.dto.book.search.BookInfoInput;
+import com.linkedbook.dto.book.search.BookSearchOutput;
 import com.linkedbook.entity.BookDB;
+import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
+import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -18,49 +23,52 @@ import static com.linkedbook.response.ResponseStatus.*;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final LikeBookRepository likeBookRepository;
+    private final JwtService jwtService;
 
     @Override
-    public Response<Object> createBookInfo(BookSearchInput bookSearchInput) {
+    @Transactional
+    public Response<Object> createBookInfo(BookInfoInput bookInfoInput) {
         // 1. 값 형식 체크
-        if (bookSearchInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValid(bookSearchInput.getIsbn())
-                || !ValidationCheck.isValid(bookSearchInput.getTitle())
-                || !ValidationCheck.isValidId(bookSearchInput.getPrice())
-                || !ValidationCheck.isValid(bookSearchInput.getAuthor())
-                || !ValidationCheck.isValid(bookSearchInput.getPublisher())
-                || !ValidationCheck.isValid(bookSearchInput.getContents())
-                || !ValidationCheck.isValidDate(bookSearchInput.getDateTime())
-                || !ValidationCheck.isValid(bookSearchInput.getStatus())
+        if (bookInfoInput == null) return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(bookInfoInput.getIsbn())
+                || !ValidationCheck.isValid(bookInfoInput.getTitle())
+                || !ValidationCheck.isValidId(bookInfoInput.getPrice())
+                || !ValidationCheck.isValid(bookInfoInput.getAuthor())
+                || !ValidationCheck.isValid(bookInfoInput.getPublisher())
+                || !ValidationCheck.isValid(bookInfoInput.getContents())
+                || !ValidationCheck.isValidDate(bookInfoInput.getDateTime())
+                || !ValidationCheck.isValid(bookInfoInput.getStatus())
         )
             return new Response<>(BAD_REQUEST);
 
         // 2. 책 정보 생성
         BookDB bookDB;
         try {
-            String isbn = bookSearchInput.getIsbn();
+            String isbn = bookInfoInput.getIsbn();
             BookDB existBook = bookRepository.findById(isbn).orElse(null);
             if (existBook == null) {
                 bookDB = BookDB.builder()
                         .id(isbn)
-                        .title(bookSearchInput.getTitle())
-                        .price(bookSearchInput.getPrice())
-                        .author(bookSearchInput.getAuthor())
-                        .publisher(bookSearchInput.getPublisher())
-                        .contents(bookSearchInput.getContents())
-                        .dateTime(bookSearchInput.getDateTime())
-                        .image(bookSearchInput.getThumbnail())
-                        .status(bookSearchInput.getStatus())
+                        .title(bookInfoInput.getTitle())
+                        .price(bookInfoInput.getPrice())
+                        .author(bookInfoInput.getAuthor())
+                        .publisher(bookInfoInput.getPublisher())
+                        .contents(bookInfoInput.getContents())
+                        .dateTime(bookInfoInput.getDateTime())
+                        .image(bookInfoInput.getThumbnail())
+                        .status(bookInfoInput.getStatus())
                         .build();
             } else {
                 bookDB = existBook;
-                existBook.setTitle(bookSearchInput.getTitle());
-                existBook.setPrice(bookSearchInput.getPrice());
-                existBook.setAuthor(bookSearchInput.getAuthor());
-                existBook.setPublisher(bookSearchInput.getPublisher());
-                existBook.setContents(bookSearchInput.getContents());
-                existBook.setDateTime(bookSearchInput.getDateTime());
-                existBook.setImage(bookSearchInput.getThumbnail());
-                existBook.setStatus(bookSearchInput.getStatus());
+                existBook.setTitle(bookInfoInput.getTitle());
+                existBook.setPrice(bookInfoInput.getPrice());
+                existBook.setAuthor(bookInfoInput.getAuthor());
+                existBook.setPublisher(bookInfoInput.getPublisher());
+                existBook.setContents(bookInfoInput.getContents());
+                existBook.setDateTime(bookInfoInput.getDateTime());
+                existBook.setImage(bookInfoInput.getThumbnail());
+                existBook.setStatus(bookInfoInput.getStatus());
             }
 
             bookRepository.save(bookDB);
@@ -72,5 +80,35 @@ public class BookServiceImpl implements BookService {
 
         // 3. 결과 return
         return new Response<>(null, CREATED_BOOK);
+    }
+
+    @Override
+    public Response<BookSearchOutput> getBookInfo(String isbn) {
+        // 1. 값 형식 체크
+        if(!ValidationCheck.isValid(isbn)) return new Response<>(NO_VALUES);
+        // 2. isbn와 일치하는 책 정보 가져오기
+        BookSearchOutput bookSearchOutput;
+        try {
+            BookDB bookDB = bookRepository.findById(isbn).orElse(null);
+            if (bookDB == null) {
+                return new Response<>(NOT_FOUND_BOOK);
+            }
+            // 로그인된 유저의 관심 책 등록 여부 확인하기
+            boolean isUserLikeBook = false;
+            int userId = jwtService.getUserId();
+            if(likeBookRepository.existsByUserAndBookAndStatus(new UserDB(userId), new BookDB(isbn), "ACTIVATE")) {
+                isUserLikeBook = true;
+            }
+            // 최종 출력값 정리
+            bookSearchOutput = BookSearchOutput.builder()
+                    .book(bookDB)
+                    .userLikeBook(isUserLikeBook)
+                    .build();
+        } catch (Exception e) {
+            log.error("[books/get] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(bookSearchOutput, SUCCESS_SELECT_BOOK);
     }
 }

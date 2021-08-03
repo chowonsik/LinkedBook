@@ -7,7 +7,7 @@ import java.util.Date;
 
 @NoArgsConstructor
 @Getter
-public class BookSearchInput {
+public class BookInfoInput {
     private String isbn;
     private String title;
     private int price;
