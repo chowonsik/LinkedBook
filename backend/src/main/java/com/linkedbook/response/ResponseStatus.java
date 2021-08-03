@@ -17,6 +17,7 @@ public enum  ResponseStatus {
     SUCCESS_SIGN_IN(200, 201, "로그인에 성공하였습니다."),
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
+    SUCCESS_UPDATE_PROFILE(200, 204, "프로필 수정에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."),

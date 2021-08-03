@@ -15,6 +15,9 @@ import com.linkedbook.dao.AreaRepository;
 import com.linkedbook.dao.UserAreaRepository;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
+import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
+import com.linkedbook.dto.user.updateprofile.UpdateProfileOutput;
+import com.linkedbook.dto.user.updateprofile.UserAreaInput;
 
 import org.apache.commons.lang3.StringUtils;
 import lombok.AllArgsConstructor;
@@ -25,7 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 099f86d46654ebd5c504f55c157a76cb71d391e6
 
 import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
@@ -41,7 +47,6 @@ public class UserServiceImpl implements UserService {
     private final AreaRepository areaRepository;
     @Autowired
     private final JwtService jwtService;
-
 
     @Override
     public Response<SignInOutput> signIn(SignInInput signInInput) {
@@ -93,8 +98,12 @@ public class UserServiceImpl implements UserService {
         if (!ValidationCheck.isValid(signUpInput.getNickname()))     return new Response<>(BAD_NAME_VALUE);
 
         // 2. 유저 생성
+<<<<<<< HEAD
         UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).status("ACTIVATE").build();
         UserAreaDB userAreaDB;
+=======
+        UserDB userDB = UserDB.builder().email(signUpInput.getPassword()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).oauth(signUpInput.getOauth()).status("ACTIVATE").build();
+>>>>>>> 099f86d46654ebd5c504f55c157a76cb71d391e6
         try {
             String email = signUpInput.getEmail();
             String nickname = signUpInput.getNickname();
@@ -149,5 +158,69 @@ public class UserServiceImpl implements UserService {
         }
 
         return new Response<>(selectProfileOutput, SUCCESS_SELECT_PROFILE);
+    }
+
+    @Override
+    @Transactional
+    public Response<Object> updateProfile(int userid, UpdateProfileInput updateProfileInput) {
+        UserDB userDB;
+        try {
+            // 유저 id 가져오기
+            int myId = jwtService.getUserId();
+            Optional<UserDB> selectUser = userRepository.findByIdAndStatus(myId, "ACTIVATE");
+            if (selectUser.isPresent()) {
+                userDB = selectUser.get();
+            } else {
+                return new Response<>(NOT_FOUND_USER);
+            }
+            
+            // 입력 값 벨리데이션
+            if (StringUtils.isNotBlank(updateProfileInput.getPassword())) userDB.setPassword(updateProfileInput.getPassword());
+            if (StringUtils.isNotBlank(updateProfileInput.getNickname())) userDB.setNickname(updateProfileInput.getNickname());
+            if (StringUtils.isNotBlank(updateProfileInput.getInfo())) userDB.setInfo(updateProfileInput.getInfo());
+            if (StringUtils.isNotBlank(updateProfileInput.getImage())) userDB.setImage(updateProfileInput.getImage());
+
+            List<UserAreaInput> userArea = updateProfileInput.getArea();
+
+            // orders 1 부터 입력한 값 까지 userArea 설정 값이 있다면 찾아서 바꾼후 ACTIVATE
+            for(int i = 1; i <= userArea.size(); i++) {
+                UserAreaDB userAreaDB;
+                Optional<UserAreaDB> getUserAreaDB = userAreaRepository.findByUserIdAndOrders(myId, i);
+                AreaDB areaDB = areaRepository.findById(userArea.get(i-1).getAreaId()).orElse(null);
+
+                // 해당 지역 번호가 없을 때
+                if (areaDB == null) {
+                    return new Response<>(BAD_AREA_VALUE);
+                }
+
+                if (getUserAreaDB.isPresent()) {
+                    userAreaDB = getUserAreaDB.get();
+                    userAreaDB.setArea(areaDB);
+                    userAreaDB.setStatus("ACTIVATE");
+                } else {
+                    userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(i).status("ACTIVATE").build();
+                }
+                
+                userAreaRepository.save(userAreaDB);
+            }
+
+            // 입력 값이 3개 보다 작을 경우 나머지 userArea 상태를 DELETED로 바꿈
+            for(int i = userArea.size() + 1; i <= 3; i++) {
+                UserAreaDB userAreaDB;
+                Optional<UserAreaDB> getUserAreaDB = userAreaRepository.findByUserIdAndOrders(myId, i);
+                if (getUserAreaDB.isPresent()) {
+                    userAreaDB = getUserAreaDB.get();
+                    userAreaDB.setStatus("DELETED");
+                } else {
+                    continue;
+                }
+                userAreaRepository.save(userAreaDB);
+            }
+            userRepository.save(userDB);
+        } catch (Exception e) {
+            return new Response<>(DATABASE_ERROR);
+        }
+
+        return new Response<>(null, SUCCESS_UPDATE_PROFILE);
     }
 }
