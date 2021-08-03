@@ -3,6 +3,7 @@ package com.linkedbook.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ import static javax.persistence.GenerationType.*;
 @DynamicInsert
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "user_area")
 public class UserAreaDB {
     @Id
@@ -28,9 +30,10 @@ public class UserAreaDB {
     @JoinColumn(name = "area_id", nullable = false)
     private AreaDB area;
 
-    @Column(name = "order", nullable = false)
-    private int order;
+    @Column(name = "orders", nullable = false)
+    private int orders;
 
     @Column(name = "status", nullable = false, length = 45)
     private String status;
+
 }
