@@ -1,24 +1,24 @@
 import React from "react";
-import "./style.scss";
+import { Wrapper } from "./styles";
 
-function UserActivity({ articles, following, follower }) {
+function UserActivity({ dealCnt, followerCnt, followingCnt }) {
   return (
-    <div>
+    <Wrapper>
       <dl className="user-activity">
         <div>
-          <dd>게시물</dd>
-          <dt>{articles}</dt>
+          <dt>게시글</dt>
+          <dd>{dealCnt}</dd>
         </div>
         <div>
-          <dd>팔로워</dd>
-          <dt>{following}</dt>
+          <dt>팔로워</dt>
+          <dd>{followerCnt}</dd>
         </div>
         <div>
-          <dd>팔로잉</dd>
-          <dt>{follower}</dt>
+          <dt>팔로잉</dt>
+          <dd>{followingCnt}</dd>
         </div>
       </dl>
-    </div>
+    </Wrapper>
   );
 }
 
