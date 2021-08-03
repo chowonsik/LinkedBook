@@ -6,7 +6,7 @@ function Input({
   value,
   onChange,
   isValid,
-  errorMessage,
+  errorMessage = "no",
   width,
   height,
   fontSize,
@@ -23,7 +23,9 @@ function Input({
           height={height}
           fontSize={fontSize}
         />
-        <ErrorMessage>{isValid ? "" : errorMessage}</ErrorMessage>
+        {errorMessage !== "no" && (
+          <ErrorMessage>{isValid ? "" : errorMessage}</ErrorMessage>
+        )}
       </Wrapper>
     </>
   );

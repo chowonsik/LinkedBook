@@ -1,10 +1,10 @@
 import React from "react";
-import Input from "../../common/Input";
-import RoundButton from "../../common/Buttons/RoundButton";
+import Input from "../../../common/Input";
+import RoundButton from "../../../common/Buttons/RoundButton";
 import { Link } from "react-router-dom";
 import { Wrapper } from "./style";
 
-export default function SignInForm({ email, password }) {
+export default function SignInForm({ email, password, onClick }) {
   return (
     <Wrapper>
       <Input
@@ -23,7 +23,7 @@ export default function SignInForm({ email, password }) {
         isValid={password.isValid}
         errorMessage={password.errorMessage}
       />
-      <RoundButton value="로그인" width={"100%"} />
+      <RoundButton value="로그인" width={"100%"} onClick={onClick} />
       <div className="sign-up-message">
         <span className="message">아직 회원이 아니신가요?</span>
         <Link to="/signup">

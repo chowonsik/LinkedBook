@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors, fonts } from "../../../styles";
+import { colors, fonts } from "../../../../styles";
 
 export const Wrapper = styled.div`
   margin-top: 20px;

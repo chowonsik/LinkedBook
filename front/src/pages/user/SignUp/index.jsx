@@ -9,7 +9,9 @@ import {
   emailValidator,
   passwordValidator,
 } from "../../../validators.js";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import Header from "../../../components/Layout/Header";
+import { request } from "../../../api.js";
 
 export default function SignUp() {
   const nickname = useInput("", nicknameValidator);
@@ -17,6 +19,8 @@ export default function SignUp() {
   const password = useInput("", passwordValidator);
   const passwordConfirm = useInput("", passwordConfirmValidator);
   const [location, setLocation] = useState("지역 설정");
+
+  const history = useHistory();
 
   function passwordConfirmValidator(value) {
     if (password.value !== value) {
@@ -26,8 +30,37 @@ export default function SignUp() {
     }
   }
 
+  async function handleSignUp() {
+    if (
+      !nickname.isValid ||
+      !email.isValid ||
+      !password.isValid ||
+      !passwordConfirm.isValid
+    ) {
+      alert("모든 항목을 입력하세요");
+      return;
+    }
+    const data = {
+      email: email.value,
+      nickname: nickname.value,
+      password: password.value,
+      info: "",
+      image: "",
+      areaId: 1,
+    };
+    const response = await request("POST", "/users/signup", data);
+    if (response.isSuccess) {
+      alert("회원가입 성공");
+      history.push({ pathname: "/signin" });
+    } else {
+      alert("회원가입 실패");
+      return;
+    }
+  }
+
   return (
     <>
+      <Header title="회원가입" isBack />
       <Wrapper>
         <Input
           type="text"
@@ -65,7 +98,7 @@ export default function SignUp() {
           <LocationButton placeholder={location} />
         </Link>
       </Wrapper>
-      <FooterButton value="회원가입" />
+      <FooterButton value="회원가입" onClick={handleSignUp} />
     </>
   );
 }

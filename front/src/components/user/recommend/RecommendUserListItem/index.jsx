@@ -1,6 +1,6 @@
 import React from "react";
-import { colors, fonts } from "../../../styles";
-import RoundButton from "../../common/Buttons/RoundButton";
+import { colors, fonts } from "../../../../styles";
+import RoundButton from "../../../common/Buttons/RoundButton";
 
 import { ButtonWrapper, ImageWrapper, TextWrapper, Wrapper } from "./style";
 

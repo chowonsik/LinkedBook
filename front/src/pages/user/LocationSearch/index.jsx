@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Input from "../../../components/common/Input";
+import Header from "../../../components/Layout/Header";
 import useInput from "../../../hooks/useInput";
 
 import { DongList, DongListItem, Wrapper } from "./style";
@@ -10,6 +11,7 @@ export default function LocationSearch() {
 
   return (
     <>
+      <Header title="지역 검색" isBack />
       <Wrapper>
         <Input
           value={search.value}
