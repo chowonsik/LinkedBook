@@ -93,11 +93,13 @@ public class UserServiceImpl implements UserService {
         if (!ValidationCheck.isValid(signUpInput.getNickname()))     return new Response<>(BAD_NAME_VALUE);
 
         // 2. 유저 생성
-        UserDB userDB = UserDB.builder().email(signUpInput.getPassword()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).status("ACTIVATE").build();
+        UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).status("ACTIVATE").build();
         UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
+            System.out.println(email);
             List<UserDB> existUsers = userRepository.findByEmailAndStatus(email, "ACTIVATE");
+            System.out.println(existUsers.size());
             if (existUsers.size() > 0) {
                 return new Response<>(EXISTS_EMAIL);
             } else {
