@@ -4,29 +4,44 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signup.SignUpInput;
+import com.linkedbook.entity.AreaDB;
+import com.linkedbook.entity.UserAreaDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.UserService;
 import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dao.AreaRepository;
+import com.linkedbook.dao.UserAreaRepository;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
 
+import org.apache.commons.lang3.StringUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 
 import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("UserService")
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     @Autowired
-    private JwtService jwtService;
+    private final UserAreaRepository userAreaRepository;
+    @Autowired
+    private final AreaRepository areaRepository;
+    @Autowired
+    private final JwtService jwtService;
+
 
     @Override
     public Response<SignInOutput> signIn(SignInInput signInInput) {
@@ -69,6 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Response<SignUpOutput> signUp(SignUpInput signUpInput) {
         // 1. 값 형식 체크
         if (signUpInput == null) return new Response<>(NO_VALUES);
@@ -77,15 +93,30 @@ public class UserServiceImpl implements UserService {
         if (!ValidationCheck.isValid(signUpInput.getNickname()))     return new Response<>(BAD_NAME_VALUE);
 
         // 2. 유저 생성
-        UserDB userDB = new UserDB(signUpInput);
+        UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).status("ACTIVATE").build();
+        UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
+            String nickname = signUpInput.getNickname();
             List<UserDB> existUsers = userRepository.findByEmailAndStatus(email, "ACTIVATE");
-            if (existUsers.size() > 0) {
+            List<UserDB> existNickname = userRepository.findByNicknameAndStatus(nickname, "ACTIVATE");
+            
+            if (existUsers.size() > 0) { // 이메일 중복 제어
                 return new Response<>(EXISTS_EMAIL);
+            } else if (existNickname.size() > 0) { // 닉네임 중복 제어
+                return new Response<>(EXISTS_NICKNAME);
             } else {
                 userDB = userRepository.save(userDB);
             }
+            AreaDB areaDB = areaRepository.findById(signUpInput.getAreaId()).orElse(null);
+            
+            // 해당 지역 번호가 없을 때
+            if (areaDB == null) {
+                return new Response<>(BAD_AREA_VALUE);
+            }
+
+            userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).status("ACTIVATE").build();
+            userAreaRepository.save(userAreaDB);
         } catch (Exception e) {
             return new Response<>(DATABASE_ERROR);
         }
