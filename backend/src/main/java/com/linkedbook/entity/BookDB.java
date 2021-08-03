@@ -1,6 +1,7 @@
 package com.linkedbook.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -8,15 +9,16 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "book")
 public class BookDB {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
-    private int id;
+    private String id;
 
     @Column(name = "title", nullable = false, length = 60)
     private String title;
@@ -34,7 +36,7 @@ public class BookDB {
     private String contents;
 
     @Column(name = "datetime", nullable = false, updatable = false)
-    private Date datetime;
+    private Date dateTime;
 
     @Column(name = "image", nullable = false, columnDefinition = "TEXT")
     private String image;
