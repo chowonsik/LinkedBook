@@ -2,6 +2,7 @@ package com.linkedbook.entity;
 
 import com.linkedbook.dto.follow.FollowStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,9 +14,10 @@ import java.util.Date;
 import static javax.persistence.GenerationType.*;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "follow")
 public class FollowDB {

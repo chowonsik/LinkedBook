@@ -22,6 +22,4 @@ public interface UserRepository extends JpaRepository<UserDB, Integer> {
     + "left outer join(select user_id, avg(score) as mannerScore from user_deal group by user_id) as manner on manner.user_id = u.id "
     + "where u.id = ?1", nativeQuery=true)
     SelectProfileOutput findUserProfile(int id, int myId);
-
-
 }
