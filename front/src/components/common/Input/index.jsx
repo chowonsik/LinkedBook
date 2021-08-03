@@ -1,15 +1,32 @@
-import { StyledInput } from "./styles";
+import { Wrapper, StyledInput, ErrorMessage } from "./styles";
 
-function Input({ value, width, height, fontSize, onChange }) {
+function Input({
+  type,
+  placeholder,
+  value,
+  onChange,
+  isValid,
+  errorMessage = "no",
+  width,
+  height,
+  fontSize,
+}) {
   return (
     <>
-      <StyledInput
-        width={width}
-        height={height}
-        placeholder={placeholder}
-        fontSize={fontSize}
-        onChange={onChange}
-      />
+      <Wrapper>
+        <StyledInput
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          width={width}
+          height={height}
+          fontSize={fontSize}
+        />
+        {errorMessage !== "no" && (
+          <ErrorMessage>{isValid ? "" : errorMessage}</ErrorMessage>
+        )}
+      </Wrapper>
     </>
   );
 }
