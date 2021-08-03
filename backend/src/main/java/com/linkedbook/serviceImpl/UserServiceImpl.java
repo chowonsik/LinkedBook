@@ -97,11 +97,14 @@ public class UserServiceImpl implements UserService {
         UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
-            System.out.println(email);
+            String nickname = signUpInput.getNickname();
             List<UserDB> existUsers = userRepository.findByEmailAndStatus(email, "ACTIVATE");
-            System.out.println(existUsers.size());
-            if (existUsers.size() > 0) {
+            List<UserDB> existNickname = userRepository.findByNicknameAndStatus(nickname, "ACTIVATE");
+            
+            if (existUsers.size() > 0) { // 이메일 중복 제어
                 return new Response<>(EXISTS_EMAIL);
+            } else if (existNickname.size() > 0) { // 닉네임 중복 제어
+                return new Response<>(EXISTS_NICKNAME);
             } else {
                 userDB = userRepository.save(userDB);
             }
