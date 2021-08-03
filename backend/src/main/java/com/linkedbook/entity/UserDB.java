@@ -60,4 +60,7 @@ public class UserDB {
     @Column(name = "updated_at")
     private Date updated_at;
     
+    public UserDB(int id) {
+        this.id = id;
+    }
 }
