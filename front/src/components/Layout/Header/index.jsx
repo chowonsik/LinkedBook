@@ -1,35 +1,77 @@
-import React from 'react';
-import { withRouter } from 'react-router';
-import './style.scss';
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import {
+  ArrowLeft,
+  Search,
+  BellFill,
+  PatchExclamationFill,
+} from "react-bootstrap-icons";
 
-// 현재 페이지의 헤더에 뒤로가기 버튼이 있는지에 따라 왼쪽 화살표가 생성됨
-// true => 왼쪽 화살표 표시, false => 왼쪽 화살표 표시하지 않음
-// title : 현재 페이지의 헤더 타이틀을 전달함
-const Header = withRouter(({history, back, title }) => {
+import {
+  Wrapper,
+  BackButton,
+  LogoAndTitle,
+  IconsAndDone,
+  DoneButton,
+} from "./styles";
 
-    function goBack() {
-        // 뒤로 가기 버튼을 눌렀을 때 페이지 이동
-        history.goBack();
-    }
-    
-    let backIcon = ''
-    if (back) {
-        backIcon = <i className="fas fa-arrow-left" onClick={goBack}></i>;
-    }
-    
-    return(
-        <div className="header">
-            <div className="back-btn">
-                {backIcon}
-            </div>
-            <div className="page-title">
-                <h4>{title}</h4>
-            </div>
-            <div className="alarm">
-                <i className="fas fa-bell"></i>
-            </div>
-        </div>
-    )
-});
+/*
+  Header에 포함되어 있는 모든 요소에 대해 true, false 값을 전달받아
+  true 값인 요소만 Header에 출력
+*/
 
-export default Header
+function Header({
+  history,
+  title = "",
+  isLogo = false,
+  isBack = false,
+  isSearch = false,
+  isAlarm = false,
+  isDeclare = false,
+  isDone = false,
+}) {
+  function handleClickBack() {
+    history.goBack();
+  }
+  return (
+    <>
+      <Wrapper>
+        <BackButton isBack={isBack}>
+          <ArrowLeft className="back-btn" onClick={handleClickBack} />
+        </BackButton>
+
+        <LogoAndTitle isLogo={isLogo} isTitle={title}>
+          <img
+            src="assets/images/logo/main-logo.png"
+            alt="Linked Book"
+            className="logo"
+          />
+          <h3>{title}</h3>
+        </LogoAndTitle>
+
+        <IconsAndDone
+          isSearch={isSearch}
+          isAlarm={isAlarm}
+          isDeclare={isDeclare}
+          isDone={isDone}
+        >
+          <Search className="search-btn" />
+          <BellFill className="alarm-btn" />
+          <PatchExclamationFill className="declare" />
+          <DoneButton className="done-btn">완료</DoneButton>
+        </IconsAndDone>
+      </Wrapper>
+    </>
+  );
+}
+
+Header.propTypes = {
+  title: PropTypes.string,
+  isLogo: PropTypes.bool,
+  isBack: PropTypes.bool,
+  isSearch: PropTypes.bool,
+  isAlarm: PropTypes.bool,
+  isDeclare: PropTypes.bool,
+  isDone: PropTypes.bool,
+};
+export default withRouter(Header);
