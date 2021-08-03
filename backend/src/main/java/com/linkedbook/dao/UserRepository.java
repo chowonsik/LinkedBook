@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<UserDB, Integer> {
     List<UserDB> findByEmailAndStatus(String email, String status);
+    List<UserDB> findByNicknameAndStatus(String nickname, String status);
 
     @Query(value="select u.id as userId, u.nickname as nickname, u.info as info, u.image as image, dong.dongmyeonri as dong, ifnull(deal.dealCnt,0) as dealCnt, ifnull(follower.followerCnt,0) as followerCnt, ifnull(following.followingCnt,0) as followingCnt, round(ifnull(manner.mannerScore,0),1) as mannerScore, case when u.id = ?2 then 1 else 0 end as isMine, case when exists(select * from follow f where f.to_user_id = ?2 and f.from_user_id = ?1) then 1 else 0 end as isFollow "
     + "from user u "
