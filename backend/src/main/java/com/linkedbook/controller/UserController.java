@@ -5,22 +5,26 @@ import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
+import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
+import com.linkedbook.dto.user.updateprofile.UpdateProfileOutput;
 import com.linkedbook.dto.user.signup.SignUpInput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
     @Autowired
-    private UserService userService;
+    private final UserService userService;
     @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     /**
      * 회원가입 API
@@ -59,6 +63,19 @@ public class UserController {
     public Response<SelectProfileOutput> selectProfile(@PathVariable("id") int userId) {
         System.out.println("[GET] /user/{id}/profile");
         return userService.selectProfile(userId);
+    }
+
+    /**
+     * 유저 프로필 수정 API
+     * [PATCH]] /users/:id/profile
+     * @return Response<SelectProfileOutput>
+     */
+    // Path-variable
+    @ResponseBody
+    @PatchMapping("/{id}/profile")
+    public Response<Object> updateProfile(@PathVariable("id") int userId, @RequestBody UpdateProfileInput updateProfileInput) {
+        System.out.println("[PATCH] /user/{id}/profile");
+        return userService.updateProfile(userId, updateProfileInput);
     }
 
     @ResponseBody

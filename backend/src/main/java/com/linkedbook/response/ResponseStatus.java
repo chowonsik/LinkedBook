@@ -17,6 +17,7 @@ public enum  ResponseStatus {
     SUCCESS_SIGN_IN(200, 201, "로그인에 성공하였습니다."),
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
+    SUCCESS_UPDATE_PROFILE(200, 204, "프로필 수정에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."),
@@ -43,6 +44,7 @@ public enum  ResponseStatus {
     BAD_PASSWORD_VALUE(400, 413, "올바른 비밀번호를 입력해주세요."),
     BAD_NAME_VALUE(400, 414, "올바른 이름을 입력해주세요."),
     BAD_FOLLOW_INFO_VALUE(400, 415, "올바른 상태를 입력해주세요."),
+    BAD_AREA_VALUE(400, 416, "올바른 지역을 입력해주세요."),
 
     // 401 Unauthorized - 클라이언트가 권한이 없기 때문에 작업을 진행할 수 없는 경우
     UNAUTHORIZED(401, 400, "권한이 없습니다."),
