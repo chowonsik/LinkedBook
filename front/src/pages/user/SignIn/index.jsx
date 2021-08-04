@@ -32,7 +32,6 @@ export default function SignIn() {
       };
       localStorage.setItem("loginUser", JSON.stringify(loginUser));
       const needRecommend = localStorage.getItem("needRecommend");
-      console.log(needRecommend);
       if (needRecommend === "false") {
         history.push({ pathname: "/" });
       } else {
