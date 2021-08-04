@@ -3,7 +3,7 @@ import { colors } from "../../../styles";
 
 export const Wrapper = styled.div`
   margin: 60px 0;
-  padding: 20px;
+  padding: 90px 20px 20px 20px;
 `;
 
 export const LocationButton = styled.input.attrs((props) => ({
