@@ -24,26 +24,41 @@ const useSelet = (initValue, validator) => {
 };
 
 // textarea를 위한 hook
-const useText = (initValue, validator, setCommonError) => {
+const useText = (initValue, validator) => {
   const [value, setValue] = useState(initValue);
-  const [error, setError] = useState("");
   const onChange = (e) => {
-    setCommonError("");
     const text = e.target.value;
     const result = validator(text);
-    if (result === "good") {
+    if (result === "good" || result === "lack") {
       setValue(text);
-      setError("");
-    } else if (result === "lack") {
-      setValue(text);
-      setError("10글자 이상으로 작성해주세요.");
-    } else if (result === "over") {
-      setError("120글자 이하로 작성해주세요.");
     }
   };
-  return { value, error, onChange };
+  return { value, onChange };
 };
 
+const useSubmit = (userId, dealId, category, content, setReport) => {
+  const [error, setError] = useState("");
+  const onClick = () => {
+    if (category === "") {
+      setError("신고 항목을 선택해주세요.");
+    } else if (content.length === 0) {
+      setError("신고 사유를 입력해주세요.");
+    } else if (content.length < 10) {
+      setError("신고 사유를 10글자 이상 작성해주세요.");
+    } else {
+      setError("");
+      const data = {
+        userId,
+        dealId: Number(dealId),
+        category,
+        content,
+      };
+      setReport(data);
+    }
+  };
+
+  return { error, onClick };
+};
 function Report({ match, setReport }) {
   const [dealId, setDealId] = useState(match.params.dealId);
 
@@ -68,30 +83,10 @@ function Report({ match, setReport }) {
       return "over";
     }
   };
-  function handleClickSubmit() {
-    if (category.value === "") {
-      setError("신고 항목을 선택해주세요.");
-      return;
-    }
-    if (text.value === "") {
-      setError("신고 사유를 입력해주세요.");
-      return;
-    } else if (text.value.length < 10 || text.value.length > 120) {
-      return;
-    }
-    setError("");
 
-    const data = {
-      userId: 5, // 추후 수정
-      dealId: Number(dealId),
-      category: category.value,
-      content: text.value,
-    };
-    setReport(data);
-  }
   const category = useSelet("", categoryValidator);
-  const [error, setError] = useState("");
-  const text = useText("", textValidator, setError);
+  const text = useText("", textValidator);
+  const submit = useSubmit(5, dealId, category.value, text.value, setReport);
 
   return (
     <>
@@ -99,10 +94,9 @@ function Report({ match, setReport }) {
       <Wrapper>
         <Category onClick={category.onClick} />
         <ReportContent onChange={text.onChange} value={text.value} />
-        <ErrorMessage error={text.error}>{text.error}</ErrorMessage>
-        <ErrorMessage error={error}>{error}</ErrorMessage>
+        <ErrorMessage error={submit.error}>{submit.error}</ErrorMessage>
       </Wrapper>
-      <FooterButton value={"신고"} onClick={handleClickSubmit} />
+      <FooterButton value={"신고"} onClick={submit.onClick} />
     </>
   );
 }

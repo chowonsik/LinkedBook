@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
 `;
 
 export const ErrorMessage = styled.div`
+  margin-bottom: 2.5rem;
   display: ${(props) => (props.error ? "block" : "none")};
   margin-top: 1rem;
   color: ${colors.red};

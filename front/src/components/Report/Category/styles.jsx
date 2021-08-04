@@ -25,6 +25,7 @@ export const Button = styled.button`
   border: none;
   border-radius: 6px;
   padding: 0.5rem 1rem;
+  color: ${colors.black};
   background-color: ${colors.lightGray};
   font-size: ${fonts.lg};
   text-align: start;
