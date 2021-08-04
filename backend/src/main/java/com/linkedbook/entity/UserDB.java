@@ -4,6 +4,7 @@ import com.linkedbook.dto.user.signup.SignUpInput;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -19,6 +20,7 @@ import static javax.persistence.GenerationType.*;
 @DynamicInsert
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "user")
 public class UserDB {
     @Id
@@ -27,7 +29,7 @@ public class UserDB {
     private int id;
 
     @OneToMany(mappedBy = "user") // 양방향 매핑
-    private List<UserAreaDB> user_area;
+    private List<UserAreaDB> userAreaDBs;
 
     @Column(name = "email", nullable = false, length = 45)
     private String email;
@@ -44,7 +46,7 @@ public class UserDB {
     @Column(name = "image", nullable = false, length = 45)
     private String image;
 
-    @Column(name = "oauth", nullable = false, length = 45)
+    @Column(name = "oauth", length = 45)
     private String oauth;
 
     @Column(name = "status", nullable = false, length = 45)
@@ -68,6 +70,7 @@ public class UserDB {
         this.status = "ACTIVATE";
     }
 
+    
     public UserDB(int id) {
         this.id = id;
     }
