@@ -16,7 +16,7 @@ import java.util.Date;
 public class BookDB {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
-    private int id;
+    private String id;
 
     @Column(name = "title", nullable = false, length = 60)
     private String title;

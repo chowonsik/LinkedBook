@@ -12,6 +12,7 @@ import com.linkedbook.service.FollowService;
 import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +26,11 @@ import static com.linkedbook.response.ResponseStatus.*;
 @Slf4j
 public class FollowServiceImpl implements FollowService {
 
+    @Autowired
     private final FollowRepository followRepository;
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final JwtService jwtService;
 
     @Override
