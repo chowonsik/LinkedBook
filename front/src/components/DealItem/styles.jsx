@@ -1,0 +1,84 @@
+import styled from "styled-components";
+import { fonts, colors } from "../../styles";
+
+export const Wrapper = styled.div`
+  & {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 90px;
+    margin: 20px 0;
+    .book-image {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      margin-right: 20px;
+      border-radius: 6px;
+    }
+    .content {
+      text-align: left;
+      flex-grow: 1;
+
+      .deal-title {
+        font-size: ${fonts.lg};
+        font-weight: 600;
+      }
+      .book-title {
+        font-size: ${fonts.md};
+        font-weight: 400;
+        margin-bottom: 8px;
+        .quality {
+          display: inline-block;
+          text-align: center;
+          margin-left: 5px;
+          width: 25px;
+          height: 17px;
+          border-radius: 15px;
+          font-size: ${fonts.sm};
+          font-weight: 600;
+          color: #fff;
+          background-color: ${colors.yellow};
+        }
+      }
+      .detail div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .author {
+          color: ${colors.gray};
+          font-size: ${fonts.xs};
+        }
+        .author::after {
+          content: "|";
+          margin: 0 4px;
+        }
+        .publisher {
+          color: ${colors.gray};
+          font-size: ${fonts.xs};
+        }
+        .created {
+          color: ${colors.gray};
+        }
+        .price {
+          font-size: ${fonts.xl};
+          font-weight: 600;
+        }
+        .created {
+          font-size: ${fonts.xs};
+        }
+        .heart {
+          display: block;
+          color: ${colors.gray};
+          width: 14px;
+          height: 14px;
+        }
+        .heart-filled {
+          display: block;
+          color: ${colors.yellow};
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+  }
+`;

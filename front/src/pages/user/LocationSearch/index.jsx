@@ -14,6 +14,7 @@ export default function LocationSearch() {
       <Header title="지역 검색" isBack />
       <Wrapper>
         <Input
+          className="input"
           value={search.value}
           onChange={search.onChange}
           placeholder="(동, 읍, 면)으로 검색"
