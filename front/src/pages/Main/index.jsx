@@ -15,7 +15,6 @@ import { ChevronDown } from "react-bootstrap-icons";
 import { fonts } from "../../styles";
 import RoundButton from "../../components/common/Buttons/RoundButton";
 import { useEffect } from "react";
-import { request } from "../../api";
 
 export default function Main() {
   const [deals, setDeals] = useState([]);
@@ -24,16 +23,7 @@ export default function Main() {
   function handleSortButtonClick(sort) {
     setSortBy(sort);
   }
-  async function func() {
-    const headers = {
-      "X-ACCESS-TOKEN":
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWR4IjoxOSwiaWF0IjoxNTk1NDAyMzU0LCJleHAiOjE2MjY5MzgzNTQsInN1YiI6InVzZXJJbmZvIn0.fzkgrs6wi4KPN2_TwFcvO2ab_dN2Ds46DEqQIvqBAD0",
-    };
-    const result = await request("GET", "/users/1/profile", headers);
-    console.log(result);
-  }
   useEffect(() => {
-    func();
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser) {
       history.push({ pathname: "/signin" });

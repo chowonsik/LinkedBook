@@ -4,16 +4,60 @@ import { colors, fonts } from "../../../styles";
 export const Wrapper = styled.div`
   margin: 60px 0;
 `;
-export const Image = styled.div`
+
+export const ImageContainer = styled.div`
+  height: 100%;
+  display: flex;
+  transition-property: transform;
+  transition-duration: 0.5s;
+  transform: translateX(${(props) => `${parseInt(props.index) * -100}%`});
+
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+`;
+export const ImageWrapper = styled.div`
   width: 100%;
   height: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
-  img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
+  overflow: hidden;
+  position: relative;
+
+  .hide {
+    display: none;
+  }
+  .left-icon {
+    position: absolute;
+    color: white;
+    left: 10px;
+    font-size: 20px;
+  }
+  .right-icon {
+    position: absolute;
+    color: white;
+    font-size: 20px;
+    right: 10px;
+  }
+  .info-icon {
+    position: absolute;
+    bottom: 7px;
+    right: 10px;
+    color: white;
+  }
+  .circles {
+    position: absolute;
+    display: flex;
+    gap: 5px;
+    font-size: 6px;
+    bottom: 7px;
+    color: rgba(255, 255, 255, 0.3);
+    .selected {
+      color: white;
+    }
   }
 `;
 
@@ -56,7 +100,28 @@ export const UserInfo = styled.div`
     flex: 1;
   }
 `;
-
+export const Section = styled.section`
+  display: flex;
+  justify-content: space-between;
+`;
+export const DealState = styled.div`
+  padding: 28px 15px;
+  .complete-button {
+    border-radius: 100px;
+    width: 90px;
+    height: 30px;
+    border: 1px solid ${colors.black};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+  }
+  .review-button {
+    color: ${colors.yellow};
+    font-weight: 600;
+    font-size: ${fonts.md};
+  }
+`;
 export const BookInfo = styled.div`
   padding: 18px;
   display: flex;
@@ -71,8 +136,18 @@ export const BookInfo = styled.div`
   }
   .book-info {
     margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     .book-title {
       font-size: ${fonts.lg};
+    }
+    .deal-quality {
+      border-radius: 100px;
+      color: white;
+      background-color: ${colors.yellow};
+      font-size: ${fonts.sm};
+      padding: 1px 7px;
     }
   }
   .book-author {
@@ -95,4 +170,18 @@ export const Footer = styled.div`
   width: 100%;
   height: 70px;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  background-color: white;
+  .icon-container {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .button-container {
+    flex: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
 `;
