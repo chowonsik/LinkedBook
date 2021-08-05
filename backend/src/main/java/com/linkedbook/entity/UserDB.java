@@ -59,17 +59,6 @@ public class UserDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-
-    public UserDB(SignUpInput signUpInput) {
-        this.email = signUpInput.getEmail();
-        this.password = signUpInput.getPassword();
-        this.nickname = signUpInput.getNickname();
-        this.info = signUpInput.getInfo();
-        this.image = signUpInput.getImage();
-        this.oauth = signUpInput.getOauth();
-        this.status = "ACTIVATE";
-    }
-
     
     public UserDB(int id) {
         this.id = id;
