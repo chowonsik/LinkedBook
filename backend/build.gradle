@@ -9,6 +9,8 @@ version = '1.0'
 
 compileJava.options.encoding = 'UTF-8'
 
+def querydslVersion = '4.3.1'
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -50,8 +52,22 @@ dependencies {
 
     compile group : 'com.squareup.okhttp3', name : 'mockwebserver', version: '4.7.2'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.14'
+
+    // Querydsl
+    implementation group: 'com.querydsl', name: 'querydsl-jpa', version: querydslVersion
+    implementation group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+    implementation group: 'com.querydsl', name: 'querydsl-core', version: querydslVersion
+
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion, classifier: 'jpa'
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 }
 
 test {
     useJUnitPlatform()
+}
+
+clean {
+    delete file('src/main/generated') // 인텔리제이 Annotation processor 생성물 생성위치
 }
