@@ -22,8 +22,8 @@ function App() {
           exact={true}
           component={LocationSearch}
         />
-        <Route path="/books" exact component={SearchBook}></Route>
-        <Route path="/books/:isbn" component={BookDetail}></Route>
+        <Route path="/books" exact component={SearchBook} />
+        <Route path="/books/:isbn" component={BookDetail} />
         <Route path="/recommend" exact={true} component={RecommendUser} />
         <Route path="/following/list" exact={true} component={FollowingList} />
         <Route path="/follower/list" exact={true} component={FollowerList} />
