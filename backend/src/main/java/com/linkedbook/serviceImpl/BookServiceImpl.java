@@ -35,9 +35,8 @@ public class BookServiceImpl implements BookService {
                 || !ValidationCheck.isValid(bookInfoInput.getTitle())
                 || !ValidationCheck.isValidId(bookInfoInput.getPrice())
                 || !ValidationCheck.isValid(bookInfoInput.getAuthor())
-                || !ValidationCheck.isValid(bookInfoInput.getPublisher())
-                || !ValidationCheck.isValid(bookInfoInput.getContents())
                 || !ValidationCheck.isValidDate(bookInfoInput.getDateTime())
+                || !ValidationCheck.isValid(bookInfoInput.getThumbnail())
                 || !ValidationCheck.isValid(bookInfoInput.getStatus())
         )
             return new Response<>(BAD_REQUEST);
@@ -93,10 +92,14 @@ public class BookServiceImpl implements BookService {
             if (bookDB == null) {
                 return new Response<>(NOT_FOUND_BOOK);
             }
+            // 서버에서 클라이언트로 null값을 보내지 않도록 가공
+            if(bookDB.getPublisher() == null) bookDB.setPublisher("");
+            if(bookDB.getContents() == null) bookDB.setContents("");
+
             // 로그인된 유저의 관심 책 등록 여부 확인하기
             boolean isUserLikeBook = false;
-            int userId = jwtService.getUserId();
-            if(likeBookRepository.existsByUserAndBookAndStatus(new UserDB(userId), new BookDB(isbn), "ACTIVATE")) {
+            UserDB userDB = new UserDB(jwtService.getUserId());
+            if(likeBookRepository.existsByUserAndBookAndStatus(userDB, bookDB, "ACTIVATE")) {
                 isUserLikeBook = true;
             }
             // 최종 출력값 정리

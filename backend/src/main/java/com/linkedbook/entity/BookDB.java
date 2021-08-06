@@ -31,10 +31,10 @@ public class BookDB {
     @Column(name = "author", nullable = false, length = 45)
     private String author;
 
-    @Column(name = "publisher", nullable = false, length = 45)
+    @Column(name = "publisher", length = 45)
     private String publisher;
 
-    @Column(name = "contents", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "contents", columnDefinition = "TEXT")
     private String contents;
 
     @Column(name = "datetime", nullable = false, updatable = false)
