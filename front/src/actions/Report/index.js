@@ -5,9 +5,9 @@ const token =
 
 export const SET_REPORT = "SET_REPORT";
 export const setReport = (data, history) => {
-  return (dispatch) => {
+  return () => {
     return axios
-      .post("http://i5b307.p.ssafy.io:8080/api/reports", data, {
+      .post("/api/reports", data, {
         "X-ACCESS-TOKEN": token,
       })
       .then((res) => {
