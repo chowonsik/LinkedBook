@@ -16,12 +16,14 @@ public enum  ResponseStatus {
     SUCCESS(200, 200, "요청에 성공하였습니다."),
     SUCCESS_SIGN_IN(200, 201, "로그인에 성공하였습니다."),
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
+    SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
+    SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."),
     SUCCESS_CHANGE_FOLLOW(200, 203, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
-    SUCCESS_SELECT_PROFILE(200, 204, "프로필 조회에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."),
     CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
+    CREATED_BOOK(201, 220, "책 등록에 성공하였습니다."),
     CREATED_FOLLOW(201, 202, "새로운 팔로우 관계 등록에 성공하였습니다."),
 
     // 202 Accepted - 클라이언트의 요청은 정상적이나, 서버가 아직 요청을 완료하지 못했다. 비동기
@@ -61,6 +63,7 @@ public enum  ResponseStatus {
     // 404 Not Found - 클라이언트가 요청한 자원이 존재하지 않다.
     NOT_FOUND(404, 400, "NOT FOUND"),
     NOT_FOUND_USER(404, 405, "사용자 정보가 존재하지 않습니다."),
+    NOT_FOUND_BOOK(404, 410, "책 정보가 존재하지 않습니다."),
 
     // 405 Method Not Allowed - 클라이언트의 요청이 허용되지 않는 메소드인 경우
     METHOD_NOT_ALLOWED(405, 400, "허용되지 않는 HTTP Method 입니다."),
