@@ -52,15 +52,15 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
                 .select(new QSelectDealOutput(dealDB.id, dealDB.title, dealImageDB.image.imageurl, dealDB.price,
                         dealDB.quality, dealDB.created_at,
                         JPAExpressions.select(likeDealDB.count().castToNum(Integer.class)).from(likeDealDB)
-                                .where(likeDealDB.user.id.eq(userId).and(likeDealDB.deal.id.eq(dealDB.id))
-                                        .and(likeDealDB.status.eq("ACTIVATE"))),
+                                .where(likeDealDB.user.id.eq(userId).and(likeDealDB.deal.id.eq(dealDB.id))),
                         bookDB.title, bookDB.author, bookDB.publisher))
                 .from(dealDB).leftJoin(userAreaDB)
                 .on(dealDB.user.id.eq(userAreaDB.user.id).and(userAreaDB.orders.eq(1))).join(bookDB)
                 .on(dealDB.book.id.eq(bookDB.id)).leftJoin(dealImageDB)
                 .on(dealDB.id.eq(dealImageDB.deal.id).and(dealImageDB.orders.eq(1)))
                 .where(eqSearch(selectDealInput.getSearch()), eqUserId(selectDealInput.getUserId()),
-                        eqBookId(selectDealInput.getBookId()), eqAreaId(selectDealInput.getAreaId()))
+                        eqBookId(selectDealInput.getBookId()), eqAreaId(selectDealInput.getAreaId()),
+                        dealDB.status.eq("ACTIVATE"), dealDB.user.status.eq("ACTIVATE"))
                 .orderBy(getOrderSpecifier(pageable.getSort()).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
         List<SelectDealOutput> content = queryResult;
