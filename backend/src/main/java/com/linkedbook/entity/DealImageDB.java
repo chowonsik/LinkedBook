@@ -32,7 +32,4 @@ public class DealImageDB {
 
     @Column(name = "orders", nullable = false)
     private int orders;
-
-    @Column(name = "status", nullable = false, length = 45)
-    private String status;
 }

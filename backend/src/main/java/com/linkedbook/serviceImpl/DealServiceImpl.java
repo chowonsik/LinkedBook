@@ -10,6 +10,8 @@ import com.linkedbook.dto.deal.createDeal.CreateDealImage;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
+import com.linkedbook.dto.deal.updateDeal.UpdateDealImage;
+import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
 import com.linkedbook.entity.DealDB;
 import com.linkedbook.entity.DealImageDB;
 import com.linkedbook.entity.ImageDB;
@@ -21,6 +23,8 @@ import com.linkedbook.service.DealService;
 import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -101,7 +105,7 @@ public class DealServiceImpl implements DealService {
                     ImageDB imageDB = ImageDB.builder().imageurl(image.getImageUrl()).build();
                     imageDB = imageRepository.save(imageDB);
                     DealImageDB dealImage = DealImageDB.builder().deal(dealDB).image(imageDB).orders(image.getOrders())
-                            .status("ACTIVATE").build();
+                            .build();
                     dealImageRepository.save(dealImage);
                 }
             }
@@ -115,5 +119,73 @@ public class DealServiceImpl implements DealService {
         }
         // 3. 결과 return
         return new Response<>(null, CREATED_DEAL);
+    }
+
+    @Override
+    @Transactional
+    public Response<Object> updateDeal(UpdateDealInput updateDealInput, int dealId) {
+        try {
+
+            // deal 정보 가져오기
+            DealDB dealDB = dealRepository.findById(dealId).orElse(null);
+            if (dealDB == null)
+                return new Response<>(BAD_ID_VALUE);
+
+            // 상태가 삭제일 경우
+            if (StringUtils.isNotBlank(updateDealInput.getStatus())) {
+                if (updateDealInput.getStatus().equals("DELETED")) {
+                    dealDB.setStatus(updateDealInput.getStatus());
+                    dealDB = dealRepository.save(dealDB);
+                    return new Response<>(null, SUCCESS_CHANGE_DEAL);
+                }
+            }
+            if (StringUtils.isNotBlank(updateDealInput.getBookId())) {
+                BookDB bookDB = bookRepository.findById(updateDealInput.getBookId()).orElse(null);
+                dealDB.setBook(bookDB);
+            }
+            if (StringUtils.isNotBlank(updateDealInput.getTitle()))
+                dealDB.setTitle(updateDealInput.getTitle());
+            if (StringUtils.isNotBlank(updateDealInput.getQuality()))
+                dealDB.setQuality(updateDealInput.getQuality());
+            if (StringUtils.isNotBlank(updateDealInput.getContent()))
+                dealDB.setContent(updateDealInput.getContent());
+            if (updateDealInput.getPrice() != null)
+                dealDB.setPrice(updateDealInput.getPrice());
+
+            List<UpdateDealImage> updateImages = updateDealInput.getImages();
+
+            // 기존의 사진들을 지워준다.
+            for (DealImageDB dealImage : dealDB.getImages()) {
+                dealImageRepository.deleteById(dealImage.getId());
+            }
+
+            // 새로운 사진으로 채운다.
+            for (UpdateDealImage dealImage : updateImages) {
+                // 저장된 이미지인지 확인하고 저장된 이미지가 아니라면 이미지를 만들고 생성
+                ImageDB imageDB = imageRepository.findByImageurl(dealImage.getImageUrl()).orElse(null);
+                if (imageDB == null) {
+                    imageDB = ImageDB.builder().imageurl(dealImage.getImageUrl()).build();
+                    imageDB = imageRepository.save(imageDB);
+                    DealImageDB dealImageDB = DealImageDB.builder().deal(dealDB).image(imageDB)
+                            .orders(dealImage.getOrders()).build();
+                    dealImageRepository.save(dealImageDB);
+                } else {
+                    DealImageDB dealImageDB = DealImageDB.builder().deal(dealDB).image(imageDB)
+                            .orders(dealImage.getOrders()).build();
+                    dealImageRepository.save(dealImageDB);
+                }
+            }
+
+            dealDB = dealRepository.save(dealDB);
+
+        } catch (IllegalArgumentException e) {
+            log.error("[PATCH]/deals undefined status exception", e);
+            return new Response<>(BAD_STATUS_VALUE);
+        } catch (Exception e) {
+            log.error("[PATCH]/deals database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(null, SUCCESS_CHANGE_DEAL);
     }
 }

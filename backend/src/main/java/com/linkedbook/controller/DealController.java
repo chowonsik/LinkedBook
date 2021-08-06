@@ -5,6 +5,7 @@ import com.linkedbook.service.DealService;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
+import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,5 +68,18 @@ public class DealController {
                     "quality");
         }
         return dealService.selectDealList(selectDealInput, pageable);
+    }
+
+    /**
+     * 거래 수정 API [PATCH] /deals/{id}
+     * 
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @PatchMapping("/{id}")
+    public Response<Object> updateDeal(@RequestBody UpdateDealInput updateDealInput, @PathVariable("id") int dealId) {
+        log.info("[PATCH] /deals/" + dealId);
+        return dealService.updateDeal(updateDealInput, dealId);
     }
 }
