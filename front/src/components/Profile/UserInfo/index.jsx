@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { BookmarkCheckFill, GearFill } from "react-bootstrap-icons";
 import { Wrapper } from "./styles";
 import MannerScore from "../../common/MannerScore";
 
 const UserInfo = ({ userObj }) => {
+  let history = useHistory();
   const [isFollow, setIsFollow] = useState(userObj.isFollow);
   function toggleFollowBtn() {
     setIsFollow(!isFollow);
     // API 요청
+  }
+  function handleUserSetting() {
+    history.push("/profile/update");
   }
   return (
     <Wrapper>
@@ -18,9 +22,8 @@ const UserInfo = ({ userObj }) => {
           <div className="user-info">
             <div className="user-title">
               <h1 className="username">{userObj.nickname}</h1>
-              <GearFill className="user-setting">
-                <Link to="/profile/update"></Link>
-              </GearFill>
+              {/* 자기 프로필인 경우 안보이도록 하는 기능 추가 필요 */}
+              <GearFill onClick={handleUserSetting} className="user-setting" />
             </div>
             <div className="user-detail">
               <strong className="location">{userObj.dong}</strong>

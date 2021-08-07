@@ -1,7 +1,5 @@
-import { SET_USER_PROFILE } from "../../actions/Users";
-
 const INIT_STATE = {
-  userProfile: {},
+  userDeals: {},
 };
 
 export const userReducer = (state = INIT_STATE, action) => {
@@ -9,7 +7,7 @@ export const userReducer = (state = INIT_STATE, action) => {
     case SET_USER_PROFILE:
       return {
         ...state,
-        userProfile: action.userObj,
+        userDeals: action.userObj,
       };
     default:
       return state;

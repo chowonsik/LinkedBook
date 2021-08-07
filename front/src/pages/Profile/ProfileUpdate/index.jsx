@@ -1,20 +1,20 @@
 import React from "react";
-import "./style.scss";
 import useInput from "../../../hooks/useInput";
 import { Link } from "react-router-dom";
-import Button from "../../../components/Common/Button";
+import { useSelector } from "react-redux";
 
-const ProfileUpdate = ({}) => {
+const ProfileUpdate = () => {
+  const userObj = useSelector((state) => state.userReducer.userProfile);
   // props 전달하는지 새로운 정보 요청하는지?
-  const userObj = {
-    nickname: "나무늘보",
-    email: "deraholt@naver.com",
-    info: "나무늘보 서점에 오신걸 환영",
-    location: "덕명동",
-  };
+  // const userObj = {
+  //   nickname: "나무늘보",
+  //   email: "deraholt@naver.com",
+  //   info: "나무늘보 서점에 오신걸 환영",
+  //   location: "덕명동",
+  // };
+  // 유저이메일 값은 안받아서 조회 못하고 있음. 근데 보이게는 해야하지 않나.?
 
   const nickname = useInput(userObj.nickname, nicknameValidator);
-  const email = useInput(userObj.email, emailValidator);
   const info = useInput(userObj.info, infoValidator);
 
   function nicknameValidator(value) {
@@ -25,16 +25,6 @@ const ProfileUpdate = ({}) => {
       };
     } else {
       return { isValid: true, errorMessage: "" };
-    }
-  }
-
-  function emailValidator(value) {
-    const reg = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-    const result = reg.test(value);
-    if (result) {
-      return { isValid: true, errorMessage: "" };
-    } else {
-      return { isValid: false, errorMessage: "이메일 형식으로 입력하세요" };
     }
   }
 
@@ -52,19 +42,6 @@ const ProfileUpdate = ({}) => {
   return (
     <>
       <img src={userObj.image} alt="profile" />
-
-      <div className="label-with-input">
-        <label htmlFor="email">아이디(이메일)</label>
-        <input
-          type="text"
-          id="nickname"
-          onChange={email.onChange}
-          value={email.value}
-        ></input>
-        <div className="error-message">
-          {email.isValid ? "" : email.errorMessage}
-        </div>
-      </div>
 
       <div className="label-with-input">
         <label htmlFor="nickname">닉네임(서점명)</label>
@@ -103,7 +80,6 @@ const ProfileUpdate = ({}) => {
         <button>비밀번호 변경</button>
       </Link>
       <button>회원 탈퇴</button>
-      <Button color="white" background="var(--color-main)"></Button>
     </>
   );
 };

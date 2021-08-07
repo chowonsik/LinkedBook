@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { fonts, colors } from "../../../styles";
 
 export const Wrapper = styled.div`
+  & {
+    margin-bottom: 20px;
+  }
   dt {
     font-size: ${fonts.sm};
     color: ${colors.gray};

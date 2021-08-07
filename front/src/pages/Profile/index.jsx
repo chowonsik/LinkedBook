@@ -1,30 +1,34 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserProfile, setUserProfile } from "../../actions/Users";
+
 import UserInfo from "../../components/Profile/UserInfo";
 import UserActivity from "../../components/Profile/UserActivity";
 import DealItem from "../../components/DealItem";
 import CommentItem from "../../components/CommentItem";
-import { Wrapper } from "./styles";
 import ProfileTab from "../../components/Profile/ProfileTab";
+import { Wrapper } from "./styles";
+import { request } from "../../api";
+import axios from "axios";
 
-const Profile = () => {
-  const [userObj, setUserObject] = useState({});
-  const [activeTab, setActiveTab] = useState({});
+const TOKEN =
+  "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYyNzM5Mzg1NH0.D07COiIiT_BVqFvyfr7wjAhZLcQ-svD3vpx0-HUgkZ4";
+
+const Profile = ({ match }) => {
+  // 내프로필이면,useSelector로 가져오고(내프로필은 이미 app에서 요청해놓기)
+  const userObjStore = useSelector((state) => state.userReducer.userProfile);
+  const [userObj, setUserObj] = useState({});
+  const [activeTab, setActiveTab] = useState("");
   const [tabInfo, setTabInfo] = useState([]);
+
   useEffect(() => {
-    // 정보받아옴
-    setUserObject({
-      nickname: "변대웅짱",
-      image:
-        "https://blog.kakaocdn.net/dn/0mySg/btqCUccOGVk/nQ68nZiNKoIEGNJkooELF1/img.jpg",
-      dong: "덕명동",
-      mannerScore: 3.5,
-      info: "Lorem ipsum dolor, sit amet consec tetur adipisicing elit. sit amet consectetur adip isici ng elit ",
-      dealCnt: 10,
-      followerCnt: 10,
-      followingCnt: 11,
-      isFollow: false,
-    });
+    // current user가 자기자신인경우(자기자신 프로필, 임시로 2로 설정)
+    if (parseInt(match.params.id) === 2) {
+      setUserObj(userObjStore);
+    } else {
+      getUserObj(match.params.id);
+    }
     setTabInfo([
       {
         id: 12,
@@ -76,44 +80,52 @@ const Profile = () => {
       },
     ]);
     setActiveTab(0);
-  }, []);
+  }, [match.params.id]);
+
+  const getUserObj = async (userId) => {
+    const response = await request("get", `/users/${userId}/profile`, {
+      headers: {
+        "X-ACCESS-TOKEN": TOKEN,
+      },
+    });
+    setUserObj(response.result);
+  };
 
   const handleTabClick = (id) => {
     if (activeTab !== id) {
       setActiveTab(id);
-      handleTabInfo(id);
+      getTabInfo(id);
     }
   };
 
-  const handleTabInfo = (id) => {
+  const getTabInfo = async (activeTab) => {
     // 내거래인지, 관심거래인지, 한줄평인지에 따라 api 받아서
-    if (id === 0) {
-      // api요청
+    if (activeTab === 0) {
       // setTabInfo
-    } else if (id === 1) {
+    } else if (activeTab === 1) {
       //api 요청
-      // setTabInfo
     } else {
       //api 요청
-      // setTabInfo
     }
   };
-
   return (
     <Wrapper>
-      <UserInfo userObj={userObj} />
-      <UserActivity
-        dealCnt={userObj.dealCnt}
-        followingCnt={userObj.followerCnt}
-        followerCnt={userObj.followerCnt}
-      />
-      <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
-      {/* 탭에 따라 컴포넌트 교체 */}
-      {activeTab === 0 || activeTab === 1
-        ? tabInfo.map((deal) => <DealItem key={deal.id} dealObj={deal} />)
-        : tabInfo.map((comment) => (
-            <CommentItem key={comment.id} commentObj={comment} />
-          ))}
+      {userObj && (
+        <>
+          <UserInfo userObj={userObj} />
+          <UserActivity
+            dealCnt={userObj.dealCnt}
+            followingCnt={userObj.followerCnt}
+            followerCnt={userObj.followerCnt}
+          />
+          <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
+          {activeTab !== 2
+            ? tabInfo.map((deal) => <DealItem key={deal.id} dealObj={deal} />)
+            : tabInfo.map((comment) => (
+                <CommentItem key={comment.id} commentObj={comment} />
+              ))}
+        </>
+      )}
     </Wrapper>
   );
 };
