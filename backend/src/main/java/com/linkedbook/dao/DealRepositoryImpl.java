@@ -60,9 +60,8 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
                         JPAExpressions.select(likeDealDB.count().castToNum(Integer.class)).from(likeDealDB)
                                 .where(likeDealDB.user.id.eq(userId).and(likeDealDB.deal.id.eq(dealDB.id))),
                         bookDB.title, bookDB.author, bookDB.publisher))
-                .from(dealDB).leftJoin(userAreaDB)
-                .on(dealDB.user.id.eq(userAreaDB.user.id).and(userAreaDB.orders.eq(1))).join(bookDB)
-                .on(dealDB.book.id.eq(bookDB.id)).leftJoin(dealImageDB)
+                .from(dealDB).join(userAreaDB).on(dealDB.user.id.eq(userAreaDB.user.id).and(userAreaDB.orders.eq(1)))
+                .join(bookDB).on(dealDB.book.id.eq(bookDB.id)).leftJoin(dealImageDB)
                 .on(dealDB.id.eq(dealImageDB.deal.id).and(dealImageDB.orders.eq(1)))
                 .where(eqSearch(selectDealInput.getSearch()), eqUserId(selectDealInput.getUserId()),
                         eqBookId(selectDealInput.getBookId()), eqAreaId(selectDealInput.getAreaId()),
