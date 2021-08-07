@@ -27,4 +27,17 @@ public class CommentController {
         log.info("[POST] /comments");
         return commentService.createComment(commentInput);
     }
+
+    /**
+     * 한줄평 수정 API
+     * [PATCH] /comments/{id}
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @PatchMapping("/{id}")
+    public Response<Object> updateComment(@PathVariable("id") int id, @RequestBody CommentInput commentInput) {
+        log.info("[PATCH] /comments/" + id);
+        return commentService.updateComment(id, commentInput);
+    }
 }

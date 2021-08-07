@@ -4,7 +4,6 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.BookRepository;
 import com.linkedbook.dao.CommentRepository;
 import com.linkedbook.dto.comment.CommentInput;
-import com.linkedbook.entity.BookDB;
 import com.linkedbook.entity.CommentDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
@@ -34,7 +33,6 @@ public class CommentServiceImpl implements CommentService {
                 || !ValidationCheck.isValidScore(commentInput.getScore())
         )
             return new Response<>(BAD_REQUEST);
-
         // 2. 한줄평 정보 생성
         CommentDB commentDB;
         try {
@@ -58,9 +56,35 @@ public class CommentServiceImpl implements CommentService {
             log.error("[comments/post] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
-
         // 3. 결과 return
         return new Response<>(null, CREATED_COMMENT);
+    }
 
+    @Override
+    public Response<Object> updateComment(int id, CommentInput commentInput) {
+        // 1. 값 형식 체크
+        if (commentInput == null) return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValidId(id)
+                || !ValidationCheck.isValid(commentInput.getContent())
+                || !ValidationCheck.isValidScore(commentInput.getScore())
+        )
+            return new Response<>(BAD_REQUEST);
+        // 2. 한줄평 정보 수정
+        CommentDB commentDB;
+        try {
+            commentDB = commentRepository.findById(id).orElse(null);
+            if(commentDB == null) {
+                return new Response<>(NOT_FOUND_COMMENT);
+            }
+            commentDB.setScore(commentInput.getScore());
+            commentDB.setContent(commentInput.getContent());
+
+            commentRepository.save(commentDB);
+        } catch (Exception e) {
+            log.error("[comments/patch] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(null, SUCCESS_CHANGE_COMMENT);
     }
 }

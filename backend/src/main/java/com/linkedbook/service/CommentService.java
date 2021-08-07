@@ -5,4 +5,5 @@ import com.linkedbook.response.Response;
 
 public interface CommentService {
     Response<Object> createComment(CommentInput commentInput);
+    Response<Object> updateComment(int id, CommentInput commentInput);
 }
