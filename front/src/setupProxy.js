@@ -8,9 +8,6 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: url,
       changeOrigin: true,
-      pathRewrite: {
-        "^/api": "", // 하위 url 초기화
-      },
     })
   );
 };
