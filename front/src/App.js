@@ -10,6 +10,7 @@ import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
 import FollowerList from "./pages/Follow/FollowerList";
 import FollowingList from "./pages/Follow/FollowingList";
+import Report from "./pages/Report";
 function App() {
   return (
     <div className="App">
@@ -27,6 +28,7 @@ function App() {
         <Route path="/recommend" exact={true} component={RecommendUser} />
         <Route path="/following/list" exact={true} component={FollowingList} />
         <Route path="/follower/list" exact={true} component={FollowerList} />
+        <Route path="/redbell/:dealId" exact={true} component={Report} />
       </Router>
     </div>
   );

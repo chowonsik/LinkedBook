@@ -6,10 +6,12 @@ import { persistReducer } from "redux-persist";
 import { bookReducer } from "../reducers/Books";
 import { userReducer } from "../reducers/Users";
 import { followReducer } from "../reducers/Follow";
+import { reportReducer } from "../reducers/Report";
 const rootReducer = combineReducers({
   bookReducer,
   userReducer,
   followReducer,
+  reportReducer,
 });
 
 const persistConfig = {

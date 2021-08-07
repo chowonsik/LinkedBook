@@ -57,4 +57,8 @@ public class DealDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
+
+    public DealDB(int id) {
+        this.id = id;
+    }
 }
