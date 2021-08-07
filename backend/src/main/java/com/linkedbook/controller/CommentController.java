@@ -40,4 +40,17 @@ public class CommentController {
         log.info("[PATCH] /comments/" + id);
         return commentService.updateComment(id, commentInput);
     }
+
+    /**
+     * 한줄평 삭제 API
+     * [DELETE] /comments/{id}
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @DeleteMapping("/{id}")
+    public Response<Object> deleteComment(@PathVariable("id") int id) {
+        log.info("[DELETE] /comments/" + id);
+        return commentService.deleteComment(id);
+    }
 }

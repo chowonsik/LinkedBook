@@ -11,6 +11,7 @@ import com.linkedbook.service.CommentService;
 import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import static com.linkedbook.response.ResponseStatus.*;
@@ -40,7 +41,7 @@ public class CommentServiceImpl implements CommentService {
             String isbn = commentInput.getIsbn();
 
             boolean isExistBookDB = bookRepository.existsById(isbn);
-            if(!isExistBookDB) {
+            if (!isExistBookDB) {
                 return new Response<>(NOT_FOUND_BOOK);
             }
 
@@ -73,7 +74,7 @@ public class CommentServiceImpl implements CommentService {
         CommentDB commentDB;
         try {
             commentDB = commentRepository.findById(id).orElse(null);
-            if(commentDB == null) {
+            if (commentDB == null) {
                 return new Response<>(NOT_FOUND_COMMENT);
             }
             commentDB.setScore(commentInput.getScore());
@@ -86,5 +87,23 @@ public class CommentServiceImpl implements CommentService {
         }
         // 3. 결과 return
         return new Response<>(null, SUCCESS_CHANGE_COMMENT);
+    }
+
+    @Override
+    public Response<Object> deleteComment(int id) {
+        // 1. 값 형식 체크
+        if (!ValidationCheck.isValidId(id)) return new Response<>(BAD_REQUEST);
+        // 2. 한줄평 정보 삭제
+        try {
+            commentRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("[comments/delete] not found entity error", e);
+            return new Response<>(NOT_FOUND_COMMENT);
+        } catch (Exception e) {
+            log.error("[comments/delete] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(null, SUCCESS_DELETE_COMMENT);
     }
 }

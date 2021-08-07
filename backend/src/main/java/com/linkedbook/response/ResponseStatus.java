@@ -18,8 +18,6 @@ public enum  ResponseStatus {
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
     SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."),
-    SUCCESS_CHANGE_FOLLOW(200, 204, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
-    SUCCESS_CHANGE_COMMENT(200, 206, "한줄평 정보를 변경하는데 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."),
@@ -34,6 +32,9 @@ public enum  ResponseStatus {
 
     // 204 No Content - 클라이언트의 요청은 정상적이다. 하지만 컨텐츠를 제공하지 않는다.
     NO_CONTENT(204, 200, "요청에 성공하였습니다."),
+    SUCCESS_CHANGE_FOLLOW(204, 201, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
+    SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."),
+    SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
 
     /*
      4XX Client errors
