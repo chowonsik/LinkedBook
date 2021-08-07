@@ -8,6 +8,7 @@ import Category from "../../components/Report/Category";
 import ReportContent from "../../components/Report/ReportContent";
 import ConfirmBox from "../../components/Report/ConfirmBox";
 import { setReport } from "../../actions/Report";
+import { request } from "../../api";
 
 // 신고 항목 선택을 위한 hook
 const useSelet = (initValue, validator) => {
@@ -50,17 +51,16 @@ const useSubmit = (userId, dealId, category, content, setReport, history) => {
     } else {
       setError("");
       const data = {
-        userId,
         dealId: Number(dealId),
         category,
         content,
       };
 
       setReport(data, history);
+
       setIsActive(true);
     }
   };
-
   return { error, onClick, isActive };
 };
 function Report({ match, setReport }) {
@@ -68,11 +68,11 @@ function Report({ match, setReport }) {
   const history = useHistory();
   const categoryValidator = (nodeId) => {
     if (nodeId === "spam") {
-      return "ADVERTISING";
+      return "SPAM";
     } else if (nodeId === "illegal-act") {
-      return "ILLEGAL_ACT";
+      return "ILLEGAL";
     } else if (nodeId === "bad-manners") {
-      return "BAD_MANNERS";
+      return "MANNER";
     } else if (nodeId === "etc") {
       return "ETC";
     }
