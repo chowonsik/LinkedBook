@@ -10,6 +10,8 @@ public class ValidationCheck {
 
     public static boolean isValidId(int id) { return (id > 0); }
 
+    public static boolean isValidScore(int score) { return (score > 0 && score <= 5); }
+
     public static boolean isValidNum(String num) {
         try {
             Double.parseDouble(num);

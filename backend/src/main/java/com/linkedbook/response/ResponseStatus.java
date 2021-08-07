@@ -25,6 +25,7 @@ public enum  ResponseStatus {
     CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
     CREATED_BOOK(201, 220, "책 등록에 성공하였습니다."),
     CREATED_FOLLOW(201, 202, "새로운 팔로우 관계 등록에 성공하였습니다."),
+    CREATED_COMMENT(201, 209, "한줄평 등록에 성공하였습니다."),
     CREATED_REPORT(201, 210, "신고 등록에 성공하였습니다."),
 
     // 202 Accepted - 클라이언트의 요청은 정상적이나, 서버가 아직 요청을 완료하지 못했다. 비동기
