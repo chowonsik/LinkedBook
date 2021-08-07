@@ -3,6 +3,7 @@ package com.linkedbook.service;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
+import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
 import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
 import com.linkedbook.response.Response;
 
@@ -17,4 +18,6 @@ public interface DealService {
     Response<Object> createDeal(CreateDealInput createDealInput);
 
     Response<Object> updateDeal(UpdateDealInput updateDealInput, int dealId);
+
+    Response<SelectDealDetailOutput> selectDeal(int dealId);
 }

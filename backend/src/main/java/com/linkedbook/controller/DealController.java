@@ -5,6 +5,7 @@ import com.linkedbook.service.DealService;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
+import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
 import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
 
 import lombok.AllArgsConstructor;
@@ -81,5 +82,18 @@ public class DealController {
     public Response<Object> updateDeal(@RequestBody UpdateDealInput updateDealInput, @PathVariable("id") int dealId) {
         log.info("[PATCH] /deals/" + dealId);
         return dealService.updateDeal(updateDealInput, dealId);
+    }
+
+    /**
+     * 거래 상세 조회 API [GET]] /deals/{id}
+     * 
+     * @return Response<Object>
+     */
+    // Params
+    @ResponseBody
+    @GetMapping("/{id}")
+    public Response<SelectDealDetailOutput> selectDeal(@PathVariable("id") int dealId) {
+        log.info("[GET] /deals/" + dealId);
+        return dealService.selectDeal(dealId);
     }
 }

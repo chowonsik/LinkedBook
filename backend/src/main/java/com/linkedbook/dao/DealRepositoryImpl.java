@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.linkedbook.dto.deal.selectDeal.QSelectDealOutput;
+import com.linkedbook.dto.deal.selectDealDetail.QSelectDealDetailOutput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
+import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
 import com.linkedbook.entity.QBookDB;
 import com.linkedbook.entity.QDealDB;
 import com.linkedbook.entity.QDealImageDB;
@@ -13,6 +15,8 @@ import com.linkedbook.entity.QImageDB;
 import com.linkedbook.entity.QLikeDealDB;
 import com.linkedbook.entity.QUserDB;
 import com.linkedbook.entity.QUserAreaDB;
+import com.linkedbook.entity.QAreaDB;
+import com.linkedbook.entity.QUserDealDB;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
@@ -42,6 +46,8 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
     QLikeDealDB likeDealDB = QLikeDealDB.likeDealDB;
     QUserDB userDB = QUserDB.userDB;
     QUserAreaDB userAreaDB = QUserAreaDB.userAreaDB;
+    QAreaDB areaDB = QAreaDB.areaDB;
+    QUserDealDB userDealDB = QUserDealDB.userDealDB;
 
     @Override
     public Page<SelectDealOutput> findDynamicQueryDeal(SelectDealInput selectDealInput, Integer userId,
@@ -66,6 +72,24 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
         List<SelectDealOutput> content = queryResult;
         long totalCount = queryResult.size();
         return new PageImpl<SelectDealOutput>(content, pageable, totalCount);
+    }
+
+    @Override
+    public SelectDealDetailOutput findDealDetail(Integer dealId, Integer userId) {
+
+        return queryFactory
+                .select(new QSelectDealDetailOutput(dealDB.id, dealDB.title, dealDB.price, dealDB.quality,
+                        dealDB.created_at,
+                        JPAExpressions.select(likeDealDB.count().castToNum(Integer.class)).from(likeDealDB)
+                                .where(likeDealDB.user.id.eq(userId).and(likeDealDB.deal.id.eq(dealDB.id))),
+                        bookDB.title, bookDB.author, bookDB.publisher, bookDB.price, userDB.id, userDB.nickname,
+                        userDB.image, areaDB.dongmyeonri, userDealDB.score.avg()))
+                .from(dealDB).join(userAreaDB).on(dealDB.user.id.eq(userAreaDB.user.id).and(userAreaDB.orders.eq(1)))
+                .join(bookDB).on(dealDB.book.id.eq(bookDB.id)).join(userDB).on(dealDB.user.id.eq(userDB.id))
+                .join(areaDB).on(userAreaDB.area.id.eq(areaDB.id)).leftJoin(userDealDB)
+                .on(dealDB.user.id.eq(userDealDB.user.id))
+                .where(dealDB.id.eq(dealId), dealDB.status.eq("ACTIVATE"), dealDB.user.status.eq("ACTIVATE"))
+                .groupBy(dealDB.user.id).fetchOne();
     }
 
     private BooleanExpression eqSearch(String search) {

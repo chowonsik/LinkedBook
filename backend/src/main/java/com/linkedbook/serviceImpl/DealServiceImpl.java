@@ -10,6 +10,8 @@ import com.linkedbook.dto.deal.createDeal.CreateDealImage;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
+import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
+import com.linkedbook.dto.deal.selectDealDetail.SelectDealImage;
 import com.linkedbook.dto.deal.updateDeal.UpdateDealImage;
 import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
 import com.linkedbook.entity.DealDB;
@@ -187,5 +189,21 @@ public class DealServiceImpl implements DealService {
         }
         // 3. 결과 return
         return new Response<>(null, SUCCESS_UPDATE_DEAL);
+    }
+
+    @Override
+    public Response<SelectDealDetailOutput> selectDeal(int dealId) {
+        // 1. 값 형식 체크
+        SelectDealDetailOutput selectDealDetailOutput;
+        try {
+            selectDealDetailOutput = dealRepository.findDealDetail(dealId, jwtService.getUserId());
+            List<SelectDealImage> dealImageDB = dealImageRepository.findByDealImages(dealId);
+            selectDealDetailOutput.setDealImages(dealImageDB);
+        } catch (Exception e) {
+            log.error("[GET]/deals/" + dealId + " database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 4. 결과 return
+        return new Response<>(selectDealDetailOutput, SUCCESS_SELECT_DEAL_DETAIL);
     }
 }
