@@ -136,7 +136,7 @@ public class DealServiceImpl implements DealService {
                 if (updateDealInput.getStatus().equals("DELETED")) {
                     dealDB.setStatus(updateDealInput.getStatus());
                     dealDB = dealRepository.save(dealDB);
-                    return new Response<>(null, SUCCESS_CHANGE_DEAL);
+                    return new Response<>(null, SUCCESS_DELETE_DEAL);
                 }
             }
             if (StringUtils.isNotBlank(updateDealInput.getBookId())) {
@@ -186,6 +186,6 @@ public class DealServiceImpl implements DealService {
             return new Response<>(DATABASE_ERROR);
         }
         // 3. 결과 return
-        return new Response<>(null, SUCCESS_CHANGE_DEAL);
+        return new Response<>(null, SUCCESS_UPDATE_DEAL);
     }
 }
