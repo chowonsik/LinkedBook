@@ -1,15 +1,14 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.user.signup.SignUpInput;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
-import java.awt.geom.Area;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +58,14 @@ public class UserDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-    
+
+    // 관심등록된 수 카운팅
+    @Basic(fetch=FetchType.LAZY)
+    @Formula("(select count(1) " +
+            "from deal as d " +
+            "where d.user_id = id)")
+    private int dealCnt;
+
     public UserDB(int id) {
         this.id = id;
     }

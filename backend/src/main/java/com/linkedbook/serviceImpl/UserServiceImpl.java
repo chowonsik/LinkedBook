@@ -1,6 +1,8 @@
 package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
+import com.linkedbook.dto.user.selectUser.SelectUserInput;
+import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signup.SignUpInput;
@@ -16,39 +18,36 @@ import com.linkedbook.dao.UserAreaRepository;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
 
-import org.apache.commons.lang3.StringUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 
 import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("UserService")
 @AllArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private final UserRepository userRepository;
-    @Autowired
-    private final UserAreaRepository userAreaRepository;
-    @Autowired
-    private final AreaRepository areaRepository;
-    @Autowired
-    private final JwtService jwtService;
 
+    private final UserRepository userRepository;
+    private final UserAreaRepository userAreaRepository;
+    private final AreaRepository areaRepository;
+    private final JwtService jwtService;
 
     @Override
     public Response<SignInOutput> signIn(SignInInput signInInput) {
         // 1. 값 형식 체크
-        if (signInInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValid(signInInput.getEmail()))    return new Response<>(BAD_EMAIL_VALUE);
-        if (!ValidationCheck.isValid(signInInput.getPassword())) return new Response<>(BAD_PASSWORD_VALUE);
+        if (signInInput == null)  return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(signInInput.getEmail()))  return new Response<>(BAD_EMAIL_VALUE);
+        if (!ValidationCheck.isValid(signInInput.getPassword()))  return new Response<>(BAD_PASSWORD_VALUE);
 
         // 2. user 정보 가져오기
         UserDB userDB;
@@ -64,6 +63,7 @@ public class UserServiceImpl implements UserService {
                 userDB = userDBs.get(0);
             }
         } catch (Exception e) {
+            log.error("[users/signin/post] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
 
@@ -87,10 +87,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Response<SignUpOutput> signUp(SignUpInput signUpInput) {
         // 1. 값 형식 체크
-        if (signUpInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValid(signUpInput.getEmail()))    return new Response<>(BAD_EMAIL_VALUE);
-        if (!ValidationCheck.isValid(signUpInput.getPassword())) return new Response<>(BAD_PASSWORD_VALUE);
-        if (!ValidationCheck.isValid(signUpInput.getNickname()))     return new Response<>(BAD_NAME_VALUE);
+        if (signUpInput == null)  return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(signUpInput.getEmail()))  return new Response<>(BAD_EMAIL_VALUE);
+        if (!ValidationCheck.isValid(signUpInput.getPassword()))  return new Response<>(BAD_PASSWORD_VALUE);
+        if (!ValidationCheck.isValid(signUpInput.getNickname()))  return new Response<>(BAD_NAME_VALUE);
 
         // 2. 유저 생성
         UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).status("ACTIVATE").build();
@@ -118,6 +118,7 @@ public class UserServiceImpl implements UserService {
             userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).status("ACTIVATE").build();
             userAreaRepository.save(userAreaDB);
         } catch (Exception e) {
+            log.error("[users/signup/post] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
 
@@ -145,9 +146,56 @@ public class UserServiceImpl implements UserService {
             int myId = jwtService.getUserId();
             selectProfileOutput = userRepository.findUserProfile(id, myId);
         } catch (Exception e) {
+            log.error("[users/"+id+"/profile/get] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
 
         return new Response<>(selectProfileOutput, SUCCESS_SELECT_PROFILE);
+    }
+
+    @Override
+    public Response<List<SelectUserOutput>> selectUser(SelectUserInput selectUserInput) {
+        // 1. 값 형식 체크
+        if(selectUserInput == null) return new Response<>(NO_VALUES);
+        if(!ValidationCheck.isValidPage(selectUserInput.getPage())
+        || !ValidationCheck.isValidId(selectUserInput.getSize()))  return new Response<>(BAD_REQUEST);
+        if(selectUserInput.getType().equals("SEARCH")) {
+            if(!ValidationCheck.isValid(selectUserInput.getNickName()))  return new Response<>(BAD_REQUEST);
+        } else if(selectUserInput.getType().equals("STAR")) {
+            if(!ValidationCheck.isValidId(selectUserInput.getAreaId()))  return new Response<>(BAD_REQUEST);
+        } else {
+            return new Response<>(BAD_SEARCH_TYPE_VALUE);
+        }
+
+        // 2. 일치하는 유저 정보 가져오기
+        List<SelectUserOutput> responseList = new ArrayList<>();
+        try {
+            Pageable paging = PageRequest.of(selectUserInput.getPage(), selectUserInput.getSize(), Sort.Direction.DESC, "dealCnt");
+            List<UserDB> userDBList;
+            if(selectUserInput.getType().equals("SEARCH")) { // 유저 닉네임으로 검색
+                String selectNickname = selectUserInput.getNickName();
+                userDBList = userRepository.findByStatusAndNicknameContaining("ACTIVATE", selectNickname, paging);
+            } else { // 유저 거래지역으로 검색 (책 판매량 많은 순으로 정렬)
+                int selectAreaId = selectUserInput.getAreaId();
+                int userId = jwtService.getUserId();
+                userDBList = userRepository.findAreaStar(userId, selectAreaId, paging);
+            }
+            // 최종 출력값 정리
+            for (UserDB user : userDBList) {
+                responseList.add(
+                        SelectUserOutput.builder()
+                                .userId(user.getId())
+                                .nickName(user.getNickname())
+                                .image(user.getImage())
+                                .dealCnt(user.getDealCnt())
+                                .build()
+                );
+            }
+        } catch (Exception e) {
+            log.error("[users/get] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(responseList, SUCCESS_SELECT_USER);
     }
 }
