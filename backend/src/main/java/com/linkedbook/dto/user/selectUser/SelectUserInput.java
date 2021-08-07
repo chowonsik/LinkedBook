@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class SelectUserInput {
     String type;
-    String nickName;
+    String nickname;
     int areaId;
     int page;
     int size;

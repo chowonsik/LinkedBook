@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
         if(!ValidationCheck.isValidPage(selectUserInput.getPage())
         || !ValidationCheck.isValidId(selectUserInput.getSize()))  return new Response<>(BAD_REQUEST);
         if(selectUserInput.getType().equals("SEARCH")) {
-            if(!ValidationCheck.isValid(selectUserInput.getNickName()))  return new Response<>(BAD_REQUEST);
+            if(!ValidationCheck.isValid(selectUserInput.getNickname()))  return new Response<>(BAD_REQUEST);
         } else if(selectUserInput.getType().equals("STAR")) {
             if(!ValidationCheck.isValidId(selectUserInput.getAreaId()))  return new Response<>(BAD_REQUEST);
         } else {
@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
             Pageable paging = PageRequest.of(selectUserInput.getPage(), selectUserInput.getSize(), Sort.Direction.DESC, "dealCnt");
             List<UserDB> userDBList;
             if(selectUserInput.getType().equals("SEARCH")) { // 유저 닉네임으로 검색
-                String selectNickname = selectUserInput.getNickName();
+                String selectNickname = selectUserInput.getNickname();
                 userDBList = userRepository.findByStatusAndNicknameContaining("ACTIVATE", selectNickname, paging);
             } else { // 유저 거래지역으로 검색 (책 판매량 많은 순으로 정렬)
                 int selectAreaId = selectUserInput.getAreaId();
@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
                 responseList.add(
                         SelectUserOutput.builder()
                                 .userId(user.getId())
-                                .nickName(user.getNickname())
+                                .nickname(user.getNickname())
                                 .image(user.getImage())
                                 .dealCnt(user.getDealCnt())
                                 .build()

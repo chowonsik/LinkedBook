@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class SelectUserOutput {
     int userId;
-    String nickName;
+    String nickname;
     String image;
     int dealCnt;
 }
