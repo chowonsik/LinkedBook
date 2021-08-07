@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router";
-import { Wrapper, ErrorMessage } from "./styles";
+import { Wrapper, ErrorMessage, Container } from "./styles";
 import Header from "../../components/Layout/Header";
 import FooterButton from "../../components/common/Buttons/FooterButton";
 import Category from "../../components/Report/Category";
 import ReportContent from "../../components/Report/ReportContent";
 import ConfirmBox from "../../components/Report/ConfirmBox";
-import { setReport } from "../../actions/Report";
+import Modal from "../../components/Report/Modal";
+import { setReport, setReportStatus } from "../../actions/Report";
 import { request } from "../../api";
+import { useEffect } from "react";
 
 // 신고 항목 선택을 위한 hook
 const useSelet = (initValue, validator) => {
@@ -40,7 +42,6 @@ const useText = (initValue, validator) => {
 
 const useSubmit = (userId, dealId, category, content, setReport, history) => {
   const [error, setError] = useState("");
-  const [isActive, setIsActive] = useState(false);
   const onClick = () => {
     if (category === "") {
       setError("신고 항목을 선택해주세요.");
@@ -56,16 +57,24 @@ const useSubmit = (userId, dealId, category, content, setReport, history) => {
         content,
       };
 
-      setReport(data, history);
-
-      setIsActive(true);
+      setReport(data);
     }
   };
-  return { error, onClick, isActive };
+  return { error, onClick };
 };
+
 function Report({ match, setReport }) {
+  const dispatch = useDispatch();
+  const status = useSelector((state) => state.reportReducer.status);
+
+  useEffect(() => {
+    changeModalActive();
+  }, [status]);
   const [dealId, setDealId] = useState(match.params.dealId);
+  const [isActive, setIsActive] = useState(false);
+
   const history = useHistory();
+
   const categoryValidator = (nodeId) => {
     if (nodeId === "spam") {
       return "SPAM";
@@ -88,6 +97,14 @@ function Report({ match, setReport }) {
     }
   };
 
+  const changeModalActive = () => {
+    if (status === 201) {
+      setIsActive(true);
+      setTimeout(history.goBack, 1500);
+    }
+    dispatch(setReportStatus(0));
+  };
+
   const category = useSelet("", categoryValidator);
   const text = useText("", textValidator);
   const submit = useSubmit(
@@ -100,25 +117,27 @@ function Report({ match, setReport }) {
   );
 
   return (
-    <>
+    <Wrapper>
+      <Modal
+        text={"신고가 성공적으로 접수되었습니다."}
+        isActive={isActive}
+      ></Modal>
       <Header title={"신고하기"} isBack={true} />
-      <Wrapper>
+
+      <Container>
         <Category onClick={category.onClick} />
         <ReportContent onChange={text.onChange} value={text.value} />
         <ErrorMessage error={submit.error}>{submit.error}</ErrorMessage>
-        <ConfirmBox
-          text={"신고가 성공적으로 접수되었습니다."}
-          isActive={submit.isActive}
-        />
-      </Wrapper>
+      </Container>
+
       <FooterButton value={"신고"} onClick={submit.onClick} />
-    </>
+    </Wrapper>
   );
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setReport: (data, history) => dispatch(setReport(data, history)),
+    setReport: (data) => dispatch(setReport(data)),
   };
 }
 export default connect(null, mapDispatchToProps)(Report);
