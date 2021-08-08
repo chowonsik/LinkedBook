@@ -37,7 +37,7 @@ public class UserDealDB {
     private String type;
 
     @Column(name = "score", nullable = false)
-    private int score;
+    private double score;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

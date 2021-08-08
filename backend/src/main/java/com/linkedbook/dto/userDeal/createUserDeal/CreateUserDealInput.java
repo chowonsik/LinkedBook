@@ -10,5 +10,5 @@ import lombok.ToString;
 public class CreateUserDealInput {
     private int dealId;
     private int userId;
-    private int score;
+    private double score;
 }

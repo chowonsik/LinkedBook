@@ -51,8 +51,6 @@ public class UserDealServiceImpl implements UserDealService {
             return new Response<>(BAD_REQUEST);
         if (!ValidationCheck.isValidId(createUserDealInput.getUserId()))
             return new Response<>(BAD_REQUEST);
-        if (!ValidationCheck.isValidScore(createUserDealInput.getScore()))
-            return new Response<>(BAD_REQUEST);
 
         try {
             UserDB saleUser = userRepository.findById(jwtService.getUserId()).orElse(null);
