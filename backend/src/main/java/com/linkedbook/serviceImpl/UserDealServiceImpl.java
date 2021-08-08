@@ -7,6 +7,7 @@ import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
+import com.linkedbook.dto.userDeal.updateUserDeal.UpdateUserDealInput;
 import com.linkedbook.entity.DealDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.entity.UserDealDB;
@@ -54,6 +55,8 @@ public class UserDealServiceImpl implements UserDealService {
         if (!ValidationCheck.isValidId(createUserDealInput.getDealId()))
             return new Response<>(BAD_REQUEST);
         if (!ValidationCheck.isValidId(createUserDealInput.getUserId()))
+            return new Response<>(BAD_REQUEST);
+        if (!ValidationCheck.isValidScore(createUserDealInput.getScore()))
             return new Response<>(BAD_REQUEST);
 
         try {
@@ -103,5 +106,33 @@ public class UserDealServiceImpl implements UserDealService {
         }
         // 4. 결과 return
         return new Response<>(selectUserDealOutput, SUCCESS_SELECT_USERDEAL_LIST);
+    }
+
+    @Override
+    @Transactional
+    public Response<Object> updateUserDeal(UpdateUserDealInput updateUserDealInput, int userDealId) {
+        // 값 형식 체크
+        if (updateUserDealInput == null)
+            return new Response<>(BAD_REQUEST);
+        if (!ValidationCheck.isValidScore(updateUserDealInput.getScore()))
+            return new Response<>(BAD_REQUEST);
+
+        try {
+            UserDealDB userDealDB = userDealRepository.findById(userDealId).orElse(null);
+            if (userDealDB == null) {
+                return new Response<>(BAD_ID_VALUE);
+            }
+            userDealDB.setScore(updateUserDealInput.getScore());
+            userDealDB = userDealRepository.save(userDealDB);
+
+        } catch (IllegalArgumentException e) {
+            log.error("[PATCH]]/user-deals/" + userDealId + " undefined status exception", e);
+            return new Response<>(BAD_STATUS_VALUE);
+        } catch (Exception e) {
+            log.error("[PATCH]/user-deals/" + userDealId + " database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 결과 return
+        return new Response<>(null, SUCCESS_UPDATE_USERDEAL);
     }
 }

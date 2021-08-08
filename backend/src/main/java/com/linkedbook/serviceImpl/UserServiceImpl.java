@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-
 import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -42,13 +41,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final JwtService jwtService;
 
-
     @Override
     public Response<SignInOutput> signIn(SignInInput signInInput) {
         // 1. 값 형식 체크
-        if (signInInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValid(signInInput.getEmail()))    return new Response<>(BAD_EMAIL_VALUE);
-        if (!ValidationCheck.isValid(signInInput.getPassword())) return new Response<>(BAD_PASSWORD_VALUE);
+        if (signInInput == null)
+            return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(signInInput.getEmail()))
+            return new Response<>(BAD_EMAIL_VALUE);
+        if (!ValidationCheck.isValid(signInInput.getPassword()))
+            return new Response<>(BAD_PASSWORD_VALUE);
 
         // 2. user 정보 가져오기
         UserDB userDB;
@@ -69,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
         // 3. access token 생성
         String accessToken;
-        try{
+        try {
             accessToken = jwtService.createAccessToken(EMPLOYEE, userDB.getId());
             if (accessToken.isEmpty()) {
                 return new Response<>(FAILED_TO_CREATE_TOKEN);
@@ -87,20 +88,26 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Response<SignUpOutput> signUp(SignUpInput signUpInput) {
         // 1. 값 형식 체크
-        if (signUpInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValid(signUpInput.getEmail()))    return new Response<>(BAD_EMAIL_VALUE);
-        if (!ValidationCheck.isValid(signUpInput.getPassword())) return new Response<>(BAD_PASSWORD_VALUE);
-        if (!ValidationCheck.isValid(signUpInput.getNickname()))     return new Response<>(BAD_NAME_VALUE);
+        if (signUpInput == null)
+            return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(signUpInput.getEmail()))
+            return new Response<>(BAD_EMAIL_VALUE);
+        if (!ValidationCheck.isValid(signUpInput.getPassword()))
+            return new Response<>(BAD_PASSWORD_VALUE);
+        if (!ValidationCheck.isValid(signUpInput.getNickname()))
+            return new Response<>(BAD_NAME_VALUE);
 
         // 2. 유저 생성
-        UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).status("ACTIVATE").build();
+        UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword())
+                .nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage())
+                .status("ACTIVATE").build();
         UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
             String nickname = signUpInput.getNickname();
             List<UserDB> existUsers = userRepository.findByEmailAndStatus(email, "ACTIVATE");
             List<UserDB> existNickname = userRepository.findByNicknameAndStatus(nickname, "ACTIVATE");
-            
+
             if (existUsers.size() > 0) { // 이메일 중복 제어
                 return new Response<>(EXISTS_EMAIL);
             } else if (existNickname.size() > 0) { // 닉네임 중복 제어
@@ -109,7 +116,7 @@ public class UserServiceImpl implements UserService {
                 userDB = userRepository.save(userDB);
             }
             AreaDB areaDB = areaRepository.findById(signUpInput.getAreaId()).orElse(null);
-            
+
             // 해당 지역 번호가 없을 때
             if (areaDB == null) {
                 return new Response<>(BAD_AREA_VALUE);

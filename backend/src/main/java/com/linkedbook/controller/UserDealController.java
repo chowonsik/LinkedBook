@@ -2,6 +2,7 @@ package com.linkedbook.controller;
 
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
+import com.linkedbook.dto.userDeal.updateUserDeal.UpdateUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.UserDealService;
@@ -50,6 +51,20 @@ public class UserDealController {
     public Response<Page<SelectUserDealOutput>> selectUserDeal(SelectUserDealInput selectUserDealInput) {
         log.info("[GET] /user-deals");
         return userDealService.selectUserDeal(selectUserDealInput);
+    }
+
+    /**
+     * 유저 거래 내역 수정 API [PATCH] /user-deals/{id}
+     * 
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @PatchMapping("/{id}")
+    public Response<Object> updateUserDeal(@RequestBody UpdateUserDealInput updateUserDealInput,
+            @PathVariable("id") int userDealId) {
+        log.info("[PATCH] /user-deals/" + userDealId);
+        return userDealService.updateUserDeal(updateUserDealInput, userDealId);
     }
 
 }

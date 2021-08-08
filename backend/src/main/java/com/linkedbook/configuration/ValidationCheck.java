@@ -74,8 +74,8 @@ public class ValidationCheck {
         return (list == null) || list.isEmpty();
     }
 
-    public static boolean isValidScore(int score) {
-        return (score > 0) && (score <= 5);
+    public static boolean isValidScore(double score) {
+        return (score > 0 && score <= 5);
     }
 
 }
