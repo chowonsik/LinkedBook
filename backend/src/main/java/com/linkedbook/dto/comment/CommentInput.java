@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CommentInput {
     String isbn;
-    int score;
+    double score;
     String content;
 }

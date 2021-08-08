@@ -52,7 +52,7 @@ public class BookDB {
             "from like_book as lb " +
             "inner join user as u on lb.user_id = u.id " +
             "where u.status = 'ACTIVATE' " +
-            "and lb.book_id = id and lb.status = 'ACTIVATE')")
+            "and lb.book_id = id)")
     private int likeCnt;
 
     public BookDB(String id) {

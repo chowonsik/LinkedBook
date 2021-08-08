@@ -1,11 +1,16 @@
 package com.linkedbook.controller;
 
+import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dto.comment.CommentInput;
+import com.linkedbook.dto.comment.CommentOutput;
+import com.linkedbook.dto.comment.CommentSearchInput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.CommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import static com.linkedbook.response.ResponseStatus.*;
 
 @RestController
 @RequestMapping("/comments")
@@ -14,6 +19,27 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final CommentService commentService;
+
+    /**
+     * 한줄평 조회 API
+     * [GET] /comments?userId={userId}
+     * [GET] /comments?bookId={bookId}
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @GetMapping
+    public Response<CommentOutput> getCommentList(CommentSearchInput commentSearchInput) {
+        if(ValidationCheck.isValidId(commentSearchInput.getUserId())) {
+            log.info("[GET] /comments?userId=" + commentSearchInput.getUserId());
+            return commentService.getCommentListByUser(commentSearchInput);
+        } else if(ValidationCheck.isValid(commentSearchInput.getBookId())) {
+            log.info("[GET] /comments?bookId=" + commentSearchInput.getBookId());
+            return commentService.getCommentListByBook(commentSearchInput);
+        }
+        log.info("[GET] /comments?NO_VALID_STATUS");
+        return new Response<>(BAD_REQUEST);
+    }
 
     /**
      * 한줄평 생성 API

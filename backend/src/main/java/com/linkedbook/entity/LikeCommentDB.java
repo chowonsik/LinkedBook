@@ -12,8 +12,8 @@ import java.util.Date;
 import static javax.persistence.GenerationType.*;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "like_comment")
@@ -30,9 +30,6 @@ public class LikeCommentDB {
     @ManyToOne
     @JoinColumn(name = "comment_id", nullable = false)
     private CommentDB comment;
-
-    @Column(name = "status", nullable = false, length = 45)
-    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
