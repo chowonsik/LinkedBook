@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
@@ -48,12 +49,7 @@ public class CommentDB {
     @Column(name = "updated_at")
     private Date updated_at;
 
-    // 관심등록된 수 카운팅
-    @Basic(fetch=FetchType.LAZY)
-    @Formula("(select count(1) " +
-            "from like_comment as lc " +
-            "inner join user as u on lc.comment_id = u.id " +
-            "where u.status = 'ACTIVATE' " +
-            "and lc.comment_id = id)")
-    private int likeCnt;
+    // 한줄평 관심등록 정보
+    @OneToMany(mappedBy = "comment")
+    private List<LikeCommentDB> likeComments = new ArrayList<>();
 }

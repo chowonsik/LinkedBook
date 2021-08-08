@@ -6,6 +6,7 @@ import com.linkedbook.dao.LikeBookRepository;
 import com.linkedbook.dto.book.search.BookInfoInput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
 import com.linkedbook.entity.BookDB;
+import com.linkedbook.entity.CommentDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
@@ -76,7 +77,6 @@ public class BookServiceImpl implements BookService {
             log.error("[books/post] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
-
         // 3. 결과 return
         return new Response<>(null, CREATED_BOOK);
     }
@@ -96,15 +96,29 @@ public class BookServiceImpl implements BookService {
             if(bookDB.getPublisher() == null) bookDB.setPublisher("");
             if(bookDB.getContents() == null) bookDB.setContents("");
 
+            // 책 한줄평 평균 점수 구하기
+            double commentAvgScore = bookDB.getComments().stream()
+                    .mapToDouble(CommentDB::getScore).average().orElse(Double.NaN);
+
             // 로그인된 유저의 관심 책 등록 여부 확인하기
             boolean isUserLikeBook = false;
-            UserDB userDB = new UserDB(jwtService.getUserId());
-            if(likeBookRepository.existsByUserAndBookAndStatus(userDB, bookDB, "ACTIVATE")) {
+            UserDB loginUserDB = new UserDB(jwtService.getUserId());
+            if(likeBookRepository.existsByUserAndBook(loginUserDB, bookDB)) {
                 isUserLikeBook = true;
             }
             // 최종 출력값 정리
             bookSearchOutput = BookSearchOutput.builder()
-                    .book(bookDB)
+                    .id(bookDB.getId())
+                    .title(bookDB.getTitle())
+                    .price(bookDB.getPrice())
+                    .author(bookDB.getAuthor())
+                    .publisher(bookDB.getPublisher())
+                    .contents(bookDB.getContents())
+                    .dateTime(bookDB.getDateTime())
+                    .image(bookDB.getImage())
+                    .status(bookDB.getStatus())
+                    .likeBookCnt(bookDB.getLikeBooks().size())
+                    .commentAvgScore(commentAvgScore)
                     .userLikeBook(isUserLikeBook)
                     .build();
         } catch (Exception e) {

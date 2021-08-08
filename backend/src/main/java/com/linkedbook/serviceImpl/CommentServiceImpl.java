@@ -142,11 +142,11 @@ public class CommentServiceImpl implements CommentService {
                 responseList.add(
                         CommentOutput.builder()
                                 .commentId(commentDB.getId())
-                                .score(commentDB.getScore())
-                                .content(commentDB.getContent())
+                                .commentScore(commentDB.getScore())
+                                .commentContent(commentDB.getContent())
                                 .created_at(commentDB.getCreated_at())
                                 .updated_at(commentDB.getUpdated_at())
-                                .likeCnt(commentDB.getLikeCnt())
+                                .likeCommentCnt(commentDB.getLikeComments().size())
                                 .userLikeComment(isUserLikeComment)
                                 .userId(commentUserDB.getId())
                                 .userNickname(commentUserDB.getNickname())
@@ -158,7 +158,7 @@ public class CommentServiceImpl implements CommentService {
                 );
             }
         } catch (Exception e) {
-            log.error("[users?bookId/get] database error", e);
+            log.error("[comments/get] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
         // 3. 결과 return
