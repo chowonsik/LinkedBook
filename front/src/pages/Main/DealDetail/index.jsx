@@ -35,6 +35,7 @@ export default function DealDetail() {
     if (selectedIndex === deal.images.length - 1) return;
     setSelectedIndex(selectedIndex + 1);
   }
+
   useEffect(() => {
     setBook({
       title: "습관의 힘",
@@ -47,6 +48,7 @@ export default function DealDetail() {
       price: "2,000원",
       quality: "중",
       images: [
+        "https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory2&fname=http%3A%2F%2Fcfile1.uf.tistory.com%2Fimage%2F996DE5445B734C3205AE78",
         "https://placeimg.com/1000/500/tech",
         "https://placeimg.com/900/500/animals",
         "https://placeimg.com/800/500/architecture",
@@ -59,6 +61,7 @@ export default function DealDetail() {
       image: "https://placeimg.com/100/100/people",
     });
   }, []);
+
   return (
     <>
       <Header title="거래 정보" isBack />

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
-import DealItem from "../../components/DealItem";
+import DealItem from "../../components/deal/DealItem";
 import {
   InputContainer,
   LocationContainer,
