@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.linkedbook.response.ResponseStatus.*;
 
 @RestController
@@ -26,19 +28,22 @@ public class CommentController {
      * [GET] /comments?bookId={bookId}
      * @return Response<Object>
      */
-    // Body
+    // Params
     @ResponseBody
     @GetMapping
-    public Response<CommentOutput> getCommentList(CommentSearchInput commentSearchInput) {
+    public Response<List<CommentOutput>> getCommentList(CommentSearchInput commentSearchInput) {
+        if(!ValidationCheck.isValidId(commentSearchInput.getUserId()) && !ValidationCheck.isValid(commentSearchInput.getBookId())) {
+            log.info("[GET] /comments?NO_VALID_STATUS");
+            return new Response<>(BAD_REQUEST);
+        }
+
         if(ValidationCheck.isValidId(commentSearchInput.getUserId())) {
             log.info("[GET] /comments?userId=" + commentSearchInput.getUserId());
-            return commentService.getCommentListByUser(commentSearchInput);
-        } else if(ValidationCheck.isValid(commentSearchInput.getBookId())) {
+            return commentService.getCommentList(commentSearchInput, true);
+        } else {
             log.info("[GET] /comments?bookId=" + commentSearchInput.getBookId());
-            return commentService.getCommentListByBook(commentSearchInput);
+            return commentService.getCommentList(commentSearchInput, false);
         }
-        log.info("[GET] /comments?NO_VALID_STATUS");
-        return new Response<>(BAD_REQUEST);
     }
 
     /**

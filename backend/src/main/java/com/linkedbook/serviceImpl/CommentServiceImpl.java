@@ -117,99 +117,51 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Response<CommentOutput> getCommentListByUser(CommentSearchInput commentSearchInput) {
+    public Response<List<CommentOutput>> getCommentList(CommentSearchInput commentSearchInput, boolean isUserPage) {
         // 1. 값 형식 체크
         if(!ValidationCheck.isValidPage(commentSearchInput.getPage())
                 || !ValidationCheck.isValidId(commentSearchInput.getSize()))  return new Response<>(BAD_REQUEST);
         // 2. 일치하는 한줄평 정보 가져오기
-        CommentOutput response;
+        List<CommentOutput> responseList = new ArrayList<>();
         try {
             Pageable paging = PageRequest.of(commentSearchInput.getPage(), commentSearchInput.getSize(), Sort.Direction.DESC, "id");
-            UserDB findUserDB = new UserDB(commentSearchInput.getUserId());
-
             // 필요한 정보 가공
-            List<CommentByUserOutput> searchByUserList = new ArrayList<>();
-            List<CommentDB> commentDBList = commentRepository.findByUser(findUserDB, paging);
+            List<CommentDB> commentDBList;
+            if(isUserPage) { // 유저 프로필 페이지에서 조회할 때
+                commentDBList = commentRepository.findByUser(new UserDB(commentSearchInput.getUserId()), paging);
+            } else { // 책 상세 페이지에서 조회할 때
+                commentDBList = commentRepository.findByBook(new BookDB(commentSearchInput.getBookId()), paging);
+            }
 
+            UserDB loginUserDB = new UserDB(jwtService.getUserId());
             for (CommentDB commentDB : commentDBList) {
+                UserDB commentUserDB = commentDB.getUser();
                 BookDB commentBookDB = commentDB.getBook();
-                boolean isUserLikeComment = likeCommentRepository.existsByUserAndComment(findUserDB, commentDB);
-                searchByUserList.add(
-                        CommentByUserOutput.builder()
+                boolean isUserLikeComment = likeCommentRepository.existsByUserAndComment(loginUserDB, commentDB);
+                // 최종 출력값 정리
+                responseList.add(
+                        CommentOutput.builder()
                                 .commentId(commentDB.getId())
                                 .score(commentDB.getScore())
                                 .content(commentDB.getContent())
                                 .created_at(commentDB.getCreated_at())
                                 .updated_at(commentDB.getUpdated_at())
+                                .likeCnt(commentDB.getLikeCnt())
+                                .userLikeComment(isUserLikeComment)
+                                .userId(commentUserDB.getId())
+                                .userNickname(commentUserDB.getNickname())
+                                .userImage(commentUserDB.getImage())
                                 .bookId(commentBookDB.getId())
                                 .bookTitle(commentBookDB.getTitle())
                                 .bookImage(commentBookDB.getImage())
-                                .likeCnt(commentDB.getLikeCnt())
-                                .userLikeComment(isUserLikeComment)
                                 .build()
                 );
             }
-
-            // 최종 출력값 정리
-            response = CommentOutput.builder()
-                    .searchByUserList(searchByUserList)
-                    .build();
-        } catch (Exception e) {
-            log.error("[users?userId/get] database error", e);
-            return new Response<>(DATABASE_ERROR);
-        }
-        // 3. 결과 return
-        return new Response<>(response, SUCCESS_GET_COMMENT_LIST);
-    }
-
-    @Override
-    public Response<CommentOutput> getCommentListByBook(CommentSearchInput commentSearchInput) {
-        // 1. 값 형식 체크
-        if(!ValidationCheck.isValidPage(commentSearchInput.getPage())
-                || !ValidationCheck.isValidId(commentSearchInput.getSize()))  return new Response<>(BAD_REQUEST);
-        // 2. 일치하는 한줄평 정보 가져오기
-        CommentOutput response;
-        try {
-            Pageable paging = PageRequest.of(commentSearchInput.getPage(), commentSearchInput.getSize(), Sort.Direction.DESC, "id");
-            BookDB findBookDB = new BookDB(commentSearchInput.getBookId());
-
-            // 필요한 정보 가공
-            List<CommentByBookOutput> searchByBookList = new ArrayList<>();
-            List<CommentDB> commentDBList = commentRepository.findByBook(findBookDB, paging);
-
-            for (CommentDB commentDB : commentDBList) {
-                UserDB commentUserDB = commentDB.getUser();
-                boolean isUserLikeComment = likeCommentRepository.existsByUserAndComment(commentUserDB, commentDB);
-                searchByBookList.add(
-                        CommentByBookOutput.builder()
-                                .commentId(commentDB.getId())
-                                .score(commentDB.getScore())
-                                .content(commentDB.getContent())
-                                .created_at(commentDB.getCreated_at())
-                                .updated_at(commentDB.getUpdated_at())
-                                .userId(commentUserDB.getId())
-                                .nickname(commentUserDB.getNickname())
-                                .image(commentUserDB.getImage())
-                                .likeCnt(commentDB.getLikeCnt())
-                                .userLikeComment(isUserLikeComment)
-                                .build()
-                );
-            }
-
-            // 책의 한줄평 평균 점수 구하기
-            double bookScoreAvg = commentRepository.findByBook(findBookDB).stream()
-                    .mapToDouble(CommentDB::getScore).average().orElse(Double.NaN);
-
-            // 최종 출력값 정리
-            response = CommentOutput.builder()
-                    .searchByBookList(searchByBookList)
-                    .bookScoreAvg(bookScoreAvg)
-                    .build();
         } catch (Exception e) {
             log.error("[users?bookId/get] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
         // 3. 결과 return
-        return new Response<>(response, SUCCESS_GET_COMMENT_LIST);
+        return new Response<>(responseList, SUCCESS_GET_COMMENT_LIST);
     }
 }
