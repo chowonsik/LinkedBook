@@ -6,7 +6,6 @@ import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
 import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
-import com.linkedbook.dto.user.updateprofile.UpdateProfileOutput;
 import com.linkedbook.dto.user.signup.SignUpInput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
@@ -27,8 +26,8 @@ public class UserController {
     private final JwtService jwtService;
 
     /**
-     * 회원가입 API
-     * [POST] /users/signup
+     * 회원가입 API [POST] /users/signup
+     * 
      * @return Response<SignUpOutput>
      */
     // Body
@@ -40,8 +39,8 @@ public class UserController {
     }
 
     /**
-     * 로그인 API
-     * [POST] /users/signin
+     * 로그인 API [POST] /users/signin
+     * 
      * @return Response<SignInOutput>
      */
     // Body
@@ -53,8 +52,8 @@ public class UserController {
     }
 
     /**
-     * 유저 프로필 조회 API
-     * [GET] /users/:id/profile
+     * 유저 프로필 조회 API [GET] /users/:id/profile
+     * 
      * @return Response<SelectProfileOutput>
      */
     // Path-variable
@@ -66,14 +65,15 @@ public class UserController {
     }
 
     /**
-     * 유저 프로필 수정 API
-     * [PATCH]] /users/:id/profile
+     * 유저 프로필 수정 API [PATCH]] /users/:id/profile
+     * 
      * @return Response<SelectProfileOutput>
      */
     // Path-variable
     @ResponseBody
     @PatchMapping("/{id}/profile")
-    public Response<Object> updateProfile(@PathVariable("id") int userId, @RequestBody UpdateProfileInput updateProfileInput) {
+    public Response<Object> updateProfile(@PathVariable("id") int userId,
+            @RequestBody UpdateProfileInput updateProfileInput) {
         System.out.println("[PATCH] /user/{id}/profile");
         return userService.updateProfile(userId, updateProfileInput);
     }
@@ -83,9 +83,12 @@ public class UserController {
     public Response<JwtOutput> jwt() {
         System.out.println("[POST] /user/jwt");
         int userId = jwtService.getUserId();
-        if (userId == -1) return new Response<>(UNAUTHORIZED_TOKEN);
-        if (userId == -2) return new Response<>(BAD_ACCESS_TOKEN_VALUE);
-        if (userId == -3) return new Response<>(FORBIDDEN_USER_ID);
+        if (userId == -1)
+            return new Response<>(UNAUTHORIZED_TOKEN);
+        if (userId == -2)
+            return new Response<>(BAD_ACCESS_TOKEN_VALUE);
+        if (userId == -3)
+            return new Response<>(FORBIDDEN_USER_ID);
         JwtOutput jwtOutput = new JwtOutput(userId);
         return new Response<>(jwtOutput, SUCCESS_SIGN_IN);
     }

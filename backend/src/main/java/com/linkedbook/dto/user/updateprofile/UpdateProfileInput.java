@@ -11,5 +11,5 @@ public class UpdateProfileInput {
     private String nickname;
     private String info;
     private String image;
-    private List<UserAreaInput> area;
+    private int areaId;
 }
