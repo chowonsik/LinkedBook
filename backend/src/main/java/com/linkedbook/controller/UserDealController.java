@@ -1,6 +1,8 @@
 package com.linkedbook.controller;
 
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
+import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
+import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.UserDealService;
 
@@ -35,6 +37,19 @@ public class UserDealController {
     public Response<Object> createUserDeal(@RequestBody CreateUserDealInput createUserDealInput) {
         log.info("[POST] /user-deals");
         return userDealService.createUserDeal(createUserDealInput);
+    }
+
+    /**
+     * 유저 거래 내역 조회 API [GET] /user-deals
+     * 
+     * @return Response<Page<SelectUserDealOutput>>
+     */
+    // Params
+    @ResponseBody
+    @GetMapping
+    public Response<Page<SelectUserDealOutput>> selectUserDeal(SelectUserDealInput selectUserDealInput) {
+        log.info("[GET] /user-deals");
+        return userDealService.selectUserDeal(selectUserDealInput);
     }
 
 }

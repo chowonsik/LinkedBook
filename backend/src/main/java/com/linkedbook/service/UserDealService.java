@@ -1,10 +1,16 @@
 package com.linkedbook.service;
 
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
+import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
+import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
 import com.linkedbook.response.Response;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import com.linkedbook.response.Response;
 
 public interface UserDealService {
+
     Response<Object> createUserDeal(CreateUserDealInput createUserDeal);
+
+    Response<Page<SelectUserDealOutput>> selectUserDeal(SelectUserDealInput selectUserDealInput);
 }

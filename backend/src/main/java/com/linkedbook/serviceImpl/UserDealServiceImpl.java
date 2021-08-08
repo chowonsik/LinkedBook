@@ -5,6 +5,8 @@ import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dao.UserDealRepository;
 import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
+import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
+import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
 import com.linkedbook.entity.DealDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.entity.UserDealDB;
@@ -18,7 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,5 +82,26 @@ public class UserDealServiceImpl implements UserDealService {
         }
         // 결과 return
         return new Response<>(null, CREATED_USERDEAL);
+    }
+
+    @Override
+    public Response<Page<SelectUserDealOutput>> selectUserDeal(SelectUserDealInput selectUserDealInput) {
+        // 1. 값 형식 체크
+        if (selectUserDealInput == null)
+            return new Response<>(NO_VALUES);
+
+        Pageable pageable;
+
+        Page<SelectUserDealOutput> selectUserDealOutput;
+        try {
+            pageable = PageRequest.of(selectUserDealInput.getPage(), selectUserDealInput.getSize());
+            selectUserDealOutput = userDealRepository.findUserDealList(selectUserDealInput.getUserId(),
+                    selectUserDealInput.getType(), pageable);
+        } catch (Exception e) {
+            log.error("[GET]/deals database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 4. 결과 return
+        return new Response<>(selectUserDealOutput, SUCCESS_SELECT_USERDEAL_LIST);
     }
 }
