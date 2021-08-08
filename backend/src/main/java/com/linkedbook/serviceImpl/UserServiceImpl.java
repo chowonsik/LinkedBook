@@ -182,18 +182,18 @@ public class UserServiceImpl implements UserService {
                 userDB.setInfo(updateProfileInput.getInfo());
             if (StringUtils.isNotBlank(updateProfileInput.getImage()))
                 userDB.setImage(updateProfileInput.getImage());
-
-            UserAreaDB userAreaDB;
-            Optional<UserAreaDB> getUserAreaDB = userAreaRepository.findByUserIdAndOrders(myId, 1);
-            AreaDB areaDB = areaRepository.findById(updateProfileInput.getAreaId()).orElse(null);
-
-            // 해당 지역 번호가 없을 때
-            if (areaDB == null || !getUserAreaDB.isPresent()) {
-                return new Response<>(BAD_AREA_VALUE);
+            if (ValidationCheck.isValidId(updateProfileInput.getAreaId())) {
+                UserAreaDB userAreaDB;
+                Optional<UserAreaDB> getUserAreaDB = userAreaRepository.findByUserIdAndOrders(myId, 1);
+                AreaDB areaDB = areaRepository.findById(updateProfileInput.getAreaId()).orElse(null);
+                // 해당 지역 번호가 없을 때
+                if (areaDB == null || !getUserAreaDB.isPresent()) {
+                    return new Response<>(BAD_AREA_VALUE);
+                }
+                userAreaDB = getUserAreaDB.get();
+                userAreaDB.setArea(areaDB);
+                userAreaRepository.save(userAreaDB);
             }
-            userAreaDB = getUserAreaDB.get();
-            userAreaDB.setArea(areaDB);
-            userAreaRepository.save(userAreaDB);
             userRepository.save(userDB);
         } catch (Exception e) {
             return new Response<>(DATABASE_ERROR);
