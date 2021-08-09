@@ -11,6 +11,7 @@ export const Wrapper = styled.div`
   align-items: center;
   font-size: ${fonts.xxl};
   border-top: 1px solid ${colors.lightGray};
+  background-color: white;
   .new-post {
     color: ${colors.yellow};
     font-size: 26px;

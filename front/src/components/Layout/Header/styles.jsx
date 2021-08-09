@@ -13,6 +13,8 @@ export const Wrapper = styled.div`
   border: none;
   border-bottom: 1px solid ${colors.lightGray};
   padding: 8px 12px;
+  background-color: white;
+  z-index: 5;
 `;
 
 export const BackButton = styled.div`
