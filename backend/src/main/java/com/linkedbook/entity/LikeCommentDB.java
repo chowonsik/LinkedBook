@@ -1,6 +1,7 @@
 package com.linkedbook.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,6 +16,7 @@ import static javax.persistence.GenerationType.*;
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "like_comment")
 public class LikeCommentDB {

@@ -25,6 +25,7 @@ public enum  ResponseStatus {
     CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
     CREATED_BOOK(201, 220, "책 등록에 성공하였습니다."),
     CREATED_FOLLOW(201, 202, "새로운 팔로우 관계 등록에 성공하였습니다."),
+    CREATED_LIKE_COMMENT(201, 208, "관심 한줄평 등록에 성공하였습니다."),
     CREATED_COMMENT(201, 209, "한줄평 등록에 성공하였습니다."),
     CREATED_REPORT(201, 210, "신고 등록에 성공하였습니다."),
 
