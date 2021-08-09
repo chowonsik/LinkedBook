@@ -3,6 +3,7 @@ package com.linkedbook.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -17,6 +18,7 @@ import static javax.persistence.GenerationType.*;
 @DynamicInsert
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "deal")
 public class DealDB {
     @Id
@@ -57,8 +59,4 @@ public class DealDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-
-    public DealDB(int id) {
-        this.id = id;
-    }
 }

@@ -1,6 +1,5 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.user.signup.SignUpInput;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
-import java.awt.geom.Area;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +47,9 @@ public class UserDB {
     @Column(name = "oauth", length = 45)
     private String oauth;
 
+    @Column(name = "oauth_id", length = 255)
+    private String oauthId;
+
     @Column(name = "status", nullable = false, length = 45)
     private String status;
 
@@ -59,8 +60,4 @@ public class UserDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-    
-    public UserDB(int id) {
-        this.id = id;
-    }
 }
