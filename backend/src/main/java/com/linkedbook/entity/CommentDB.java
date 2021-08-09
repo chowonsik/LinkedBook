@@ -34,7 +34,7 @@ public class CommentDB {
     private BookDB book;
 
     @Column(name = "score", nullable = false)
-    private int score;
+    private double score;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;

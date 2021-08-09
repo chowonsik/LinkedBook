@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
                 return new Response<>(BAD_AREA_VALUE);
             }
 
-            userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).status("ACTIVATE").build();
+            userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).build();
             userAreaRepository.save(userAreaDB);
         } catch (Exception e) {
             return new Response<>(DATABASE_ERROR);
