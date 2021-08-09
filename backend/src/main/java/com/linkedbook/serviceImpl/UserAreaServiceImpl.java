@@ -11,6 +11,7 @@ import com.linkedbook.dao.AreaRepository;
 import com.linkedbook.dao.UserAreaRepository;
 import com.linkedbook.dto.userArea.createUserArea.CreateUserArea;
 import com.linkedbook.dto.userArea.createUserArea.CreateUserAreaInput;
+import com.linkedbook.dto.userArea.selectUserArea.SelectUserAreaOutput;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,18 @@ public class UserAreaServiceImpl implements UserAreaService {
         }
 
         return new Response<>(null, CREATED_USERAREA);
+    }
+
+    @Override
+    public Response<List<SelectUserAreaOutput>> selectUserArea() {
+        List<SelectUserAreaOutput> selectUserAreaOutput;
+        try {
+            selectUserAreaOutput = userAreaRepository.findByUserId(jwtService.getUserId());
+        } catch (Exception e) {
+            return new Response<>(DATABASE_ERROR);
+        }
+
+        return new Response<>(selectUserAreaOutput, SUCCESS_SELECT_USERAREA);
     }
 
 }

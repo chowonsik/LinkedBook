@@ -1,6 +1,9 @@
 package com.linkedbook.controller;
 
+import java.util.List;
+
 import com.linkedbook.dto.userArea.createUserArea.CreateUserAreaInput;
+import com.linkedbook.dto.userArea.selectUserArea.SelectUserAreaOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.UserAreaService;
 
@@ -29,4 +32,16 @@ public class UserAreaController {
         return userAreaService.createUserArea(createUserAreaInput);
     }
 
+    /**
+     * 유저 거래 지역 조회 API [GET]] /user-areas
+     * 
+     * @return Response<List<SelectUserAreaOutput>>
+     */
+    // Body
+    @ResponseBody
+    @GetMapping
+    public Response<List<SelectUserAreaOutput>> selectUserArea() {
+        log.info("[GET] /user-areas");
+        return userAreaService.selectUserArea();
+    }
 }
