@@ -59,14 +59,16 @@ export default function CreateDeal() {
     }`;
     return fileName;
   }
+
   // s3 서버에 이미지 업로드 하고 {url, order} 리스트 반환
-  function getImages() {
+  async function getImages() {
     if (postImg.length === 0) return new Array(0);
     const images = [];
-    postImg.forEach((image, i) => {
+    for (let i = 0; i < postImg.length; i++) {
+      const image = postImg[i];
       const file = image.files[0];
       const newFileName = getFileName(file, i);
-      ReactS3Client.uploadFile(file, newFileName)
+      await ReactS3Client.uploadFile(file, newFileName)
         .then((data) => {
           images.push({
             imageUrl: data.location,
@@ -74,14 +76,14 @@ export default function CreateDeal() {
           });
         })
         .catch((err) => console.error(err));
-    });
+    }
     return images;
   }
   // 상품 등록
   async function createDeal() {
     const valid = validCheck();
     if (!valid) return;
-    const images = getImages();
+    const images = await getImages();
     const data = {
       bookId: bookInfo.isbn.split(" ")[1],
       title: dealTitle.value,
@@ -90,8 +92,8 @@ export default function CreateDeal() {
       content: dealContent.value,
       images: images,
     };
+
     const result = await request("POST", "/deals", data);
-    console.log(result);
   }
   // 책 검색 결과 리스트 보이기
   function showList() {
