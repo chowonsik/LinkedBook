@@ -9,11 +9,10 @@ export const ImageContainer = styled.div`
   height: 100%;
   display: flex;
   transition-property: transform;
-  transition-duration: 0.5s;
+  transition-duration: 0.4s;
   transform: translateX(${(props) => `${parseInt(props.index) * -100}%`});
 
   img {
-    height: 100%;
     width: 100%;
     object-fit: cover;
   }
@@ -26,6 +25,7 @@ export const ImageWrapper = styled.div`
   align-items: center;
   overflow: hidden;
   position: relative;
+  background-color: rgba(0, 0, 0, 0.1);
 
   .hide {
     display: none;

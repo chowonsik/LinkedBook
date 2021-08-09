@@ -4,15 +4,15 @@ import RoundButton from "../../../common/Buttons/RoundButton";
 
 import { ButtonWrapper, ImageWrapper, TextWrapper, Wrapper } from "./style";
 
-export default function RecommendUserListItem() {
+export default function RecommendUserListItem({ url, nickname, book }) {
   return (
     <Wrapper>
       <ImageWrapper>
-        <img src="https://placeimg.com/100/100/any" alt="profile" />
+        <img src={url} alt="profile" />
       </ImageWrapper>
       <TextWrapper>
-        <div className="nickname">웅파고</div>
-        <div className="count-book">등록한 책 : 22</div>
+        <div className="nickname">{nickname}</div>
+        <div className="count-book">등록한 책 : {book}</div>
       </TextWrapper>
       <ButtonWrapper>
         <RoundButton
