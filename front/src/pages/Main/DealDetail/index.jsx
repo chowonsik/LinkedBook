@@ -3,6 +3,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CircleFill,
+  Heart,
   HeartFill,
   InfoCircle,
 } from "react-bootstrap-icons";
@@ -21,45 +22,42 @@ import {
   UserInfo,
   Wrapper,
 } from "./style";
+import { useParams } from "react-router-dom";
+import { requestGet } from "../../../api";
 export default function DealDetail() {
-  const [book, setBook] = useState({});
-  const [deal, setDeal] = useState({ images: [] });
-  const [user, setUser] = useState({});
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const { dealId } = useParams();
+  const [dealData, setDealData] = useState({
+    dealImages: [],
+  });
 
   function goLeft() {
     if (selectedIndex === 0) return;
     setSelectedIndex(selectedIndex - 1);
   }
   function goRight() {
-    if (selectedIndex === deal.images.length - 1) return;
+    if (selectedIndex === dealData.dealImages.length - 1) return;
     setSelectedIndex(selectedIndex + 1);
   }
 
+  async function fetchData() {
+    const response = await requestGet(`/deals/${dealId}`);
+    setDealData(response.result);
+    console.log(response.result);
+  }
+
+  function getLoginUser() {
+    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
+    return loginUser;
+  }
+
+  function priceToString(price) {
+    return price ? price.toLocaleString() : 0;
+  }
+
   useEffect(() => {
-    setBook({
-      title: "습관의 힘",
-      author: "찰스 두히그",
-      publisher: "갤리온",
-      price: "14,400원",
-    });
-    setDeal({
-      title: "책 팔아요",
-      price: "2,000원",
-      quality: "중",
-      images: [
-        "https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory2&fname=http%3A%2F%2Fcfile1.uf.tistory.com%2Fimage%2F996DE5445B734C3205AE78",
-        "https://placeimg.com/1000/500/tech",
-        "https://placeimg.com/900/500/animals",
-        "https://placeimg.com/800/500/architecture",
-      ],
-    });
-    setUser({
-      nickname: "변대웅",
-      dong: "덕명동",
-      mannerScore: 4.5,
-      image: "https://placeimg.com/100/100/people",
-    });
+    fetchData();
+    getLoginUser();
   }, []);
 
   return (
@@ -68,13 +66,20 @@ export default function DealDetail() {
       <Wrapper>
         <ImageWrapper>
           <ImageContainer index={selectedIndex}>
-            {deal.images.map((image) => (
-              <img src={image} alt="책 이미지" />
+            {dealData.dealImages.map((image, i) => (
+              <img
+                src={image.imageurl}
+                alt="책 이미지"
+                key={i}
+                onError={(e) => (e.target.style.display = "none")}
+              />
             ))}
           </ImageContainer>
           <div
             className={`left-icon ${
-              deal.images.length === 0 || selectedIndex === 0 ? "hide" : ""
+              dealData.dealImages.length === 0 || selectedIndex === 0
+                ? "hide"
+                : ""
             }`}
             onClick={goLeft}
           >
@@ -82,8 +87,8 @@ export default function DealDetail() {
           </div>
           <div
             className={`right-icon ${
-              deal.images.length === 0 ||
-              selectedIndex === deal.images.length - 1
+              dealData.dealImages.length === 0 ||
+              selectedIndex === dealData.dealImages.length - 1
                 ? "hide"
                 : ""
             }`}
@@ -95,13 +100,13 @@ export default function DealDetail() {
             <InfoCircle />
           </div>
           <div className="circles">
-            {deal.images.map((image, i) =>
+            {dealData.dealImages.map((image, i) =>
               i === selectedIndex ? (
-                <div className="circle selected">
+                <div className="circle selected" key={i}>
                   <CircleFill />
                 </div>
               ) : (
-                <div className="circle">
+                <div className="circle" key={i}>
                   <CircleFill />
                 </div>
               )
@@ -110,47 +115,80 @@ export default function DealDetail() {
         </ImageWrapper>
         <UserInfo>
           <div className="image-container">
-            <img src={user.image} alt="유저 프로필 이미지" />
+            <img
+              src={dealData.userImage}
+              alt=""
+              onError={(e) => {
+                e.target.src = "https://placeimg.com/100/100/people";
+              }}
+            />
           </div>
           <div className="text-container">
-            <span className="nickname">{user.nickname}</span>
-            <span className="dong">{user.dong}</span>
+            <span className="nickname">{dealData.userNickname}</span>
+            <span className="dong">{dealData.userDong}</span>
           </div>
           <div className="score-container">
-            <MannerScore score={user.mannerScore} />
+            <MannerScore score={dealData.userMannerScore} />
           </div>
         </UserInfo>
         <Section>
           <BookInfo>
-            <div className="deal-title">{deal.title}</div>
-            <div className="deal-price">{deal.price}</div>
-            <div className="book-info">
-              <span className="book-title">{book.title}</span>
-              <span className="deal-quality">{deal.quality}</span>
+            <div className="deal-title">{dealData.dealTitle}</div>
+            <div className="deal-price">
+              {priceToString(dealData.dealPrice)}원
             </div>
-            <div className="book-author">저자 : {book.author}</div>
-            <div className="book-publisher">출판사 : {book.publisher}</div>
-            <div className="book-price">정가 : {book.price}</div>
+            <div className="book-info">
+              <span className="book-title">{dealData.bookTitle}</span>
+              <span className="deal-quality">{dealData.dealQuality}</span>
+            </div>
+            <div className="book-author">저자 : {dealData.bookAuthor}</div>
+            <div className="book-publisher">
+              출판사 : {dealData.bookPublisher}
+            </div>
+            <div className="book-price">
+              정가 : {priceToString(dealData.bookPrice)}원
+            </div>
           </BookInfo>
           <DealState>
-            <div className="complete-button">거래 완료</div>
-            <div className="review-button">거래 후기 남기기</div>
-            <div className="review-button">후기 작성 완료</div>
+            {dealData.userId === getLoginUser().id ? (
+              <div className="complete-button">거래 완료</div>
+            ) : (
+              ""
+            )}
+            {/* <div className="review-button">거래 후기 남기기</div> */}
+            {/* <div className="review-button">후기 작성 완료</div> */}
           </DealState>
         </Section>
       </Wrapper>
       <Footer>
         <div className="icon-container">
-          <HeartFill color={colors.yellow} size="24px" />
+          {dealData.isLikeDeal === 1 ? (
+            <HeartFill color={colors.yellow} size="24px" />
+          ) : (
+            <Heart color={colors.yellow} size="24px" />
+          )}
         </div>
         <div className="button-container">
-          <RoundButton value="수정하기" width="40%" fontSize={fonts.xl} />
-          <RoundButton
-            value="삭제하기"
-            width="40%"
-            fontSize={fonts.xl}
-            backgroundColor={colors.red}
-          />
+          {dealData.userId === getLoginUser().id ? (
+            <RoundButton value="수정하기" width="40%" fontSize={fonts.xl} />
+          ) : (
+            <RoundButton value="거래하기" width="40%" fontSize={fonts.xl} />
+          )}
+          {dealData.userId === getLoginUser().id ? (
+            <RoundButton
+              value="삭제하기"
+              width="40%"
+              fontSize={fonts.xl}
+              backgroundColor={colors.red}
+            />
+          ) : (
+            <RoundButton
+              value="신고하기"
+              width="40%"
+              fontSize={fonts.xl}
+              backgroundColor={colors.red}
+            />
+          )}
         </div>
       </Footer>
     </>

@@ -8,12 +8,18 @@ export const Wrapper = styled.div`
     width: 100%;
     height: 90px;
     margin: 20px 0;
-    .book-image {
+    .image-container {
       width: 90px;
       height: 90px;
-      object-fit: cover;
-      margin-right: 20px;
       border-radius: 6px;
+      margin-right: 20px;
+      background-color: ${colors.lightGray};
+      .book-image {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 6px;
+      }
     }
     .content {
       text-align: left;

@@ -10,12 +10,15 @@ import FollowerList from "./pages/Follow/FollowerList";
 import FollowingList from "./pages/Follow/FollowingList";
 import LocationSetting from "./pages/Main/LocationSetting";
 import DealDetail from "./pages/Main/DealDetail";
+import DealCreate from "./pages/deal/CreateDeal";
+
 function App() {
   return (
     <div className="App">
       <Router>
         <Route path="/" exact={true} component={Main} />
         <Route path="/location" exact={true} component={LocationSetting} />
+        <Route path="/deal" exact={true} component={DealCreate} />
         <Route path="/deal/:dealId" exact={true} component={DealDetail} />
         <Route path="/signin" exact={true} component={SignIn} />
         <Route path="/signup" exact={true} component={SignUp} />
