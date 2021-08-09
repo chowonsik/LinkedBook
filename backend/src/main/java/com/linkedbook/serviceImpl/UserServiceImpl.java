@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Response<Object> updateProfile(int userid, UpdateProfileInput updateProfileInput) {
+    public Response<Object> updateProfile(UpdateProfileInput updateProfileInput) {
         UserDB userDB;
         try {
             // 유저 id 가져오기

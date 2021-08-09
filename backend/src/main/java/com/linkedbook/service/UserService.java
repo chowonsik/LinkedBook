@@ -15,5 +15,5 @@ public interface UserService {
 
     Response<SelectProfileOutput> selectProfile(int id);
 
-    Response<Object> updateProfile(int id, UpdateProfileInput updateProfileInput);
+    Response<Object> updateProfile(UpdateProfileInput updateProfileInput);
 }

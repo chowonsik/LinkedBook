@@ -71,11 +71,10 @@ public class UserController {
      */
     // Path-variable
     @ResponseBody
-    @PatchMapping("/{id}/profile")
-    public Response<Object> updateProfile(@PathVariable("id") int userId,
-            @RequestBody UpdateProfileInput updateProfileInput) {
+    @PatchMapping()
+    public Response<Object> updateProfile(@RequestBody UpdateProfileInput updateProfileInput) {
         System.out.println("[PATCH] /user/{id}/profile");
-        return userService.updateProfile(userId, updateProfileInput);
+        return userService.updateProfile(updateProfileInput);
     }
 
     @ResponseBody
