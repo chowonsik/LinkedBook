@@ -50,8 +50,4 @@ public class CommentDB {
     // 한줄평 관심등록 정보
     @OneToMany(mappedBy = "comment")
     private List<LikeCommentDB> likeComments = new ArrayList<>();
-
-    public CommentDB(int id) {
-        this.id = id;
-    }
 }

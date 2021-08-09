@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -55,8 +54,4 @@ public class BookDB {
     // 책에 등록된 한줄평 정보
     @OneToMany(mappedBy = "book")
     private List<CommentDB> comments = new ArrayList<>();
-
-    public BookDB(String id) {
-        this.id = id;
-    }
 }
