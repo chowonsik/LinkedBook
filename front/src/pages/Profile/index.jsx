@@ -82,6 +82,10 @@ const Profile = ({ match }) => {
     setActiveTab(0);
   }, [match.params.id]);
 
+  useEffect(() => {
+    setUserObj(userObjStore);
+  }, [userObjStore]);
+
   const getUserObj = async (userId) => {
     const response = await request("get", `/users/${userId}/profile`, {
       headers: {

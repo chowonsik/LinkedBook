@@ -7,8 +7,7 @@ import Input from "../../../components/common/Input";
 import Textarea from "../../../components/common/Input/Textarea";
 import Header from "../../../components/Layout/Header";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
-import { request } from "../../../api";
-import { updateUserProfile } from "../../../actions/Users";
+import { getUserProfile, updateUserProfile } from "../../../actions/Users";
 
 const ProfileUpdate = () => {
   let history = useHistory();
@@ -20,10 +19,19 @@ const ProfileUpdate = () => {
   const description = useInput(userObj.info, descValidator);
   const [userImg, setUserImg] = useState(userObj.image);
   const [changedData, setChangedData] = useState({});
-
   useEffect(() => {
     setChangedData({ ...changedData, image: userImg });
   }, [userImg]);
+  useEffect(() => {
+    setChangedData({ ...changedData, nickname: nickname.value });
+  }, [nickname.value]);
+  useEffect(() => {
+    setChangedData({ ...changedData, info: description.value });
+  }, [description.value]);
+
+  useEffect(() => {
+    setChangedData({ ...changedData, info: description.value });
+  }, [description.value]);
 
   function nicknameValidator(value) {
     if (value.length < 2 || value.length > 10) {
@@ -40,7 +48,7 @@ const ProfileUpdate = () => {
     if (value.length > 80) {
       return {
         isValid: false,
-        errorMessage: "100자 이내로 입력해주세요",
+        errorMessage: "80자 이내로 입력해주세요",
       };
     } else {
       return { isValid: true, errorMessage: "" };
@@ -67,16 +75,14 @@ const ProfileUpdate = () => {
   function handleLocationClick() {
     history.push("/search/location");
   }
-
   function submitUserData() {
-    setChangedData({
-      ...changedData,
-      nickname: nickname.value,
-      description: description.value,
-    });
-    // 작동아직은 아님.
-    dispatch(updateUserProfile(userObj.userId, changedData));
+    dispatch(updateUserProfile(changedData));
+    dispatch(getUserProfile(2));
+    // current user id를 2대신 넣기
+    history.push("/profile/2");
+    history.go(0);
   }
+
   return (
     <>
       <Header isBack title="프로필 수정" />
@@ -121,6 +127,7 @@ const ProfileUpdate = () => {
           id="location"
           value={userObj.dong}
           errorMessage
+          readOnly
         />
 
         <Link to="/profile/update/password">

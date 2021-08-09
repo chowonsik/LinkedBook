@@ -12,6 +12,7 @@ function Input({
   height,
   fontSize,
   id,
+  readOnly,
 }) {
   return (
     <>
@@ -26,6 +27,7 @@ function Input({
           fontSize={fontSize}
           id={id}
           onClick={onClick}
+          readOnly={readOnly}
         />
         {errorMessage !== "no" && (
           <ErrorMessage>{isValid ? "" : errorMessage}</ErrorMessage>

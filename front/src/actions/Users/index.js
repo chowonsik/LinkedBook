@@ -18,15 +18,14 @@ export const getUserProfile = (userId) => {
   };
 };
 
-export const updateUserProfile = (userId, data) => {
+export const updateUserProfile = (data) => {
   return async (dispatch) => {
-    const response = await request("patch", `/users/${userId}/profile`, {
-      headers: {
-        "X-ACCESS-TOKEN": TOKEN,
-      },
-      data,
+    console.log(data);
+    const response = await request("patch", `/users`, data, {
+      "X-ACCESS-TOKEN": TOKEN,
     });
-    dispatch(setUserProfile(response.result));
+    console.log(response);
+    dispatch(getUserProfile(3));
   };
 };
 
