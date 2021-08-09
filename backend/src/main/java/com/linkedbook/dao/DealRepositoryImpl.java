@@ -55,14 +55,14 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
 
         System.out.println(selectDealInput.getAreaId());
         List<SelectDealOutput> queryResult = queryFactory
-                .select(new QSelectDealOutput(dealDB.id, dealDB.title, dealImageDB.image.imageurl, dealDB.price,
-                        dealDB.quality, dealDB.created_at,
+                .select(new QSelectDealOutput(dealDB.id, dealDB.title, imageDB.imageurl.coalesce("").as("imageurl"),
+                        dealDB.price, dealDB.quality, dealDB.created_at,
                         JPAExpressions.select(likeDealDB.count().castToNum(Integer.class)).from(likeDealDB)
                                 .where(likeDealDB.user.id.eq(userId).and(likeDealDB.deal.id.eq(dealDB.id))),
                         bookDB.title, bookDB.author, bookDB.publisher))
-                .from(dealDB).join(userAreaDB).on(dealDB.user.id.eq(userAreaDB.user.id).and(userAreaDB.orders.eq(1)))
-                .join(bookDB).on(dealDB.book.id.eq(bookDB.id)).leftJoin(dealImageDB)
-                .on(dealDB.id.eq(dealImageDB.deal.id).and(dealImageDB.orders.eq(1)))
+                .from(dealDB).join(dealDB.user, userDB).join(userDB.userAreaDBs, userAreaDB).on(userAreaDB.orders.eq(1))
+                .join(dealDB.book, bookDB).leftJoin(dealDB.images, dealImageDB).on(dealImageDB.orders.eq(1))
+                .leftJoin(dealImageDB.image, imageDB)
                 .where(eqSearch(selectDealInput.getSearch()), eqUserId(selectDealInput.getUserId()),
                         eqBookId(selectDealInput.getBookId()), eqAreaId(selectDealInput.getAreaId()),
                         dealDB.status.eq("ACTIVATE"), dealDB.user.status.eq("ACTIVATE"))
