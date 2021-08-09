@@ -28,10 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-<<<<<<< HEAD
 
-=======
->>>>>>> 099f86d46654ebd5c504f55c157a76cb71d391e6
 
 import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
@@ -98,12 +95,8 @@ public class UserServiceImpl implements UserService {
         if (!ValidationCheck.isValid(signUpInput.getNickname()))     return new Response<>(BAD_NAME_VALUE);
 
         // 2. 유저 생성
-<<<<<<< HEAD
         UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).status("ACTIVATE").build();
         UserAreaDB userAreaDB;
-=======
-        UserDB userDB = UserDB.builder().email(signUpInput.getPassword()).password(signUpInput.getPassword()).nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage()).oauth(signUpInput.getOauth()).status("ACTIVATE").build();
->>>>>>> 099f86d46654ebd5c504f55c157a76cb71d391e6
         try {
             String email = signUpInput.getEmail();
             String nickname = signUpInput.getNickname();
