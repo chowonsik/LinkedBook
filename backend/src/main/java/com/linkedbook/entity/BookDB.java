@@ -8,7 +8,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @DynamicInsert
@@ -46,14 +48,13 @@ public class BookDB {
     @Column(name = "status", nullable = false, length = 45)
     private String status;
 
-    // 관심등록된 수 카운팅
-    @Basic(fetch=FetchType.LAZY)
-    @Formula("(select count(1) " +
-            "from like_book as lb " +
-            "inner join user as u on lb.user_id = u.id " +
-            "where u.status = 'ACTIVATE' " +
-            "and lb.book_id = id and lb.status = 'ACTIVATE')")
-    private int likeCnt;
+    // 책 관심등록 정보
+    @OneToMany(mappedBy = "book")
+    private List<LikeBookDB> likeBooks = new ArrayList<>();
+
+    // 책에 등록된 한줄평 정보
+    @OneToMany(mappedBy = "book")
+    private List<CommentDB> comments = new ArrayList<>();
 
     public BookDB(String id) {
         this.id = id;

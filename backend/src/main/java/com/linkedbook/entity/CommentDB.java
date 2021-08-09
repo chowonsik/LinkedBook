@@ -7,7 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
@@ -37,9 +39,6 @@ public class CommentDB {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "status", nullable = false, length = 45)
-    private String status;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date created_at;
@@ -47,4 +46,12 @@ public class CommentDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
+
+    // 한줄평 관심등록 정보
+    @OneToMany(mappedBy = "comment")
+    private List<LikeCommentDB> likeComments = new ArrayList<>();
+
+    public CommentDB(int id) {
+        this.id = id;
+    }
 }

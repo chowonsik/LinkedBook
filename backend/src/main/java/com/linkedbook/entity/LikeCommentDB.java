@@ -31,9 +31,6 @@ public class LikeCommentDB {
     @JoinColumn(name = "comment_id", nullable = false)
     private CommentDB comment;
 
-    @Column(name = "status", nullable = false, length = 45)
-    private String status;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date created_at;
