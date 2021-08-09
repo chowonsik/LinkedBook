@@ -4,6 +4,7 @@ import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
 import com.linkedbook.dto.userDeal.updateUserDeal.UpdateUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.UserDealService;
 
@@ -48,7 +49,7 @@ public class UserDealController {
     // Params
     @ResponseBody
     @GetMapping
-    public Response<Page<SelectUserDealOutput>> selectUserDeal(SelectUserDealInput selectUserDealInput) {
+    public PageResponse<SelectUserDealOutput> selectUserDeal(SelectUserDealInput selectUserDealInput) {
         log.info("[GET] /user-deals");
         return userDealService.selectUserDeal(selectUserDealInput);
     }

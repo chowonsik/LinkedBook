@@ -11,6 +11,7 @@ import com.linkedbook.dto.userDeal.updateUserDeal.UpdateUserDealInput;
 import com.linkedbook.entity.DealDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.entity.UserDealDB;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.response.ResponseStatus;
 import com.linkedbook.service.UserDealService;
@@ -88,24 +89,25 @@ public class UserDealServiceImpl implements UserDealService {
     }
 
     @Override
-    public Response<Page<SelectUserDealOutput>> selectUserDeal(SelectUserDealInput selectUserDealInput) {
+    public PageResponse<SelectUserDealOutput> selectUserDeal(SelectUserDealInput selectUserDealInput) {
         // 1. 값 형식 체크
         if (selectUserDealInput == null)
-            return new Response<>(NO_VALUES);
+            return new PageResponse<>(NO_VALUES);
 
         Pageable pageable;
 
         Page<SelectUserDealOutput> selectUserDealOutput;
         try {
-            pageable = PageRequest.of(selectUserDealInput.getPage(), selectUserDealInput.getSize());
+            pageable = PageRequest.of(selectUserDealInput.getPage(), selectUserDealInput.getSize(), Sort.Direction.DESC,
+                    "created_at");
             selectUserDealOutput = userDealRepository.findUserDealList(selectUserDealInput.getUserId(),
                     selectUserDealInput.getType(), pageable);
         } catch (Exception e) {
             log.error("[GET]/deals database error", e);
-            return new Response<>(DATABASE_ERROR);
+            return new PageResponse<>(DATABASE_ERROR);
         }
         // 4. 결과 return
-        return new Response<>(selectUserDealOutput, SUCCESS_SELECT_USERDEAL_LIST);
+        return new PageResponse<>(selectUserDealOutput, SUCCESS_SELECT_USERDEAL_LIST);
     }
 
     @Override
