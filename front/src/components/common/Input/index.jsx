@@ -5,11 +5,13 @@ function Input({
   placeholder,
   value,
   onChange,
+  onClick,
   isValid,
   errorMessage = "no",
   width,
   height,
   fontSize,
+  id,
 }) {
   return (
     <>
@@ -22,6 +24,8 @@ function Input({
           width={width}
           height={height}
           fontSize={fontSize}
+          id={id}
+          onClick={onClick}
         />
         {errorMessage !== "no" && (
           <ErrorMessage>{isValid ? "" : errorMessage}</ErrorMessage>

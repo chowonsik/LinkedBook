@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { HashRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 import Main from "./pages/Main";
 import LocationSearch from "./pages/user/LocationSearch";
@@ -32,9 +32,15 @@ function App() {
           component={LocationSearch}
         />
         <Route path="/recommend" exact={true} component={RecommendUser} />
-        <Route path="/profile/:id" exact={true} component={Profile} />
+        <Switch>
+          <Route
+            path="/profile/update"
+            exact={true}
+            component={ProfileUpdate}
+          />
+          <Route path="/profile/:id" exact={true} component={Profile} />
+        </Switch>
         <Route path="/profile/history" exact={true} component={UserHistory} />
-        <Route path="/profile/update" exact={true} component={ProfileUpdate} />
         <Route
           path="/profile/update/password"
           exact={true}

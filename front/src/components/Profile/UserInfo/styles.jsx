@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   & {
     width: 100%;
     height: auto;
-    margin-bottom: 4px;
+    margin-bottom: 12px;
     .profile-content {
       display: flex;
       align-items: center;

@@ -1,21 +1,29 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
 import useInput from "../../../hooks/useInput";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Wrapper } from "./styles";
+import Input from "../../../components/common/Input";
+import Textarea from "../../../components/common/Input/Textarea";
+import Header from "../../../components/Layout/Header";
+import FooterButton from "../../../components/common/Buttons/FooterButton";
+import { request } from "../../../api";
+import { updateUserProfile } from "../../../actions/Users";
 
 const ProfileUpdate = () => {
+  let history = useHistory();
   const userObj = useSelector((state) => state.userReducer.userProfile);
-  // props 전달하는지 새로운 정보 요청하는지?
-  // const userObj = {
-  //   nickname: "나무늘보",
-  //   email: "deraholt@naver.com",
-  //   info: "나무늘보 서점에 오신걸 환영",
-  //   location: "덕명동",
-  // };
-  // 유저이메일 값은 안받아서 조회 못하고 있음. 근데 보이게는 해야하지 않나.?
+  const dispatch = useDispatch();
 
+  // 유저이메일 값은 안받아서 조회 못하고 있음. 근데 보이게는 해야하지 않나.?
   const nickname = useInput(userObj.nickname, nicknameValidator);
-  const info = useInput(userObj.info, infoValidator);
+  const description = useInput(userObj.info, descValidator);
+  const [userImg, setUserImg] = useState(userObj.image);
+  const [changedData, setChangedData] = useState({});
+
+  useEffect(() => {
+    setChangedData({ ...changedData, image: userImg });
+  }, [userImg]);
 
   function nicknameValidator(value) {
     if (value.length < 2 || value.length > 10) {
@@ -28,58 +36,100 @@ const ProfileUpdate = () => {
     }
   }
 
-  function infoValidator(value) {
+  function descValidator(value) {
     if (value.length > 80) {
       return {
         isValid: false,
-        errorMessage: "80자 이내로 입력해주세요",
+        errorMessage: "100자 이내로 입력해주세요",
       };
     } else {
       return { isValid: true, errorMessage: "" };
     }
   }
 
+  function onFileChange(event) {
+    const {
+      target: { files },
+    } = event;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onload = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setUserImg(result);
+    };
+    if (theFile) {
+      reader.readAsDataURL(theFile);
+    }
+  }
+
+  function handleLocationClick() {
+    history.push("/search/location");
+  }
+
+  function submitUserData() {
+    setChangedData({
+      ...changedData,
+      nickname: nickname.value,
+      description: description.value,
+    });
+    // 작동아직은 아님.
+    dispatch(updateUserProfile(userObj.userId, changedData));
+  }
   return (
     <>
-      <img src={userObj.image} alt="profile" />
-
-      <div className="label-with-input">
-        <label htmlFor="nickname">닉네임(서점명)</label>
-        <input
+      <Header isBack title="프로필 수정" />
+      <Wrapper>
+        <div className="user-image">
+          <img src={userImg} alt="profile" />
+          <label htmlFor="upload">프로필 사진 바꾸기 </label>
+          <input
+            id="upload"
+            type="file"
+            accept="image/*"
+            onChange={onFileChange}
+          />
+        </div>
+        <label htmlFor="nickname">닉네임</label>
+        <Input
+          id="nickname"
           type="text"
-          id="email"
-          onChange={nickname.onChange}
+          placeholder="닉네임"
           value={nickname.value}
-        ></input>
-        <div className="error-message">
-          {nickname.isValid ? "" : nickname.errorMessage}
-        </div>
-      </div>
-
-      <div className="label-with-input">
-        <label htmlFor="info">프로필 설명</label>
-        <textarea
-          id="info"
-          onChange={info.onChange}
-          value={info.value}
+          onChange={nickname.onChange}
+          isValid={nickname.isValid}
+          errorMessage={nickname.errorMessage}
+        />
+        <label htmlFor="desc">프로필 설명</label>
+        <Textarea
+          id="desc"
+          type="text"
+          onChange={description.onChange}
+          value={description.value}
+          isValid={description.isValid}
+          errorMessage={description.errorMessage}
           rows="3"
-          cols="30"
-        ></textarea>
-        <div className="error-message">
-          {info.isValid ? "" : info.errorMessage}
-        </div>
-      </div>
+          cols="10"
+        />
 
-      <div className="label-with-input">
-        <Link to="/profile/update/location">
-          <label>내 지역</label>
-          <input value={userObj.location}></input>
+        <label htmlFor="location">내 지역</label>
+        <Input
+          onClick={handleLocationClick}
+          className="location"
+          type="text"
+          id="location"
+          value={userObj.dong}
+          errorMessage
+        />
+
+        <Link to="/profile/update/password">
+          <button className="change-password">비밀번호 변경</button>
         </Link>
-      </div>
-      <Link to="/profile/update/password">
-        <button>비밀번호 변경</button>
-      </Link>
-      <button>회원 탈퇴</button>
+
+        <button className="delete-account">회원 탈퇴</button>
+      </Wrapper>
+      <FooterButton value="완료" onClick={submitUserData} />
     </>
   );
 };
