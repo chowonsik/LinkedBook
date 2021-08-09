@@ -19,6 +19,7 @@ import com.linkedbook.entity.DealImageDB;
 import com.linkedbook.entity.ImageDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.entity.BookDB;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.response.ResponseStatus;
 import com.linkedbook.service.DealService;
@@ -57,20 +58,20 @@ public class DealServiceImpl implements DealService {
     private final JwtService jwtService;
 
     @Override
-    public Response<Page<SelectDealOutput>> selectDealList(SelectDealInput selectDealInput, Pageable pageable) {
+    public PageResponse<SelectDealOutput> selectDealList(SelectDealInput selectDealInput, Pageable pageable) {
         // 1. 값 형식 체크
         if (selectDealInput == null)
-            return new Response<>(NO_VALUES);
+            return new PageResponse<>(NO_VALUES);
 
         Page<SelectDealOutput> selectDealOutput;
         try {
             selectDealOutput = dealRepository.findDynamicQueryDeal(selectDealInput, jwtService.getUserId(), pageable);
         } catch (Exception e) {
             log.error("[GET]/deals database error", e);
-            return new Response<>(DATABASE_ERROR);
+            return new PageResponse<>(DATABASE_ERROR);
         }
         // 4. 결과 return
-        return new Response<>(selectDealOutput, SUCCESS_SELECT_DEAL_LIST);
+        return new PageResponse<>(selectDealOutput, SUCCESS_SELECT_DEAL_LIST);
     }
 
     @Override

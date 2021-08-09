@@ -1,5 +1,6 @@
 package com.linkedbook.controller;
 
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.DealService;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
@@ -50,7 +51,7 @@ public class DealController {
     // Params
     @ResponseBody
     @GetMapping
-    public Response<Page<SelectDealOutput>> selectDealList(@RequestParam(required = false) String search,
+    public PageResponse<SelectDealOutput> selectDealList(@RequestParam(required = false) String search,
             @RequestParam(required = false) String filter, @RequestParam(required = false) Integer userId,
             @RequestParam(required = false) String bookId, @RequestParam(required = false) Integer areaId,
             @RequestParam int page, @RequestParam int size) {

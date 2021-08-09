@@ -53,7 +53,6 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
     public Page<SelectDealOutput> findDynamicQueryDeal(SelectDealInput selectDealInput, Integer userId,
             Pageable pageable) {
 
-        System.out.println(selectDealInput.getAreaId());
         List<SelectDealOutput> queryResult = queryFactory
                 .select(new QSelectDealOutput(dealDB.id, dealDB.title, imageDB.imageurl.coalesce("").as("imageurl"),
                         dealDB.price, dealDB.quality, dealDB.created_at,
