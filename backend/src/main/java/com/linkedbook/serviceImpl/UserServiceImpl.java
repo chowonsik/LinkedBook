@@ -26,7 +26,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.linkedbook.model.Role.EMPLOYEE;
@@ -115,7 +114,7 @@ public class UserServiceImpl implements UserService {
                 return new Response<>(BAD_AREA_VALUE);
             }
 
-            userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).status("ACTIVATE").build();
+            userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).build();
             userAreaRepository.save(userAreaDB);
         } catch (Exception e) {
             log.error("[users/signup/post] database error", e);

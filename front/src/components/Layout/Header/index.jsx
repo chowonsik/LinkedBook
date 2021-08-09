@@ -13,6 +13,7 @@ import {
   LogoAndTitle,
   IconsAndDone,
   DoneButton,
+  Block,
 } from "./styles";
 
 /*
@@ -35,7 +36,7 @@ function Header({
     history.goBack();
   }
   return (
-    <>
+    <Block>
       <Wrapper>
         <BackButton isBack={isBack}>
           <ArrowLeft className="back-btn" onClick={handleClickBack} />
@@ -62,7 +63,7 @@ function Header({
           <DoneButton className="done-btn">완료</DoneButton>
         </IconsAndDone>
       </Wrapper>
-    </>
+    </Block>
   );
 }
 

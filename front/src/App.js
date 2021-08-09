@@ -12,6 +12,7 @@ import FollowerList from "./pages/Follow/FollowerList";
 import FollowingList from "./pages/Follow/FollowingList";
 import Report from "./pages/Report";
 import SearchUser from "./pages/SearchUser";
+import ToastMessage from "./components/common/ToastMessage";
 function App() {
   return (
     <div className="App">
@@ -32,6 +33,7 @@ function App() {
         <Route path="/redbell/:dealId" exact={true} component={Report} />
         <Route path="/search/user" exact={true} component={SearchUser} />
       </Router>
+      <ToastMessage />
     </div>
   );
 }

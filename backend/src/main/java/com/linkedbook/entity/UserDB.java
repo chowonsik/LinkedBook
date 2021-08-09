@@ -48,6 +48,9 @@ public class UserDB {
     @Column(name = "oauth", length = 45)
     private String oauth;
 
+    @Column(name = "oauth_id", length = 255)
+    private String oauthId;
+
     @Column(name = "status", nullable = false, length = 45)
     private String status;
 
@@ -58,15 +61,4 @@ public class UserDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-
-    // 관심등록된 수 카운팅
-    @Basic(fetch=FetchType.LAZY)
-    @Formula("(select count(1) " +
-            "from deal as d " +
-            "where d.user_id = id)")
-    private int dealCnt;
-
-    public UserDB(int id) {
-        this.id = id;
-    }
 }
