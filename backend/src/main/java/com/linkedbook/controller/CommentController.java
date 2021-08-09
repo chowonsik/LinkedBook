@@ -77,7 +77,7 @@ public class CommentController {
      * [DELETE] /comments/{id}
      * @return Response<Object>
      */
-    // Body
+    // Path-Variable
     @ResponseBody
     @DeleteMapping("/{id}")
     public Response<Object> deleteComment(@PathVariable("id") int id) {

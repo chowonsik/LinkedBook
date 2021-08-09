@@ -27,4 +27,17 @@ public class LikeCommentController {
         log.info("[POST] /like-comments");
         return likeCommentService.createLikeComment(likeCommentInput);
     }
+
+    /**
+     * 관심 한줄평 삭제 API
+     * [DELETE] /like-comments/{id}
+     * @return Response<Object>
+     */
+    // Path-Variable
+    @ResponseBody
+    @DeleteMapping("/{id}")
+    public Response<Object> deleteLikeComment(@PathVariable("id") int id) {
+        log.info("[DELETE] /like-comments/" + id);
+        return likeCommentService.deleteLikeComment(id);
+    }
 }
