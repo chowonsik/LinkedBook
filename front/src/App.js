@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { getUserProfile } from "./actions/Users";
 import ProfileUpdate from "./pages/Profile/ProfileUpdate";
 import UserHistory from "./pages/Profile/UserHistory";
+import ChangePassword from "./pages/Profile/ChangePassword";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,11 @@ function App() {
         <Route path="/profile/:id" exact={true} component={Profile} />
         <Route path="/profile/history" exact={true} component={UserHistory} />
         <Route path="/profile/update" exact={true} component={ProfileUpdate} />
+        <Route
+          path="/profile/update/password"
+          exact={true}
+          component={ChangePassword}
+        />
       </Router>
     </div>
   );
