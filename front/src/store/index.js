@@ -7,11 +7,13 @@ import { bookReducer } from "../reducers/Books";
 import { userReducer } from "../reducers/Users";
 import { followReducer } from "../reducers/Follow";
 import { reportReducer } from "../reducers/Report";
+import { notificationReducer } from "../reducers/Notification";
 const rootReducer = combineReducers({
   bookReducer,
   userReducer,
   followReducer,
   reportReducer,
+  notificationReducer,
 });
 
 const persistConfig = {
