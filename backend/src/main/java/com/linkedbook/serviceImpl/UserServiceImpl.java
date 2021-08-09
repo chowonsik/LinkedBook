@@ -9,6 +9,7 @@ import com.linkedbook.dto.user.signup.SignUpInput;
 import com.linkedbook.entity.AreaDB;
 import com.linkedbook.entity.UserAreaDB;
 import com.linkedbook.entity.UserDB;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.UserService;
@@ -20,9 +21,7 @@ import com.linkedbook.dto.user.signup.SignUpOutput;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -153,48 +152,51 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Response<List<SelectUserOutput>> selectUser(SelectUserInput selectUserInput) {
+    public PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput) {
         // 1. 값 형식 체크
-        if(selectUserInput == null) return new Response<>(NO_VALUES);
+        if(selectUserInput == null) return new PageResponse<>(NO_VALUES);
         if(!ValidationCheck.isValidPage(selectUserInput.getPage())
-        || !ValidationCheck.isValidId(selectUserInput.getSize()))  return new Response<>(BAD_REQUEST);
+        || !ValidationCheck.isValidId(selectUserInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
         if(selectUserInput.getType().equals("SEARCH")) {
-            if(!ValidationCheck.isValid(selectUserInput.getNickname()))  return new Response<>(BAD_REQUEST);
+            if(!ValidationCheck.isValid(selectUserInput.getNickname()))  return new PageResponse<>(BAD_REQUEST);
         } else if(selectUserInput.getType().equals("STAR")) {
-            if(!ValidationCheck.isValidId(selectUserInput.getAreaId()))  return new Response<>(BAD_REQUEST);
+            if(!ValidationCheck.isValidId(selectUserInput.getAreaId()))  return new PageResponse<>(BAD_REQUEST);
         } else {
-            return new Response<>(BAD_SEARCH_TYPE_VALUE);
+            return new PageResponse<>(BAD_SEARCH_TYPE_VALUE);
         }
-
         // 2. 일치하는 유저 정보 가져오기
-        List<SelectUserOutput> responseList = new ArrayList<>();
+        Page<SelectUserOutput> responseList;
+        Pageable paging;
         try {
-            Pageable paging = PageRequest.of(selectUserInput.getPage(), selectUserInput.getSize(), Sort.Direction.DESC, "dealCnt");
-            List<UserDB> userDBList;
-            if(selectUserInput.getType().equals("SEARCH")) { // 유저 닉네임으로 검색
+            Page<UserDB> userDBList;
+            if(selectUserInput.getType().equals("SEARCH")) { // 유저 닉네임으로 검색 (닉네임 순으로 정렬)
                 String selectNickname = selectUserInput.getNickname();
+                paging = PageRequest.of(selectUserInput.getPage(), selectUserInput.getSize(), Sort.Direction.ASC, "nickname");
                 userDBList = userRepository.findByStatusAndNicknameContaining("ACTIVATE", selectNickname, paging);
             } else { // 유저 거래지역으로 검색 (책 판매량 많은 순으로 정렬)
                 int selectAreaId = selectUserInput.getAreaId();
                 int userId = jwtService.getUserId();
+                if(userId < 0) {
+                    log.error("[users/get] NOT FOUND LOGIN USER error");
+                    return new PageResponse<>(BAD_ID_VALUE);
+                }
+                paging = PageRequest.of(selectUserInput.getPage(), selectUserInput.getSize(), Sort.Direction.DESC, "deals.size" , "id");
                 userDBList = userRepository.findAreaStar(userId, selectAreaId, paging);
             }
             // 최종 출력값 정리
-            for (UserDB user : userDBList) {
-                responseList.add(
-                        SelectUserOutput.builder()
-                                .userId(user.getId())
-                                .nickname(user.getNickname())
-                                .image(user.getImage())
-                                .dealCnt(user.getDealCnt())
-                                .build()
-                );
-            }
+            responseList = userDBList.map(
+                    userDB -> SelectUserOutput.builder()
+                            .userId(userDB.getId())
+                            .nickname(userDB.getNickname())
+                            .image(userDB.getImage())
+                            .dealCnt(userDB.getDeals().size())
+                            .build()
+            );
         } catch (Exception e) {
             log.error("[users/get] database error", e);
-            return new Response<>(DATABASE_ERROR);
+            return new PageResponse<>(DATABASE_ERROR);
         }
         // 3. 결과 return
-        return new Response<>(responseList, SUCCESS_SELECT_USER);
+        return new PageResponse<>(responseList, SUCCESS_SELECT_USER);
     }
 }

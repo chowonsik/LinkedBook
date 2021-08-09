@@ -8,15 +8,13 @@ import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
 import com.linkedbook.dto.user.signup.SignUpInput;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import javax.websocket.server.PathParam;
-import java.util.List;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -73,10 +71,10 @@ public class UserController {
      * [GET] /users
      * @return Response<List<SelectUserOutput>>
      */
-    // Body
+    // Params
     @ResponseBody
     @GetMapping
-    public Response<List<SelectUserOutput>> selectUser(SelectUserInput selectUserInput) {
+    public PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput) {
         log.info("[GET] /users");
         return userService.selectUser(selectUserInput);
     }
