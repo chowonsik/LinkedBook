@@ -4,7 +4,6 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.AreaRepository;
 import com.linkedbook.dto.area.selectArea.SelectAreaInput;
 import com.linkedbook.dto.area.selectArea.SelectAreaOutput;
-import com.linkedbook.entity.AreaDB;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.AreaService;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -42,8 +40,8 @@ public class AreaServiceImpl implements AreaService {
             log.error("[reports/post] database error", e);
             return new PageResponse<>(DATABASE_ERROR);
         }
-        // 3. 결과 return
-        return new PageResponse<>(areaList, CREATED_REPORT);
+        // 결과 return
+        return new PageResponse<>(areaList, SUCCESS_SELECT_AREA);
     }
 
 }
