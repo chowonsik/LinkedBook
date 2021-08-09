@@ -83,9 +83,8 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
                                 .where(likeDealDB.user.id.eq(userId).and(likeDealDB.deal.id.eq(dealDB.id))),
                         bookDB.title, bookDB.author, bookDB.publisher, bookDB.price, userDB.id, userDB.nickname,
                         userDB.image, areaDB.dongmyeonri, userDealDB.score.avg()))
-                .from(dealDB).join(userAreaDB).on(dealDB.user.id.eq(userAreaDB.user.id).and(userAreaDB.orders.eq(1)))
-                .join(bookDB).on(dealDB.book.id.eq(bookDB.id)).join(userDB).on(dealDB.user.id.eq(userDB.id))
-                .join(areaDB).on(userAreaDB.area.id.eq(areaDB.id)).leftJoin(userDealDB)
+                .from(dealDB).join(dealDB.user, userDB).join(userDB.userAreaDBs, userAreaDB).on(userAreaDB.orders.eq(1))
+                .join(dealDB.book, bookDB).join(userAreaDB.area, areaDB).leftJoin(userDealDB)
                 .on(dealDB.user.id.eq(userDealDB.user.id))
                 .where(dealDB.id.eq(dealId), dealDB.status.eq("ACTIVATE"), dealDB.user.status.eq("ACTIVATE"))
                 .groupBy(dealDB.user.id).fetchOne();
