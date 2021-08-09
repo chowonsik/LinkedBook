@@ -1,6 +1,8 @@
 package com.linkedbook.entity;
 
+import com.linkedbook.dto.report.ReportStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,9 +14,10 @@ import java.util.Date;
 import static javax.persistence.GenerationType.*;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "report")
 public class ReportDB {
@@ -31,8 +34,9 @@ public class ReportDB {
     @JoinColumn(name = "deal_id", nullable = false)
     private DealDB deal;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 45)
-    private String category;
+    private ReportStatus category;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;

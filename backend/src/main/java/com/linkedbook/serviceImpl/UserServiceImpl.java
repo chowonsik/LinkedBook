@@ -16,16 +16,12 @@ import com.linkedbook.dao.UserAreaRepository;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
 
-import org.apache.commons.lang3.StringUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
 
 import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
@@ -115,7 +111,7 @@ public class UserServiceImpl implements UserService {
                 return new Response<>(BAD_AREA_VALUE);
             }
 
-            userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).status("ACTIVATE").build();
+            userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).build();
             userAreaRepository.save(userAreaDB);
         } catch (Exception e) {
             return new Response<>(DATABASE_ERROR);

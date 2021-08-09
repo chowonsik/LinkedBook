@@ -1,6 +1,8 @@
 import React from "react";
 import { HashRouter as Router, Route } from "react-router-dom";
+import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
+import BookDetail from "./pages/book/BookDetail";
 import Main from "./pages/Main";
 import LocationSearch from "./pages/user/LocationSearch";
 import RecommendUser from "./pages/user/RecommendUser";
@@ -12,6 +14,8 @@ import LocationSetting from "./pages/Main/LocationSetting";
 import DealDetail from "./pages/Main/DealDetail";
 import DealCreate from "./pages/deal/CreateDeal";
 
+import Report from "./pages/Report";
+import ToastMessage from "./components/common/ToastMessage";
 function App() {
   return (
     <div className="App">
@@ -27,10 +31,14 @@ function App() {
           exact={true}
           component={LocationSearch}
         />
+        <Route path="/books" exact component={SearchBook} />
+        <Route path="/books/:isbn" component={BookDetail} />
         <Route path="/recommend" exact={true} component={RecommendUser} />
         <Route path="/following/list" exact={true} component={FollowingList} />
         <Route path="/follower/list" exact={true} component={FollowerList} />
+        <Route path="/redbell/:dealId" exact={true} component={Report} />
       </Router>
+      <ToastMessage />
     </div>
   );
 }

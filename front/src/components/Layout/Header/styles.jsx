@@ -1,18 +1,23 @@
 import styled from "styled-components";
 import { colors, fonts } from "../../../styles";
 
+export const Block = styled.div`
+  display: block;
+  width: 100%;
+  height: 55px;
+`;
 export const Wrapper = styled.div`
   display: flex;
   position: fixed;
   top: 0;
   width: 100%;
-  height: 60px;
+  height: 55px;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
   border: none;
   border-bottom: 1px solid ${colors.lightGray};
   padding: 8px 12px;
+  background-color: white;
 `;
 
 export const BackButton = styled.div`
@@ -24,7 +29,7 @@ export const BackButton = styled.div`
 `;
 
 export const LogoAndTitle = styled.div`
-  width: 130px;
+  width: 110px;
   text-align: center;
   margin-left: 16px;
 
@@ -33,8 +38,8 @@ export const LogoAndTitle = styled.div`
   }
   .logo {
     display: ${(props) => (props.isLogo && !props.isTitle ? "block" : "none")};
-    width: 130px;
-    height: 40px;
+    width: 110px;
+    height: auto;
   }
 `;
 
