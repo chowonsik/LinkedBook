@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<CommentDB, Integer> {
-    List<CommentDB> findByBook(BookDB bookDB);
     List<CommentDB> findByBook(BookDB bookDB, Pageable paging);
     List<CommentDB> findByUser(UserDB userDB, Pageable paging);
+    boolean existsByUserAndBook(UserDB userDB, BookDB bookDB);
 }

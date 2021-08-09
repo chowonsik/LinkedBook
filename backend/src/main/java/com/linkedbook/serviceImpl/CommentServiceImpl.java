@@ -13,11 +13,11 @@ import com.linkedbook.service.CommentService;
 import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +35,7 @@ public class CommentServiceImpl implements CommentService {
     private final JwtService jwtService;
 
     @Override
+    @Transactional
     public Response<Object> createComment(CommentInput commentInput) {
         // 1. 값 형식 체크
         if (commentInput == null) return new Response<>(NO_VALUES);
@@ -46,17 +47,24 @@ public class CommentServiceImpl implements CommentService {
         // 2. 한줄평 정보 생성
         CommentDB commentDB;
         try {
-            int userId = jwtService.getUserId();
-            String isbn = commentInput.getIsbn();
-
-            boolean isExistBookDB = bookRepository.existsById(isbn);
-            if (!isExistBookDB) {
+            UserDB loginUserDB = jwtService.getUserDB();
+            if(loginUserDB == null) {
+                log.error("[comments/post] NOT FOUND LOGIN USER error");
+                return new Response<>(NOT_FOUND_USER);
+            }
+            BookDB bookDB = bookRepository.findById(commentInput.getIsbn()).orElse(null);
+            if (bookDB == null) {
+                log.error("[comments/post] NOT FOUND BOOK error");
                 return new Response<>(NOT_FOUND_BOOK);
+            }
+            if(commentRepository.existsByUserAndBook(loginUserDB, bookDB)) {
+                log.error("[comments/post] DUPLICATE COMMENT INFO error");
+                return new Response<>(EXISTS_INFO);
             }
 
             commentDB = CommentDB.builder()
-                    .user(new UserDB(userId))
-                    .book(new BookDB(isbn))
+                    .user(loginUserDB)
+                    .book(bookDB)
                     .score(commentInput.getScore())
                     .content(commentInput.getContent())
                     .build();
@@ -71,6 +79,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public Response<Object> updateComment(int id, CommentInput commentInput) {
         // 1. 값 형식 체크
         if (commentInput == null) return new Response<>(NO_VALUES);
@@ -82,10 +91,17 @@ public class CommentServiceImpl implements CommentService {
         // 2. 한줄평 정보 수정
         CommentDB commentDB;
         try {
+            UserDB loginUserDB = jwtService.getUserDB();
+            if(loginUserDB == null) {
+                log.error("[comments/patch] NOT FOUND LOGIN USER error");
+                return new Response<>(NOT_FOUND_USER);
+            }
             commentDB = commentRepository.findById(id).orElse(null);
-            if (commentDB == null) {
+            if (commentDB == null || commentDB.getUser().getId() != loginUserDB.getId()) {
+                log.error("[comments/patch] NOT FOUND COMMENT error");
                 return new Response<>(NOT_FOUND_COMMENT);
             }
+
             commentDB.setScore(commentInput.getScore());
             commentDB.setContent(commentInput.getContent());
 
@@ -99,15 +115,24 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public Response<Object> deleteComment(int id) {
         // 1. 값 형식 체크
         if (!ValidationCheck.isValidId(id)) return new Response<>(BAD_REQUEST);
         // 2. 한줄평 정보 삭제
         try {
+            int loginUserId = jwtService.getUserId();
+            if(loginUserId < 0) {
+                log.error("[comments/delete] NOT FOUND LOGIN USER error");
+                return new Response<>(NOT_FOUND_USER);
+            }
+            CommentDB commentDB = commentRepository.findById(id).orElse(null);
+            if(commentDB == null || commentDB.getUser().getId() != loginUserId) {
+                log.error("[comments/delete] NOT FOUND COMMENT error");
+                return new Response<>(NOT_FOUND_COMMENT);
+            }
+
             commentRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            log.error("[comments/delete] not found entity error", e);
-            return new Response<>(NOT_FOUND_COMMENT);
         } catch (Exception e) {
             log.error("[comments/delete] database error", e);
             return new Response<>(DATABASE_ERROR);

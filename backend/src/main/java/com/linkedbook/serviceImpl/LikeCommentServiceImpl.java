@@ -1,8 +1,8 @@
 package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
+import com.linkedbook.dao.CommentRepository;
 import com.linkedbook.dao.LikeCommentRepository;
-import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.comment.like.LikeCommentInput;
 import com.linkedbook.entity.CommentDB;
 import com.linkedbook.entity.LikeCommentDB;
@@ -12,7 +12,6 @@ import com.linkedbook.service.JwtService;
 import com.linkedbook.service.LikeCommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +23,7 @@ import static com.linkedbook.response.ResponseStatus.*;
 public class LikeCommentServiceImpl implements LikeCommentService {
 
     private final LikeCommentRepository likeCommentRepository;
+    private final CommentRepository commentRepository;
     private final JwtService jwtService;
 
     @Override
@@ -35,10 +35,24 @@ public class LikeCommentServiceImpl implements LikeCommentService {
         // 2. 관심등록된 한줄평 정보 생성
         LikeCommentDB likeCommentDB;
         try {
-            int userId = jwtService.getUserId();
+            UserDB loginUserDB = jwtService.getUserDB();
+            if(loginUserDB == null) {
+                log.error("[like-comments/post] NOT FOUND LOGIN USER error");
+                return new Response<>(NOT_FOUND_USER);
+            }
+            CommentDB commentDB = commentRepository.findById(likeCommentInput.getId()).orElse(null);
+            if(commentDB == null) {
+                log.error("[like-comments/post] NOT FOUND COMMENT error");
+                return new Response<>(NOT_FOUND_COMMENT);
+            }
+            if(likeCommentRepository.existsByUserAndComment(loginUserDB, commentDB)) {
+                log.error("[like-comments/post] DUPLICATE LIKE-COMMENT INFO error");
+                return new Response<>(EXISTS_INFO);
+            }
+
             likeCommentDB = LikeCommentDB.builder()
-                    .user(new UserDB(userId))
-                    .comment(new CommentDB(likeCommentInput.getId()))
+                    .user(loginUserDB)
+                    .comment(commentDB)
                     .build();
             likeCommentRepository.save(likeCommentDB);
         } catch (Exception e) {
