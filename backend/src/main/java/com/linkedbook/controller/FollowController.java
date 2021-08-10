@@ -24,7 +24,7 @@ public class FollowController {
      * @param info follower: 유저를 팔로우하는 타 유저 정보를 원하는 상태 / following: 유저가 팔로우하는 타 유저 정보를 원하는 상태
      * @return Response<List<FollowOutput>>
      */
-    // Body
+    // Path-Variable
     @ResponseBody
     @GetMapping("/{info}")
     public Response<List<FollowOutput>> getFollowList(@PathVariable("info") String info) {
@@ -33,7 +33,7 @@ public class FollowController {
     }
 
     /**
-     * 팔로우 상태 수정 API
+     * 팔로우 상태 생성 API
      * [POST] /follow
      * @return Response<Object>
      */
@@ -42,6 +42,19 @@ public class FollowController {
     @PostMapping
     public Response<Object> createFollowRelation(@RequestBody FollowInput followInput) {
         log.info("[POST] /follow");
-        return followService.changeFollowRelation(followInput);
+        return followService.createFollowRelation(followInput);
+    }
+
+    /**
+     * 팔로우 상태 삭제 API
+     * [DELETE] /follow/{id}
+     * @return Response<Object>
+     */
+    // Path-Variable
+    @ResponseBody
+    @DeleteMapping("/{id}")
+    public Response<Object> createFollowRelation(@PathVariable("id") int id) {
+        log.info("[DELETE] /follow/" + id);
+        return followService.deleteFollowRelation(id);
     }
 }

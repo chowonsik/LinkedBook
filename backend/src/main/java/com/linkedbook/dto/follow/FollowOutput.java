@@ -15,7 +15,6 @@ public class FollowOutput {
     private int followId;
     private FollowUser user;
     private boolean f4f;
-    private FollowStatus status;
     private Date created_at;
     private Date updated_at;
 }
