@@ -9,6 +9,7 @@ export const Block = styled.div`
 export const Wrapper = styled.div`
   display: flex;
   position: fixed;
+  z-index: 9999;
   top: 0;
   width: 100%;
   height: 55px;

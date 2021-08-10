@@ -130,7 +130,7 @@ export const BookInfo = styled.div`
   padding: 18px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
   .deal-title {
     font-size: 22px;
     font-weight: 600;
@@ -173,6 +173,7 @@ export const BookInfo = styled.div`
   .deal-content {
     margin-top: 10px;
     word-wrap: break-word;
+    margin-bottom: 30px;
   }
 `;
 

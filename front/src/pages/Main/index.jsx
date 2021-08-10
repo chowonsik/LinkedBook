@@ -103,7 +103,7 @@ export default function Main() {
         </LocationContainer>
         <InputContainer>
           <Input
-            placeholder="책이름"
+            placeholder="제목"
             value={search}
             onChange={handleSearchChange}
           />
