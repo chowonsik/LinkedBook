@@ -11,12 +11,11 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Builder
-public class FollowUser {
-    private int userId;
+public class FollowUserDto {
+    private int id;
     private String email;
     private String nickname;
     private String image;
-    private String status;
     private Date created_at;
     private Date updated_at;
 }

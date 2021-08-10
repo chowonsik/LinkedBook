@@ -12,8 +12,8 @@ import java.util.Date;
 @Getter
 @Builder
 public class FollowOutput {
-    private int followId;
-    private FollowUser user;
+    private int id;
+    private FollowUserDto user;
     private boolean f4f;
     private Date created_at;
     private Date updated_at;

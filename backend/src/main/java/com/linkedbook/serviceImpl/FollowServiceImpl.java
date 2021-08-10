@@ -6,16 +6,18 @@ import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.follow.*;
 import com.linkedbook.entity.FollowDB;
 import com.linkedbook.entity.UserDB;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.FollowService;
 import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -29,77 +31,57 @@ public class FollowServiceImpl implements FollowService {
     private final JwtService jwtService;
 
     @Override
-    public Response<List<FollowOutput>> getFollowList(String info) {
+    public PageResponse<FollowOutput> getFollowList(String info, FollowSearchInput followSearchInput) {
         // 1. 값 형식 체크
-        if (info == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValidFollowInfo(info))
-            return new Response<>(BAD_FOLLOW_INFO_VALUE);
-
-        List<FollowOutput> followOutput = new ArrayList<>();
-        List<FollowDB> followDBs;
+        if(followSearchInput == null)  return new PageResponse<>(NO_VALUES);
+        if (info == null || !ValidationCheck.isValidFollowInfo(info))
+            return new PageResponse<>(BAD_FOLLOW_INFO_VALUE);
+        if(!ValidationCheck.isValidPage(followSearchInput.getPage())
+                || !ValidationCheck.isValidId(followSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
+        // 2. follow 유저 정보 가져오기
+        Page<FollowOutput> followOutput;
         try {
-            // 2. follow 유저 정보 가져오기
-            int userId = jwtService.getUserId();
-            if (info.equals("follower")) { // 유저의 팔로워 불러오기
-                followDBs = followRepository.findByToUserId(userId);
-            } else { // 팔로잉하는 유저 불러오기
-                followDBs = followRepository.findByFromUserId(userId);
+            int loginUserId = jwtService.getUserId();
+            if(loginUserId < 0) {
+                log.error("[users/get] NOT FOUND LOGIN USER error");
+                return new PageResponse<>(BAD_ID_VALUE);
             }
 
-            // 3. 팔로우 리스트에 필요한 유저 정보만 가공
-            for (FollowDB db : followDBs) {
-                UserDB user;
-                if (info.equals("follower")) {
-                    user = db.getFromUser();
-                } else {
-                    user = db.getToUser();
-                }
+            Pageable paging = PageRequest.of(followSearchInput.getPage(), followSearchInput.getSize(), Sort.Direction.DESC, "id");;
+            Page<FollowDB> followDBList;
+            if (info.equals("follower")) { // 로그인 유저의 팔로워 유저 불러오기
+                followDBList = followRepository.findByToUserIdAndFromUserStatus(loginUserId, "ACTIVATE", paging);
+            } else { // 로그인 유저가 팔로잉하는 유저 불러오기
+                followDBList = followRepository.findByFromUserIdAndToUserStatus(loginUserId, "ACTIVATE", paging);
+            }
+            // 3. 팔로우 리스트에 필요한 최종 결과 가공
+            followOutput = followDBList.map(followDB -> {
+                UserDB targetUser = info.equals("follower") ? followDB.getFromUser() : followDB.getToUser();
+                int fromUserId = info.equals("follower") ? loginUserId : followDB.getToUser().getId();
+                int toUserId = info.equals("follower") ? followDB.getFromUser().getId() : loginUserId;
 
-                if (user.getStatus().equals("DELETED")) // 삭제된 유저는 보여주지 않는다.
-                    continue;
-
-                FollowUser filteredUser = FollowUser.builder()
-                        .userId(user.getId())
-                        .email(user.getEmail())
-                        .nickname(user.getNickname())
-                        .image(user.getImage())
-                        .status(user.getStatus())
-                        .created_at(user.getCreated_at())
-                        .updated_at(user.getUpdated_at())
-                        .build();
-
-                boolean filteredUserF4F = false; // 맞팔로우 관계 확인
-                int fromId, toId;
-                if (info.equals("follower")) {
-                    fromId = jwtService.getUserId();
-                    toId = user.getId();
-                } else {
-                    fromId = user.getId();
-                    toId = jwtService.getUserId();
-                }
-
-                boolean findF4FUser = followRepository.existsByFromUserIdAndToUserId(fromId, toId);
-                if (!findF4FUser) {
-                    filteredUserF4F = true;
-                }
-
-                // 최종 결과 값 완성
-                followOutput.add(
-                        FollowOutput.builder()
-                                .followId(db.getId())
-                                .user(filteredUser)
-                                .f4f(filteredUserF4F)
-                                .created_at(db.getCreated_at())
-                                .updated_at(db.getUpdated_at())
+                return FollowOutput.builder()
+                        .id(followDB.getId())
+                        .user(FollowUserDto.builder()
+                                .id(targetUser.getId())
+                                .email(targetUser.getEmail())
+                                .nickname(targetUser.getNickname())
+                                .image(targetUser.getImage())
+                                .created_at(targetUser.getCreated_at())
+                                .updated_at(targetUser.getUpdated_at())
                                 .build()
-                );
-            }
+                        )
+                        .f4f(followRepository.existsByFromUserIdAndToUserId(fromUserId, toUserId))
+                        .created_at(followDB.getCreated_at())
+                        .updated_at(followDB.getUpdated_at())
+                        .build();
+            });
         } catch (Exception e) {
             log.error("[follow/get] database error", e);
-            return new Response<>(DATABASE_ERROR);
+            return new PageResponse<>(DATABASE_ERROR);
         }
         // 4. 결과 return
-        return new Response<>(followOutput, SUCCESS_GET_FOLLOW_LIST);
+        return new PageResponse<>(followOutput, SUCCESS_GET_FOLLOW_LIST);
     }
 
     @Override
