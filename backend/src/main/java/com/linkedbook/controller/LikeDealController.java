@@ -1,6 +1,9 @@
 package com.linkedbook.controller;
 
 import com.linkedbook.dto.likeDeal.createLikeDeal.CreateLikeDealInput;
+import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealInput;
+import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealOutput;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.LikeDealService;
 
@@ -27,5 +30,19 @@ public class LikeDealController {
     public Response<Object> createLikeDeal(@RequestBody CreateLikeDealInput createLikeDealInput) {
         log.info("[POST] /like-deals");
         return likeDealService.createLikeDeal(createLikeDealInput.getDealId());
+    }
+
+    /*
+     * 
+     * 관심 거래 조회 API
+     * 
+     * @return PageResponse<SelectLikeDealOutput>
+     */
+    // Params
+    @ResponseBody
+    @GetMapping
+    public PageResponse<SelectLikeDealOutput> selectLikeDeal(SelectLikeDealInput selectLikeDealInput) {
+        log.info("[GET] /like-deals");
+        return likeDealService.selectLikeDeal(selectLikeDealInput);
     }
 }
