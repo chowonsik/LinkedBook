@@ -138,7 +138,8 @@ public class FollowServiceImpl implements FollowService {
             }
 
             FollowDB existFollowRelation = followRepository.findById(id).orElse(null);
-            if (existFollowRelation == null || existFollowRelation.getFromUser().getId() != loginUserId) {
+            if (existFollowRelation == null
+                    || (existFollowRelation.getFromUser().getId() != loginUserId && existFollowRelation.getToUser().getId() != loginUserId)) {
                 log.error("[follow/delete] NOT FOUND FOLLOW RELATION exception");
                 return new Response<>(NOT_FOUND_FOLLOW);
             }
