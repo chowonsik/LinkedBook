@@ -30,6 +30,7 @@ function Header({
   isAlarm = false,
   isDeclare = false,
   isDone = false,
+  onClickSearch,
 }) {
   function handleClickBack() {
     history.goBack();
@@ -56,7 +57,7 @@ function Header({
           isDeclare={isDeclare}
           isDone={isDone}
         >
-          <Search className="search-btn" />
+          <Search className="search-btn" onClick={onClickSearch} />
           <BellFill className="alarm-btn" />
           <PatchExclamationFill className="declare" />
           <DoneButton className="done-btn">완료</DoneButton>
