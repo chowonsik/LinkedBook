@@ -1,0 +1,56 @@
+package com.linkedbook.serviceImpl;
+
+import com.linkedbook.configuration.ValidationCheck;
+import com.linkedbook.dao.DealRepository;
+import com.linkedbook.dao.LikeDealRepository;
+import com.linkedbook.dao.UserRepository;
+import com.linkedbook.entity.DealDB;
+import com.linkedbook.entity.LikeDealDB;
+import com.linkedbook.entity.UserDB;
+import com.linkedbook.response.Response;
+import com.linkedbook.service.JwtService;
+import com.linkedbook.service.LikeDealService;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.linkedbook.response.ResponseStatus.*;
+
+@Service("LikeDealService")
+@AllArgsConstructor
+@Slf4j
+public class LikeDealServiceImpl implements LikeDealService {
+
+    private final DealRepository dealRepository;
+    private final LikeDealRepository likeDealRepository;
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+
+    @Override
+    @Transactional
+    public Response<Object> createLikeDeal(int dealId) {
+        // 값 형식 체크
+
+        LikeDealDB likeDeal;
+        try {
+            UserDB user = userRepository.findById(jwtService.getUserId()).orElse(null);
+            DealDB deal = dealRepository.findById(dealId).orElse(null);
+            if (deal == null || user == null) {
+                return new Response<>(BAD_ID_VALUE);
+            }
+
+            likeDeal = LikeDealDB.builder().user(user).deal(deal).build();
+
+            likeDealRepository.save(likeDeal);
+
+        } catch (Exception e) {
+            log.error("[books/post] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(null, CREATED_LIKEDEAL);
+    }
+
+}
