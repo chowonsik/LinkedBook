@@ -30,8 +30,14 @@ function DealListItem({ dealObj, onClick }) {
     return price.toLocaleString();
   }
   function textSlicer(text) {
-    if (text.length > 15) {
-      return text.slice(0, 12) + "...";
+    if (text.length > 13) {
+      return text.slice(0, 10) + "...";
+    }
+    return text;
+  }
+  function authorPublisherTextSlicer(text) {
+    if (text.length > 8) {
+      return text.slice(0, 5) + "...";
     }
     return text;
   }
@@ -49,7 +55,7 @@ function DealListItem({ dealObj, onClick }) {
         />
       </div>
       <div className="content">
-        <div className="deal-title">{dealObj.dealTitle}</div>
+        <div className="deal-title">{textSlicer(dealObj.dealTitle)}</div>
         <div className="book-title">
           {textSlicer(dealObj.bookTitle)}
           <span className="quality">{dealObj.dealQuality}</span>
@@ -57,8 +63,12 @@ function DealListItem({ dealObj, onClick }) {
         <div className="detail">
           <div>
             <div>
-              <span className="author">{dealObj.bookAuthor}</span>
-              <span className="publisher">{dealObj.bookPublisher}</span>
+              <span className="author">
+                {authorPublisherTextSlicer(dealObj.bookAuthor)}
+              </span>
+              <span className="publisher">
+                {authorPublisherTextSlicer(dealObj.bookPublisher)}
+              </span>
             </div>
             <span className="created">
               {dateToString(dealObj.dealCreatedAt)}
