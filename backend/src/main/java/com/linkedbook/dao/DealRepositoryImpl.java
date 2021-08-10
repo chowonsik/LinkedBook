@@ -76,7 +76,7 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
     public SelectDealDetailOutput findDealDetail(Integer dealId, Integer userId) {
 
         return queryFactory
-                .select(new QSelectDealDetailOutput(dealDB.id, dealDB.title, dealDB.price, dealDB.quality,
+                .select(new QSelectDealDetailOutput(dealDB.id, dealDB.title, dealDB.content, dealDB.price, dealDB.quality,
                         dealDB.created_at,
                         JPAExpressions.select(likeDealDB.count().castToNum(Integer.class)).from(likeDealDB)
                                 .where(likeDealDB.user.id.eq(userId).and(likeDealDB.deal.id.eq(dealDB.id))),
