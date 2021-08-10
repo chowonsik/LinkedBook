@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { KakaoBook } from "../../../api.jsx";
+import { KakaoBook } from "../../../api.js";
 import { useHistory } from "react-router-dom";
 import BookItem from "../../../components/book/BookItem";
 import { Wrapper } from "./styles";
-import axios from "axios";
+import { request } from "../../../api";
 
 const SearchBook = () => {
   const TOKEN =
@@ -82,19 +82,12 @@ const SearchBook = () => {
       thumbnail,
       status,
     };
-    axios
-      .post(`/books`, data, {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          "X-ACCESS-TOKEN": TOKEN,
-        },
-      })
-      .then((res) => {
-        console.log(data);
-        console.log(res);
-      })
-      .catch((err) => {});
+
+    await request("post", `/books`, data, {
+      headers: {
+        "X-ACCESS-TOKEN": TOKEN,
+      },
+    });
   };
 
   const handleBookItemClick = (bookObj) => {
