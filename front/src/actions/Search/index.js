@@ -2,29 +2,32 @@ import { requestGet } from "../../api";
 
 export const SET_SEARCH_USER_RESULT = "SET_SEARCH_USER_RESULT";
 export const SET_SEARCH_USER_RESET = "SET_SEARCH_USER_RESET";
-export const getSearchUserResult = (params, page) => {
+export const SET_PAGE_INFO = "SET_CURRENT_PAGE";
+export const SET_SEARCH_ERROR = "SET_SEARCH_ERROR";
+
+export const getSearchUserResult = (params) => {
   return (dispatch) => {
     const response = requestGet("/users", params);
     response.then((res) => {
+      const currentPage = res.page.currentPage;
+      const totalPages = res.page.totalPages;
+
+      dispatch(setPageInfo(currentPage, totalPages));
       const users = res.result;
-      let isError = false;
-      if (page === 0 && users.length === 0) {
-        isError = true;
-      }
-      if (users.length) {
-        dispatch(setSearchUserResult(users, isError));
-      } else if (params.page > 0 && users.length === 0) {
-        dispatch(setUserListReset());
+      if (users) {
+        dispatch(setSearchUserResult(users));
+      } else {
+        if (currentPage === 0) dispatch(setSearchError(true));
+        else dispatch(setSearchError(false));
       }
     });
   };
 };
 
-const setSearchUserResult = (users, isError) => {
+const setSearchUserResult = (users) => {
   return {
     type: SET_SEARCH_USER_RESULT,
     users,
-    isError,
   };
 };
 
@@ -32,5 +35,20 @@ export const setUserListReset = () => {
   return {
     type: SET_SEARCH_USER_RESET,
     users: [],
+  };
+};
+
+export const setPageInfo = (currentPage, totalPages) => {
+  return {
+    type: SET_PAGE_INFO,
+    currentPage,
+    totalPages,
+  };
+};
+
+export const setSearchError = (isError) => {
+  return {
+    type: SET_SEARCH_ERROR,
+    isError,
   };
 };

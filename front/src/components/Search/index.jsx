@@ -12,12 +12,15 @@ import {
 function SearchContainer({
   value,
   users,
+  height,
+  currentPage,
   isActive,
-  isError,
+  flag,
   onKeyDown,
   onChange,
   onKeyPress,
   onScroll,
+  onClick,
 }) {
   return (
     <Wrapper isActive={isActive}>
@@ -29,23 +32,24 @@ function SearchContainer({
           onKeyDown={onKeyDown}
           placeholder={`검색`}
         />
-        <Icon>
+        <Icon onClick={onClick}>
           <Search />
         </Icon>
       </SearchBar>
-      <ResultContainer onScroll={onScroll}>
+      <ResultContainer onScroll={onScroll} height={height}>
         {users &&
           users.map((user) => (
             <SearchResult
               nickname={user.nickname}
-              image={
-                "https://drive.google.com/uc?id=1tf7W-Kb9p7eAfRbPx1fVCRrpPvyJSueR"
-              }
+              image={user.image}
               key={user.userId}
               userId={user.userId}
             />
           ))}
-        <ErrorMessage isError={isError}>{"검색 결과가 없습니다."}</ErrorMessage>
+
+        <ErrorMessage currentPage={currentPage} users={users} flag={flag}>
+          {"검색 결과가 없습니다."}
+        </ErrorMessage>
       </ResultContainer>
     </Wrapper>
   );

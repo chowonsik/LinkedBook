@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   width: 100%;
   top: 0px;
   background-color: white;
-  margin-top: 60px;
+  overflow-y: hidden;
 `;
 
 export const SearchBar = styled.div`
@@ -39,11 +39,14 @@ export const Icon = styled.div`
 
 export const ResultContainer = styled.div`
   width: 90%;
-  height: 400px;
-  overflow: scroll;
+  height: ${(props) => props.height};
+  overflow-y: auto;
 `;
 
 export const ErrorMessage = styled.div`
   color: ${colors.red};
-  display: ${(props) => (props.isError ? "block" : "none")};
+  display: ${(props) =>
+    props.currentPage === 0 && props.users.length === 0 && props.flag
+      ? "block"
+      : "none"};
 `;

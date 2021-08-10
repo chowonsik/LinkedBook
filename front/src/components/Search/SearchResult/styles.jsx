@@ -12,8 +12,9 @@ export const Wrapper = styled.div`
     margin-right: 1rem;
   }
   .profile-icon {
-    font-size: ${fonts.xxl};
+    font-size: 46px;
     margin-right: 1rem;
+    color: ${colors.gray};
   }
   h3 {
     font-size: ${fonts.md};

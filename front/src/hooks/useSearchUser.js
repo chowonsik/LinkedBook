@@ -1,23 +1,30 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getSearchUserResult, setUserListReset } from "../actions/Search";
+import {
+  getSearchUserResult,
+  setUserListReset,
+  setCurrentPage,
+} from "../actions/Search";
 const useSearchUser = () => {
   const [value, setValue] = useState("");
   const [isActive, setIsActive] = useState(false);
-  const [page, setPage] = useState(0);
+  const [flag, setFlag] = useState(false);
   const dispatch = useDispatch();
+  const currentPage = useSelector((state) => state.searchReducer.currentPage);
+  const totalPages = useSelector((state) => state.searchReducer.totalPages);
   const users = useSelector((state) => state.searchReducer.userList);
+
   // 돋보기 아이콘 눌렀을 때
   const handleClickSearch = () => {
-    setIsActive(true);
-  };
-
-  // X 버튼 눌렀을 때
-  const handleClickCancle = () => {
+    setFlag(true);
     dispatch(setUserListReset());
-    setIsActive(false);
-    setPage(0);
-    setValue("");
+    const params = {
+      type: "SEARCH",
+      nickname: value,
+      page: 0,
+      size: 15,
+    };
+    dispatch(getSearchUserResult(params));
   };
 
   // 입력창의 변화 감지
@@ -29,15 +36,15 @@ const useSearchUser = () => {
   // enter 눌렀을 때
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      setPage(0);
+      setFlag(true);
       dispatch(setUserListReset());
       const params = {
         type: "SEARCH",
         nickname: value,
-        page,
-        size: 10,
+        page: 0,
+        size: 15,
       };
-      dispatch(getSearchUserResult(params, page));
+      dispatch(getSearchUserResult(params));
     }
   };
 
@@ -48,17 +55,30 @@ const useSearchUser = () => {
   };
 
   const handleScroll = (e) => {
-    console.log(e.target.scrollTop);
+    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+      if (currentPage < totalPages) {
+        const params = {
+          type: "SEARCH",
+          nickname: value,
+          page: currentPage + 1,
+          size: 7,
+        };
+        dispatch(getSearchUserResult(params));
+      }
+    }
   };
+
   return {
     value,
     users,
     isActive,
+    flag,
     handleKeyDown,
     handleClickSearch,
     handleScroll,
     handleChange,
     handleKeyPress,
+    handleClickSearch,
   };
 };
 
