@@ -10,13 +10,22 @@ import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
 import FollowerList from "./pages/Follow/FollowerList";
 import FollowingList from "./pages/Follow/FollowingList";
+import LocationSetting from "./pages/Main/LocationSetting";
+import DealDetail from "./pages/Main/DealDetail";
+import DealCreate from "./pages/deal/CreateDeal";
+
 import Report from "./pages/Report";
+import SearchUser from "./pages/SearchUser";
 import ToastMessage from "./components/common/ToastMessage";
+
 function App() {
   return (
     <div className="App">
       <Router>
         <Route path="/" exact={true} component={Main} />
+        <Route path="/location" exact={true} component={LocationSetting} />
+        <Route path="/deal" exact={true} component={DealCreate} />
+        <Route path="/deal/:dealId" exact={true} component={DealDetail} />
         <Route path="/signin" exact={true} component={SignIn} />
         <Route path="/signup" exact={true} component={SignUp} />
         <Route
@@ -30,6 +39,7 @@ function App() {
         <Route path="/following/list" exact={true} component={FollowingList} />
         <Route path="/follower/list" exact={true} component={FollowerList} />
         <Route path="/redbell/:dealId" exact={true} component={Report} />
+        <Route path="/search/user" exact={true} component={SearchUser} />
       </Router>
       <ToastMessage />
     </div>
