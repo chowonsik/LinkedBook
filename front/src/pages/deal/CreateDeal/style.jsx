@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { colors, fonts } from "../../../styles";
 
 export const Wrapper = styled.div`
-  margin: 60px 0;
+  margin: 0 0 60px 0;
   padding: 15px 24px;
 `;
 
@@ -77,9 +77,11 @@ export const ImageContainer = styled.div`
   white-space: nowrap;
   overflow-x: auto;
   padding-bottom: 2px;
+  border-radius: 6px;
   -webkit-overflow-scrolling: touch;
   .box {
     display: inline-block;
+    border-radius: 6px;
     width: 80px;
     height: 80px;
     background-color: ${colors.lightGray};

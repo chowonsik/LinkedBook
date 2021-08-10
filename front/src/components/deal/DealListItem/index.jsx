@@ -43,7 +43,8 @@ function DealListItem({ dealObj, onClick }) {
           src={dealObj.dealImage}
           alt="book"
           onError={(e) => {
-            e.target.style.visibility = "hidden";
+            e.target.src =
+              "https://historyexplorer.si.edu/sites/default/files/book-348.jpg";
           }}
         />
       </div>

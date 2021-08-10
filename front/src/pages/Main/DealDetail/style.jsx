@@ -2,27 +2,12 @@ import styled from "styled-components";
 import { colors, fonts } from "../../../styles";
 
 export const Wrapper = styled.div`
-  margin: 60px 0;
+  margin: 0 0 60px 0;
 `;
 
-export const ImageContainer = styled.div`
-  height: 100%;
-  display: flex;
-  transition-property: transform;
-  transition-duration: 0.4s;
-  transform: translateX(${(props) => `${parseInt(props.index) * -100}%`});
-
-  img {
-    width: 100%;
-    object-fit: cover;
-  }
-`;
 export const ImageWrapper = styled.div`
   width: 100%;
   height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
   position: relative;
   background-color: rgba(0, 0, 0, 0.1);
@@ -35,12 +20,16 @@ export const ImageWrapper = styled.div`
     color: white;
     left: 10px;
     font-size: 20px;
+    top: 50%;
+    transform: translateY(-50%);
   }
   .right-icon {
     position: absolute;
     color: white;
     font-size: 20px;
     right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
   .info-icon {
     position: absolute;
@@ -54,10 +43,25 @@ export const ImageWrapper = styled.div`
     gap: 5px;
     font-size: 6px;
     bottom: 7px;
+    left: 50%;
+    transform: translateX(-50%);
     color: rgba(255, 255, 255, 0.3);
     .selected {
       color: white;
     }
+  }
+`;
+
+export const ImageContainer = styled.div`
+  height: 100%;
+  display: flex;
+  transition-property: transform;
+  transition-duration: 0.4s;
+  transform: translateX(${(props) => `${parseInt(props.index) * -100}%`});
+
+  img {
+    width: 100%;
+    object-fit: cover;
   }
 `;
 
@@ -136,11 +140,14 @@ export const BookInfo = styled.div`
   }
   .book-info {
     margin-bottom: 7px;
-    display: flex;
+    /* display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 10px; */
     .book-title {
       font-size: ${fonts.lg};
+      &::after {
+        content: " ";
+      }
     }
     .deal-quality {
       border-radius: 100px;

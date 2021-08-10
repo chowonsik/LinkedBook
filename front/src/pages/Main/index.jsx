@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
 import DealItem from "../../components/deal/DealListItem";
@@ -16,7 +16,12 @@ import Input from "../../components/common/Input";
 import { ChevronDown } from "react-bootstrap-icons";
 import { fonts } from "../../styles";
 import RoundButton from "../../components/common/Buttons/RoundButton";
-import { setFilter, searchDeals, setSearch } from "../../actions/Deal/index.js";
+import {
+  setFilter,
+  searchDeals,
+  setSearch,
+  resetDeals,
+} from "../../actions/Deal/index.js";
 
 export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
@@ -27,6 +32,7 @@ export default function Main() {
   const [prevSearch, setPrevSearch] = useState("");
 
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   function handleSearchChange(e) {
@@ -66,10 +72,19 @@ export default function Main() {
     if (!loginUser) {
       history.push({ pathname: "/signin" });
     }
+    if (location.state && location.state.reset) {
+      dispatch(resetDeals());
+    }
     if (searchDealList.length === 0) {
       handleSearchButtonClick();
     }
   }, []);
+  useEffect(() => {
+    if (searchDealList.length === 0 && location.state && location.state.reset) {
+      handleSearchButtonClick();
+    }
+    console.log(searchDealList);
+  }, [searchDealList]);
 
   return (
     <>
@@ -121,12 +136,12 @@ export default function Main() {
           </SortButton>
         </SortByList>
         <DealList height={getListHeight()} onScroll={handleScroll}>
-          {searchDealList.map((deal) => (
+          {searchDealList.map((deal, i) => (
             <DealItem
               onClick={() => {
                 history.push({ pathname: `/deal/${deal.dealId}` });
               }}
-              key={deal.dealId}
+              key={i}
               dealObj={deal}
             />
           ))}

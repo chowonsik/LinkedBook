@@ -1,6 +1,8 @@
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+
+import { showToast } from "../../../actions/Notification";
 import { Plus, Search, Upc, X } from "react-bootstrap-icons";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
 import BookItem from "../../../components/deal/BookItem";
@@ -16,6 +18,7 @@ import {
 } from "./style";
 import ReactS3Client from "../../../S3.js";
 import { request } from "../../../api.js";
+import { useHistory } from "react-router";
 
 export default function CreateDeal() {
   const [search, setSearch] = useState("");
@@ -27,6 +30,8 @@ export default function CreateDeal() {
   const [searchList, setSearchList] = useState([]);
   const [listShow, setListShow] = useState(false);
   const [postImg, setPostImg] = useState([]);
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   // 등록 전 인풋, 책 정보 체크
   function validCheck() {
@@ -94,6 +99,9 @@ export default function CreateDeal() {
     };
 
     const result = await request("POST", "/deals", data);
+    console.log(result);
+    dispatch(showToast("판매 등록이 완료되었습니다."));
+    history.push({ pathname: "/", state: { reset: true } });
   }
   // 책 검색 결과 리스트 보이기
   function showList() {
@@ -105,6 +113,18 @@ export default function CreateDeal() {
   }
   // 책 검색 결과 리스트에서 책 클릭 이벤트 처리
   function handleBookClick(book) {
+    const data = {
+      isbn: book.isbn.split(" ")[1],
+      title: book.title,
+      contents: book.contents,
+      price: book.price,
+      author: book.authors,
+      publisher: book.publisher,
+      dateTime: book.datetime,
+      thumbnail: book.thumbnail,
+      status: book.status,
+    };
+    request("POST", "/books", data);
     setBookInfo(book);
   }
   // 책 검색 인풋 onChange 처리

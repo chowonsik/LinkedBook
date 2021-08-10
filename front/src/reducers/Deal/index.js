@@ -33,14 +33,7 @@ export const dealReducer = (state = INIT_STATE, action) => {
         searchDealList: action.deals,
       };
     case RESET_DEALS:
-      return {
-        ...state,
-        searchDealList: {
-          NEW: [],
-          PRICE: [],
-          QUALITY: [],
-        },
-      };
+      return INIT_STATE;
     default:
       return state;
   }
