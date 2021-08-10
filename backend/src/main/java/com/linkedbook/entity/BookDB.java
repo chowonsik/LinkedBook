@@ -54,8 +54,4 @@ public class BookDB {
     // 책에 등록된 한줄평 정보
     @OneToMany(mappedBy = "book")
     private List<CommentDB> comments = new ArrayList<>();
-
-    public BookDB(String id) {
-        this.id = id;
-    }
 }

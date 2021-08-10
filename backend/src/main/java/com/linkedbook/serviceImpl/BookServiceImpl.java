@@ -3,6 +3,7 @@ package com.linkedbook.serviceImpl;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.BookRepository;
 import com.linkedbook.dao.LikeBookRepository;
+import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.book.search.BookInfoInput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
 import com.linkedbook.entity.BookDB;
@@ -25,6 +26,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final LikeBookRepository likeBookRepository;
+    private final UserRepository userRepository;
     private final JwtService jwtService;
 
     @Override
@@ -88,8 +90,14 @@ public class BookServiceImpl implements BookService {
         // 2. isbn와 일치하는 책 정보 가져오기
         BookSearchOutput bookSearchOutput;
         try {
+            UserDB loginUserDB = userRepository.findById(jwtService.getUserId()).orElse(null);
             BookDB bookDB = bookRepository.findById(isbn).orElse(null);
+            if (loginUserDB == null) {
+                log.error("[books/get] NOT FOUND USER error");
+                return new Response<>(NOT_FOUND_USER);
+            }
             if (bookDB == null) {
+                log.error("[books/get] NOT FOUND BOOK error");
                 return new Response<>(NOT_FOUND_BOOK);
             }
             // 서버에서 클라이언트로 null값을 보내지 않도록 가공
@@ -102,7 +110,6 @@ public class BookServiceImpl implements BookService {
 
             // 로그인된 유저의 관심 책 등록 여부 확인하기
             boolean isUserLikeBook = false;
-            UserDB loginUserDB = new UserDB(jwtService.getUserId());
             if(likeBookRepository.existsByUserAndBook(loginUserDB, bookDB)) {
                 isUserLikeBook = true;
             }
