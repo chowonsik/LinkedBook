@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@JsonPropertyOrder({"isSuccess", "status", "code", "message", "page", "result", "timestamp"})
+@JsonPropertyOrder({ "isSuccess", "status", "code", "message", "page", "result", "timestamp" })
 public class PageResponse<T> {
     @JsonProperty(value = "isSuccess")
     private boolean isSuccess;
@@ -31,7 +31,7 @@ public class PageResponse<T> {
     private Date timestamp;
 
     /*
-     성공 시 호출
+     * 성공 시 호출
      */
     public PageResponse(Page<T> inputPage, ResponseStatus status) {
         this.isSuccess = true;
@@ -44,7 +44,7 @@ public class PageResponse<T> {
     }
 
     /*
-     실패 시 호출
+     * 실패 시 호출
      */
     public PageResponse(ResponseStatus status) {
         this.isSuccess = false;
