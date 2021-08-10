@@ -130,6 +130,7 @@ export const BookInfo = styled.div`
   padding: 18px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   .deal-title {
     font-size: 22px;
     font-weight: 600;
@@ -168,6 +169,10 @@ export const BookInfo = styled.div`
   .book-price {
     font-size: ${fonts.md};
     color: ${colors.gray};
+  }
+  .deal-content {
+    margin-top: 10px;
+    word-wrap: break-word;
   }
 `;
 
