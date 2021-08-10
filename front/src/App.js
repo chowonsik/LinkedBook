@@ -17,6 +17,7 @@ import DealCreate from "./pages/deal/CreateDeal";
 import Report from "./pages/Report";
 import SearchUser from "./pages/SearchUser";
 import ToastMessage from "./components/common/ToastMessage";
+
 function App() {
   return (
     <div className="App">
