@@ -6,6 +6,12 @@ export const Wrapper = styled.div`
   padding: 10px 20px;
 `;
 
+export const DealList = styled.div`
+  margin-top: 10px;
+  height: ${(props) => props.height}px;
+  overflow: auto;
+`;
+
 export const LocationContainer = styled.div`
   display: flex;
   margin-bottom: 10px;

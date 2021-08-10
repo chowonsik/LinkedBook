@@ -1,83 +1,74 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
-import DealItem from "../../components/deal/DealItem";
+import DealItem from "../../components/deal/DealListItem";
 import {
   InputContainer,
   LocationContainer,
   SortByList,
   Wrapper,
   SortButton,
+  DealList,
 } from "./style";
 import Input from "../../components/common/Input";
 import { ChevronDown } from "react-bootstrap-icons";
 import { fonts } from "../../styles";
 import RoundButton from "../../components/common/Buttons/RoundButton";
-import { useEffect } from "react";
+import { setFilter, searchDeals, setSearch } from "../../actions/Deal/index.js";
 
 export default function Main() {
-  const [deals, setDeals] = useState([]);
-  const [sortBy, setSortBy] = useState(0);
+  const search = useSelector((state) => state.dealReducer.search);
+  const filter = useSelector((state) => state.dealReducer.filter);
+  const searchDealList = useSelector(
+    (state) => state.dealReducer.searchDealList[filter]
+  );
+  const [prevSearch, setPrevSearch] = useState("");
+
   const history = useHistory();
-  function handleSortButtonClick(sort) {
-    setSortBy(sort);
+  const dispatch = useDispatch();
+
+  function handleSearchChange(e) {
+    dispatch(setSearch(e.target.value));
+  }
+
+  function handleSortButtonClick(filter) {
+    dispatch(setFilter(filter));
+  }
+
+  function handleSearchButtonClick() {
+    setPrevSearch(search);
+    dispatch(searchDeals(search));
+  }
+
+  function getListHeight() {
+    return window.innerHeight - 120 - 140;
+  }
+  function getNextBook() {
+    if (searchDealList.length % 10 != 0) return;
+    const page = parseInt(searchDealList.length / 10);
+    console.log(prevSearch);
+    console.log(search);
+    if (prevSearch === search) {
+      dispatch(searchDeals(search, page));
+    } else {
+      dispatch(searchDeals(prevSearch, page));
+    }
+  }
+  function handleScroll(e) {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    if (scrollTop + clientHeight < scrollHeight) return;
+    getNextBook();
   }
   useEffect(() => {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser) {
       history.push({ pathname: "/signin" });
     }
-    setDeals([
-      {
-        id: 12,
-        img: "http://ccimg.hellomarket.com/images/2019/item/02/19/16/1121_3704470_1.jpg?size=s6",
-        title: "넷플릭스 파워풀",
-        price: 1000,
-        quality: "상",
-        author: "생텍쥐페리",
-        publisher: "하이",
-        deal_title: "넷플릭스 파워풀 거의 새상품",
-        user_like: true,
-        time: "20분 전",
-      },
-      {
-        id: 13,
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6FgDQnQ7o_Fjbw6ABv9OvbTAGfzxZQEfOSQ&usqp=CAU",
-        price: 1050,
-        title: "어린왕자",
-        author: "생텍쥐페리",
-        publisher: "물구나무",
-        deal_title: "네고가능",
-        quality: "중",
-        user_like: true,
-        time: "몇시간전",
-      },
-      {
-        id: 15,
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6FgDQnQ7o_Fjbw6ABv9OvbTAGfzxZQEfOSQ&usqp=CAU",
-        price: 1000,
-        title: "어린왕자",
-        author: "생텍쥐페리",
-        publisher: "하이",
-        deal_title: "쿨거래원함",
-        quality: "하",
-        user_like: false,
-        time: "몇시간전",
-      },
-      {
-        id: 14,
-        img: "https://img1.yna.co.kr/etc/inner/KR/2020/09/04/AKR20200904035600005_01_i_P2.jpg",
-        price: 1000,
-        title: "어린왕자",
-        author: "생텍쥐페리",
-        publisher: "하이",
-        quality: "상",
-        deal_title: "판매중",
-        user_like: false,
-        time: "몇시간전",
-      },
-    ]);
+    if (searchDealList.length === 0) {
+      handleSearchButtonClick();
+    }
   }, []);
 
   return (
@@ -96,45 +87,50 @@ export default function Main() {
           </span>
         </LocationContainer>
         <InputContainer>
-          <Input placeholder="책이름" />
+          <Input
+            placeholder="책이름"
+            value={search}
+            onChange={handleSearchChange}
+          />
           <RoundButton
             value="검색"
             width="60px"
             height="45px"
             fontSize={fonts.lg}
+            onClick={handleSearchButtonClick}
           />
         </InputContainer>
         <SortByList>
           <SortButton
-            selected={sortBy === 0 ? true : false}
-            onClick={() => handleSortButtonClick(0)}
+            selected={filter === "NEW" ? true : false}
+            onClick={() => handleSortButtonClick("NEW")}
           >
             최신
           </SortButton>
           <SortButton
-            selected={sortBy === 1 ? true : false}
-            onClick={() => handleSortButtonClick(1)}
+            selected={filter === "PRICE" ? true : false}
+            onClick={() => handleSortButtonClick("PRICE")}
           >
             낮은 가격
           </SortButton>
           <SortButton
-            selected={sortBy === 2 ? true : false}
-            onClick={() => handleSortButtonClick(2)}
+            selected={filter === "QUALITY" ? true : false}
+            onClick={() => handleSortButtonClick("QUALITY")}
           >
             상태
           </SortButton>
         </SortByList>
-        <div className="deal-list">
-          {deals.map((deal) => (
+        <DealList height={getListHeight()} onScroll={handleScroll}>
+          {searchDealList.map((deal) => (
             <DealItem
               onClick={() => {
-                history.push({ pathname: "/deal/1" });
+                history.push({ pathname: `/deal/${deal.dealId}` });
               }}
-              key={deal.id}
+              key={deal.dealId}
               dealObj={deal}
             />
           ))}
-        </div>
+        </DealList>
       </Wrapper>
 
       <Footer />
