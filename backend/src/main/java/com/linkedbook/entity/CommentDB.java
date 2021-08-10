@@ -50,10 +50,6 @@ public class CommentDB {
     private Date updated_at;
 
     // 한줄평 관심등록 정보
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment", orphanRemoval = true)
     private List<LikeCommentDB> likeComments = new ArrayList<>();
-
-    public CommentDB(int id) {
-        this.id = id;
-    }
 }

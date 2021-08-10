@@ -1,22 +1,29 @@
 import styled from "styled-components";
 import { colors, fonts } from "../../../styles";
 
+export const Block = styled.div`
+  display: block;
+  width: 100%;
+  height: 55px;
+`;
 export const Wrapper = styled.div`
   display: flex;
   position: fixed;
+  z-index: 9999;
   top: 0;
   width: 100%;
-  height: 60px;
+  height: 55px;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
   border: none;
   border-bottom: 1px solid ${colors.lightGray};
   padding: 8px 12px;
+  background-color: white;
+  color: ${colors.black};
 `;
 
 export const BackButton = styled.div`
-  width: 20px;
+  width: 53px;
   .back-btn {
     display: ${(props) => (props.isBack ? "block" : "none")};
     font-size: ${fonts.xxl};
@@ -24,28 +31,27 @@ export const BackButton = styled.div`
 `;
 
 export const LogoAndTitle = styled.div`
-  width: 130px;
+  width: 110px;
   text-align: center;
-  margin-left: 16px;
 
   .title {
     display: ${(props) => (props.isTitle ? "block" : "none")};
   }
   .logo {
     display: ${(props) => (props.isLogo && !props.isTitle ? "block" : "none")};
-    width: 130px;
-    height: 40px;
+    width: 110px;
+    height: auto;
   }
 `;
 
 export const IconsAndDone = styled.div`
-  width: 50px;
+  width: 60px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   .search-btn {
     display: ${(props) => (props.isSearch ? "block" : "none")};
-    margin-left: 8px;
+    margin-right: 8px;
     font-size: ${fonts.xl};
   }
 
@@ -57,13 +63,13 @@ export const IconsAndDone = styled.div`
 
   .declare {
     display: ${(props) => (props.isDeclare ? "block" : "none")};
-    margin-left: 8px;
+    margin-right: 8px;
     font-size: ${fonts.xl};
   }
 
   .done-btn {
     display: ${(props) => (props.isDone ? "block" : "none")};
-    margin-left: 8px;
+    margin-right: 8px;
   }
 `;
 

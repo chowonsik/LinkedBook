@@ -61,4 +61,6 @@ public class ValidationCheck {
     }
 
     public static boolean isEmpty(List<?> list) { return (list == null) || list.isEmpty(); }
+
+    public static boolean isValidPrice(int price) { return (price > 0); }
 }

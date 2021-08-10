@@ -37,7 +37,7 @@ public class FollowController {
      * [POST] /follow
      * @return Response<Object>
      */
-    // Body
+    // ㅌ2Body
     @ResponseBody
     @PostMapping
     public Response<Object> createFollowRelation(@RequestBody FollowInput followInput) {
