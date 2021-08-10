@@ -10,7 +10,10 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const DongList = styled.div``;
+export const DongList = styled.div`
+  overflow: auto;
+  height: ${(props) => props.height};
+`;
 export const DongListItem = styled.div`
   height: 45px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
