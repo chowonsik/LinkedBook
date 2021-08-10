@@ -14,6 +14,7 @@ import java.util.List;
 public class SelectDealDetailOutput {
     private Integer dealId;
     private String dealTitle;
+    private String dealContent;
     private List<SelectDealImage> dealImages;
     private Integer dealPrice;
     private String dealQuality;
@@ -30,12 +31,13 @@ public class SelectDealDetailOutput {
     private double userMannerScore;
 
     @QueryProjection
-    public SelectDealDetailOutput(Integer dealId, String dealTitle, Integer dealPrice, String dealQuality,
-            Date dealCreatedAt, Integer isLikeDeal, String bookTitle, String bookAuthor, String bookPublisher,
-            Integer bookPrice, Integer userId, String userNickname, String userImage, String userDong,
-            double userMannerScore) {
+    public SelectDealDetailOutput(Integer dealId, String dealTitle, String dealContent, Integer dealPrice,
+            String dealQuality, Date dealCreatedAt, Integer isLikeDeal, String bookTitle, String bookAuthor,
+            String bookPublisher, Integer bookPrice, Integer userId, String userNickname, String userImage,
+            String userDong, double userMannerScore) {
         this.dealId = dealId;
         this.dealTitle = dealTitle;
+        this.dealContent = dealContent;
         this.dealPrice = dealPrice;
         this.dealQuality = dealQuality;
         this.dealCreatedAt = dealCreatedAt;
