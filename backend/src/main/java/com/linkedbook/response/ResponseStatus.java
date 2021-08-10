@@ -18,7 +18,8 @@ public enum  ResponseStatus {
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
     SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."),
-    SUCCESS_CHANGE_FOLLOW(200, 203, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
+    SUCCESS_CHANGE_FOLLOW(200, 204, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
+    SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."),
@@ -49,6 +50,7 @@ public enum  ResponseStatus {
     BAD_PASSWORD_VALUE(400, 413, "올바른 비밀번호를 입력해주세요."),
     BAD_NAME_VALUE(400, 414, "올바른 이름을 입력해주세요."),
     BAD_FOLLOW_INFO_VALUE(400, 415, "올바른 팔로우 관계를 입력해주세요."),
+    BAD_SEARCH_TYPE_VALUE(400, 420, "올바른 검색 타입을 입력해주세요."),
     BAD_ID_VALUE(400, 416, "올바른 아이디를 입력해주세요."),
     BAD_STATUS_VALUE(400, 417, "올바른 상태를 입력해주세요."),
     BAD_AREA_VALUE(400, 416, "올바른 지역을 입력해주세요."),
