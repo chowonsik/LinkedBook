@@ -11,4 +11,5 @@ public interface FollowRepository extends JpaRepository<FollowDB, Integer> {
     Page<FollowDB> findByFromUserIdAndToUserStatus(int fromUserId, String status, Pageable paging);
     Page<FollowDB> findByToUserIdAndFromUserStatus(int toUserId, String status, Pageable paging);
     boolean existsByFromUserIdAndToUserId(int fromUserId, int toUserId);
+    FollowDB findByFromUserIdAndToUserId(int fromUserId, int toUserId);
 }

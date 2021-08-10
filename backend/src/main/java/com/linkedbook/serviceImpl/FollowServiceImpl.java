@@ -3,6 +3,8 @@ package com.linkedbook.serviceImpl;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.FollowRepository;
 import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dto.common.CommonFollowOutput;
+import com.linkedbook.dto.common.CommonUserOutput;
 import com.linkedbook.dto.follow.*;
 import com.linkedbook.entity.FollowDB;
 import com.linkedbook.entity.UserDB;
@@ -56,13 +58,15 @@ public class FollowServiceImpl implements FollowService {
             }
             // 3. 팔로우 리스트에 필요한 최종 결과 가공
             followOutput = followDBList.map(followDB -> {
-                UserDB targetUser = info.equals("follower") ? followDB.getFromUser() : followDB.getToUser();
                 int fromUserId = info.equals("follower") ? loginUserId : followDB.getToUser().getId();
                 int toUserId = info.equals("follower") ? followDB.getFromUser().getId() : loginUserId;
 
+                UserDB targetUser = info.equals("follower") ? followDB.getFromUser() : followDB.getToUser();
+                FollowDB loginAndTargetDB = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
+
                 return FollowOutput.builder()
                         .id(followDB.getId())
-                        .user(FollowUserDto.builder()
+                        .user(CommonUserOutput.builder()
                                 .id(targetUser.getId())
                                 .email(targetUser.getEmail())
                                 .nickname(targetUser.getNickname())
@@ -71,7 +75,12 @@ public class FollowServiceImpl implements FollowService {
                                 .updated_at(targetUser.getUpdated_at())
                                 .build()
                         )
-                        .f4f(followRepository.existsByFromUserIdAndToUserId(fromUserId, toUserId))
+                        .follow(CommonFollowOutput.builder()
+                                .f4f(loginAndTargetDB != null)
+                                .id(loginAndTargetDB == null ? 0 :
+                                        (info.equals("follower") ? loginAndTargetDB.getId() : followDB.getId()))
+                                .build()
+                        )
                         .created_at(followDB.getCreated_at())
                         .updated_at(followDB.getUpdated_at())
                         .build();

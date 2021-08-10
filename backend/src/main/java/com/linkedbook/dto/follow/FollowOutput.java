@@ -1,5 +1,7 @@
 package com.linkedbook.dto.follow;
 
+import com.linkedbook.dto.common.CommonFollowOutput;
+import com.linkedbook.dto.common.CommonUserOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +15,8 @@ import java.util.Date;
 @Builder
 public class FollowOutput {
     private int id;
-    private FollowUserDto user;
-    private boolean f4f;
+    private CommonUserOutput user;
+    private CommonFollowOutput follow;
     private Date created_at;
     private Date updated_at;
 }
