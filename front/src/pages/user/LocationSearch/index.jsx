@@ -15,7 +15,7 @@ export default function LocationSearch() {
   async function fetchData(page = 0) {
     const params = {
       search: search,
-      size: 10,
+      size: 20,
       page: page,
     };
     const response = await requestGet("/areas", params);
@@ -49,7 +49,6 @@ export default function LocationSearch() {
           value={search}
           onChange={handleSearchChange}
           placeholder="(동, 읍, 면)으로 검색"
-          value="봉명동"
         />
       </Wrapper>
       <DongList height={getListHeight()} onScroll={handleScroll}>
