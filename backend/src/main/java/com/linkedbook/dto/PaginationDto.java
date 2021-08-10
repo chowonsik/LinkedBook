@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @RequiredArgsConstructor(staticName = "of")
-@JsonPropertyOrder({"currentPage", "pageSize", "totalPages", "totalElements"})
+@JsonPropertyOrder({ "currentPage", "pageSize", "totalPages", "totalElements" })
 public class PaginationDto {
     @NonNull
     protected Integer currentPage;

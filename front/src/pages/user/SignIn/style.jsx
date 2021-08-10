@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  padding: 20px;
+  padding: 0 12.5%;
   display: flex;
   flex-direction: column;
   align-items: center;
   img {
-    margin: 50px 0;
+    margin: 100px 0;
   }
 `;
