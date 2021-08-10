@@ -4,6 +4,7 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dto.comment.CommentInput;
 import com.linkedbook.dto.comment.CommentOutput;
 import com.linkedbook.dto.comment.CommentSearchInput;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.CommentService;
 import lombok.AllArgsConstructor;
@@ -31,10 +32,10 @@ public class CommentController {
     // Params
     @ResponseBody
     @GetMapping
-    public Response<List<CommentOutput>> getCommentList(CommentSearchInput commentSearchInput) {
+    public PageResponse<CommentOutput> getCommentList(CommentSearchInput commentSearchInput) {
         if(!ValidationCheck.isValidId(commentSearchInput.getUserId()) && !ValidationCheck.isValid(commentSearchInput.getBookId())) {
             log.info("[GET] /comments?NO_VALID_STATUS");
-            return new Response<>(BAD_REQUEST);
+            return new PageResponse<>(BAD_REQUEST);
         }
 
         if(ValidationCheck.isValidId(commentSearchInput.getUserId())) {

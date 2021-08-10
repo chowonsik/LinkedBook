@@ -4,23 +4,23 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.BookRepository;
 import com.linkedbook.dao.CommentRepository;
 import com.linkedbook.dao.LikeCommentRepository;
+import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.comment.*;
 import com.linkedbook.entity.BookDB;
 import com.linkedbook.entity.CommentDB;
 import com.linkedbook.entity.UserDB;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.CommentService;
 import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -31,6 +31,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final LikeCommentRepository likeCommentRepository;
+    private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final JwtService jwtService;
 
@@ -142,51 +143,67 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Response<List<CommentOutput>> getCommentList(CommentSearchInput commentSearchInput, boolean isUserPage) {
+    public PageResponse<CommentOutput> getCommentList(CommentSearchInput commentSearchInput, boolean isUserPage) {
         // 1. 값 형식 체크
         if(!ValidationCheck.isValidPage(commentSearchInput.getPage())
-                || !ValidationCheck.isValidId(commentSearchInput.getSize()))  return new Response<>(BAD_REQUEST);
+                || !ValidationCheck.isValidId(commentSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
         // 2. 일치하는 한줄평 정보 가져오기
-        List<CommentOutput> responseList = new ArrayList<>();
+        Page<CommentOutput> responseList;
         try {
+            UserDB loginUserDB = jwtService.getUserDB();
+            if(loginUserDB == null) {
+                log.error("[comments/get] NOT FOUND LOGIN USER error");
+                return new PageResponse<>(NOT_FOUND_USER);
+            }
             Pageable paging = PageRequest.of(commentSearchInput.getPage(), commentSearchInput.getSize(), Sort.Direction.DESC, "id");
             // 필요한 정보 가공
-            List<CommentDB> commentDBList;
+            Page<CommentDB> commentDBList;
             if(isUserPage) { // 유저 프로필 페이지에서 조회할 때
-                commentDBList = commentRepository.findByUser(new UserDB(commentSearchInput.getUserId()), paging);
+                UserDB userDB;
+                if(loginUserDB.getId() == commentSearchInput.getUserId()) {
+                    userDB = loginUserDB;
+                } else {
+                    userDB = userRepository.findById(commentSearchInput.getUserId()).orElse(null);
+                    if (userDB == null) {
+                        log.error("[comments/get] NOT FOUND USER error");
+                        return new PageResponse<>(NOT_FOUND_USER);
+                    }
+                }
+                commentDBList = commentRepository.findByUser(userDB, paging);
             } else { // 책 상세 페이지에서 조회할 때
-                commentDBList = commentRepository.findByBook(new BookDB(commentSearchInput.getBookId()), paging);
+                BookDB bookDB = bookRepository.findById(commentSearchInput.getBookId()).orElse(null);
+                if(bookDB == null) {
+                    log.error("[comments/get] NOT FOUND BOOK error");
+                    return new PageResponse<>(NOT_FOUND_BOOK);
+                }
+                commentDBList = commentRepository.findByBook(bookDB, paging);
             }
-
-            UserDB loginUserDB = new UserDB(jwtService.getUserId());
-            for (CommentDB commentDB : commentDBList) {
+            // 최종 출력값 정리
+            responseList = commentDBList.map(commentDB -> {
                 UserDB commentUserDB = commentDB.getUser();
                 BookDB commentBookDB = commentDB.getBook();
-                boolean isUserLikeComment = likeCommentRepository.existsByUserAndComment(loginUserDB, commentDB);
-                // 최종 출력값 정리
-                responseList.add(
-                        CommentOutput.builder()
-                                .commentId(commentDB.getId())
-                                .commentScore(commentDB.getScore())
-                                .commentContent(commentDB.getContent())
-                                .created_at(commentDB.getCreated_at())
-                                .updated_at(commentDB.getUpdated_at())
-                                .likeCommentCnt(commentDB.getLikeComments().size())
-                                .userLikeComment(isUserLikeComment)
-                                .userId(commentUserDB.getId())
-                                .userNickname(commentUserDB.getNickname())
-                                .userImage(commentUserDB.getImage())
-                                .bookId(commentBookDB.getId())
-                                .bookTitle(commentBookDB.getTitle())
-                                .bookImage(commentBookDB.getImage())
-                                .build()
-                );
-            }
+
+                return CommentOutput.builder()
+                        .commentId(commentDB.getId())
+                        .commentScore(commentDB.getScore())
+                        .commentContent(commentDB.getContent())
+                        .created_at(commentDB.getCreated_at())
+                        .updated_at(commentDB.getUpdated_at())
+                        .likeCommentCnt(commentDB.getLikeComments().size())
+                        .userLikeComment(likeCommentRepository.existsByUserAndComment(loginUserDB, commentDB))
+                        .userId(commentUserDB.getId())
+                        .userNickname(commentUserDB.getNickname())
+                        .userImage(commentUserDB.getImage())
+                        .bookId(commentBookDB.getId())
+                        .bookTitle(commentBookDB.getTitle())
+                        .bookImage(commentBookDB.getImage())
+                        .build();
+            });
         } catch (Exception e) {
             log.error("[comments/get] database error", e);
-            return new Response<>(DATABASE_ERROR);
+            return new PageResponse<>(DATABASE_ERROR);
         }
         // 3. 결과 return
-        return new Response<>(responseList, SUCCESS_GET_COMMENT_LIST);
+        return new PageResponse<>(responseList, SUCCESS_GET_COMMENT_LIST);
     }
 }
