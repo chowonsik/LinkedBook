@@ -30,7 +30,7 @@ public class LikeDealController {
     @PostMapping
     public Response<Object> createLikeDeal(@RequestBody CreateLikeDealInput createLikeDealInput) {
         log.info("[POST] /like-deals");
-        return likeDealService.createLikeDeal(createLikeDealInput.getDealId());
+        return likeDealService.createLikeDeal(createLikeDealInput);
     }
 
     /*

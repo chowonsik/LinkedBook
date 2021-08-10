@@ -4,6 +4,7 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dao.LikeDealRepository;
 import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dto.likeDeal.createLikeDeal.CreateLikeDealInput;
 import com.linkedbook.dto.likeDeal.deleteLikeDeal.DeleteLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealOutput;
@@ -39,13 +40,18 @@ public class LikeDealServiceImpl implements LikeDealService {
 
     @Override
     @Transactional
-    public Response<Object> createLikeDeal(int dealId) {
+    public Response<Object> createLikeDeal(CreateLikeDealInput createLikeDealInput) {
         // 값 형식 체크
+
+        if (createLikeDealInput == null)
+            return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValidId(createLikeDealInput.getDealId()))
+            return new Response<>(BAD_REQUEST);
 
         LikeDealDB likeDeal;
         try {
             UserDB user = userRepository.findById(jwtService.getUserId()).orElse(null);
-            DealDB deal = dealRepository.findById(dealId).orElse(null);
+            DealDB deal = dealRepository.findById(createLikeDealInput.getDealId()).orElse(null);
             if (deal == null || user == null) {
                 return new Response<>(BAD_ID_VALUE);
             }
@@ -94,7 +100,7 @@ public class LikeDealServiceImpl implements LikeDealService {
             return new Response<>(NO_VALUES);
 
         if (!ValidationCheck.isValidId(deleteLikeDealInput.getDealId()))
-            return new Response<>(NO_VALUES);
+            return new Response<>(BAD_REQUEST);
 
         LikeDealDB likeDeal;
         try {
