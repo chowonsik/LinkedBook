@@ -4,6 +4,7 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dao.LikeDealRepository;
 import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dto.likeDeal.deleteLikeDeal.DeleteLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealOutput;
 import com.linkedbook.entity.DealDB;
@@ -57,7 +58,7 @@ public class LikeDealServiceImpl implements LikeDealService {
             log.error("[POST]/like-deals database error", e);
             return new Response<>(DATABASE_ERROR);
         }
-        // 3. 결과 return
+        // 결과 return
         return new Response<>(null, CREATED_LIKEDEAL);
     }
 
@@ -80,8 +81,37 @@ public class LikeDealServiceImpl implements LikeDealService {
             log.error("[GET]/like-deals database error", e);
             return new PageResponse<>(DATABASE_ERROR);
         }
-        // 3. 결과 return
+        // 결과 return
         return new PageResponse<>(selectLikeDealOutput, SUCCESS_SELECT_LIKEDEAL);
+    }
+
+    @Override
+    @Transactional
+    public Response<Object> deleteLikeDeal(DeleteLikeDealInput deleteLikeDealInput) {
+        // 값 형식 체크
+
+        if (deleteLikeDealInput == null)
+            return new Response<>(NO_VALUES);
+
+        if (!ValidationCheck.isValidId(deleteLikeDealInput.getDealId()))
+            return new Response<>(NO_VALUES);
+
+        LikeDealDB likeDeal;
+        try {
+            likeDeal = likeDealRepository.findByDealIdAndUserId(deleteLikeDealInput.getDealId(), jwtService.getUserId())
+                    .orElse(null);
+            if (likeDeal == null) {
+                return new Response<>(BAD_ID_VALUE);
+            }
+
+            likeDealRepository.delete(likeDeal);
+
+        } catch (Exception e) {
+            log.error("[POST]/like-deals database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 결과 return
+        return new Response<>(null, SUCCESS_DELETE_LIKEDEAL);
     }
 
 }

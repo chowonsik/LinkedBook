@@ -1,6 +1,7 @@
 package com.linkedbook.controller;
 
 import com.linkedbook.dto.likeDeal.createLikeDeal.CreateLikeDealInput;
+import com.linkedbook.dto.likeDeal.deleteLikeDeal.DeleteLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealOutput;
 import com.linkedbook.response.PageResponse;
@@ -44,5 +45,19 @@ public class LikeDealController {
     public PageResponse<SelectLikeDealOutput> selectLikeDeal(SelectLikeDealInput selectLikeDealInput) {
         log.info("[GET] /like-deals");
         return likeDealService.selectLikeDeal(selectLikeDealInput);
+    }
+
+    /*
+     * 
+     * 관심 거래 삭제 API
+     * 
+     * @return Response<Object>
+     */
+    // Params
+    @ResponseBody
+    @DeleteMapping
+    public Response<Object> deleteLikeDeal(DeleteLikeDealInput deleteLikeDealInput) {
+        log.info("[DELETE] /like-deals");
+        return likeDealService.deleteLikeDeal(deleteLikeDealInput);
     }
 }
