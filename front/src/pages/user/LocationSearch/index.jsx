@@ -49,6 +49,7 @@ export default function LocationSearch() {
           value={search}
           onChange={handleSearchChange}
           placeholder="(동, 읍, 면)으로 검색"
+          value="봉명동"
         />
       </Wrapper>
       <DongList height={getListHeight()} onScroll={handleScroll}>
