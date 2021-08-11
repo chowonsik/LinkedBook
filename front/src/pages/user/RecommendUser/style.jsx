@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { fonts } from "../../../styles";
 
 export const Wrapper = styled.div`
-  padding: 35px 20px;
+  margin-bottom: 60px;
+  padding: 35px 20px 0 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
