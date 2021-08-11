@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { showToast } from "../../../actions/Notification";
 import { LocationButton, Wrapper } from "./style";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
 import Input from "../../../components/common/Input";
@@ -9,19 +11,32 @@ import {
   emailValidator,
   passwordValidator,
 } from "../../../validators.js";
-import { Link, useHistory } from "react-router-dom";
 import Header from "../../../components/Layout/Header";
 import { request } from "../../../api.js";
 
 export default function SignUp() {
-  const nickname = useInput("", nicknameValidator);
-  const email = useInput("", emailValidator);
-  const password = useInput("", passwordValidator);
-  const passwordConfirm = useInput("", passwordConfirmValidator);
-  const [location, setLocation] = useState("지역 설정");
+  const signUpValues = JSON.parse(localStorage.getItem("signUpValues"));
+  const nickname = useInput(
+    signUpValues ? signUpValues.nickname : "",
+    nicknameValidator
+  );
+  const email = useInput(
+    signUpValues ? signUpValues.email : "",
+    emailValidator
+  );
+  const password = useInput(
+    signUpValues ? signUpValues.password : "",
+    passwordValidator
+  );
+  const passwordConfirm = useInput(
+    signUpValues ? signUpValues.passwordConfirm : "",
+    passwordConfirmValidator
+  );
+  const [area, setArea] = useState({});
 
   const history = useHistory();
-
+  const location = useLocation();
+  const dispatch = useDispatch();
   function passwordConfirmValidator(value) {
     if (password.value !== value) {
       return { isValid: false, errorMessage: "비밀번호가 일치하지 않습니다." };
@@ -35,7 +50,8 @@ export default function SignUp() {
       !nickname.isValid ||
       !email.isValid ||
       !password.isValid ||
-      !passwordConfirm.isValid
+      !passwordConfirm.isValid ||
+      !area.areaId
     ) {
       alert("모든 항목을 입력하세요");
       return;
@@ -46,17 +62,33 @@ export default function SignUp() {
       password: password.value,
       info: "",
       image: "",
-      areaId: 1,
+      areaId: area.areaId,
     };
     const response = await request("POST", "/users/signup", data);
     if (response.isSuccess) {
-      alert("회원가입 성공");
+      dispatch(showToast("회원가입이 완료되었습니다."));
       history.push({ pathname: "/signin" });
     } else {
       alert("회원가입 실패");
       return;
     }
   }
+
+  function saveData() {
+    const signUpValues = {
+      nickname: nickname.value,
+      email: email.value,
+      password: password.value,
+      passwordConfirm: passwordConfirm.value,
+    };
+    localStorage.setItem("signUpValues", JSON.stringify(signUpValues));
+  }
+
+  useEffect(() => {
+    if (location.state && location.state.area) {
+      setArea(location.state.area);
+    }
+  }, []);
 
   return (
     <>
@@ -94,9 +126,16 @@ export default function SignUp() {
           isValid={passwordConfirm.isValid}
           errorMessage={passwordConfirm.errorMessage}
         />
-        <Link to="/search/location">
-          <LocationButton placeholder={location} />
-        </Link>
+        <LocationButton
+          onClick={() => {
+            saveData();
+            history.push({
+              pathname: "/search/location",
+              state: { isSignUp: true },
+            });
+          }}
+          placeholder={area.areaFullName ? area.areaFullName : "지역 선택"}
+        />
       </Wrapper>
       <FooterButton value="회원가입" onClick={handleSignUp} />
     </>
