@@ -25,7 +25,6 @@ public enum ResponseStatus {
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
     SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."),
-    SUCCESS_CHANGE_FOLLOW(200, 204, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
     SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
@@ -39,6 +38,12 @@ public enum ResponseStatus {
 
     // 204 No Content - 클라이언트의 요청은 정상적이다. 하지만 컨텐츠를 제공하지 않는다.
     NO_CONTENT(204, 200, "요청에 성공하였습니다."),
+    SUCCESS_UPDATE_DEAL(204, 202, "거래 수정에 성공하였습니다."),
+    SUCCESS_DELETE_DEAL(204, 203, "거래 삭제에 성공하였습니다."),
+    SUCCESS_DELETE_FOLLOW(204, 201, "팔로우 관계를 삭제하는데 성공하였습니다."),
+    SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."),
+    SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
+    SUCCESS_DELETE_LIKE_COMMENT(204, 207, "관심 한줄평 삭제에 성공하였습니다."),
 
     /*
      * 4XX Client errors
@@ -60,6 +65,7 @@ public enum ResponseStatus {
     BAD_ID_VALUE(400, 416, "올바른 아이디를 입력해주세요."),
     BAD_STATUS_VALUE(400, 417, "올바른 상태를 입력해주세요."),
     BAD_AREA_VALUE(400, 416, "올바른 지역을 입력해주세요."),
+    EXISTS_INFO(400, 420, "이미 존재하는 정보입니다."),
 
     // 401 Unauthorized - 클라이언트가 권한이 없기 때문에 작업을 진행할 수 없는 경우
     UNAUTHORIZED(401, 400, "권한이 없습니다."), UNAUTHORIZED_TOKEN(401, 410, "유효하지 않은 토큰입니다."),
@@ -68,8 +74,11 @@ public enum ResponseStatus {
     FORBIDDEN(403, 400, "권한이 없습니다."), FORBIDDEN_USER_ID(403, 410, "해당 userId에 대한 권한이 없습니다."),
 
     // 404 Not Found - 클라이언트가 요청한 자원이 존재하지 않다.
-    NOT_FOUND(404, 400, "NOT FOUND"), NOT_FOUND_USER(404, 405, "사용자 정보가 존재하지 않습니다."),
-    NOT_FOUND_BOOK(404, 410, "책 정보가 존재하지 않습니다."), NOT_FOUND_DEAL(404, 415, "거래 정보가 존재하지 않습니다."),
+    NOT_FOUND(404, 400, "NOT FOUND"),
+    NOT_FOUND_USER(404, 405, "사용자 정보가 존재하지 않습니다."),
+    NOT_FOUND_FOLLOW(404, 406, "팔로우 정보가 존재하지 않습니다."),
+    NOT_FOUND_BOOK(404, 410, "책 정보가 존재하지 않습니다."),
+    NOT_FOUND_DEAL(404, 415, "거래 정보가 존재하지 않습니다."),
 
     // 405 Method Not Allowed - 클라이언트의 요청이 허용되지 않는 메소드인 경우
     METHOD_NOT_ALLOWED(405, 400, "허용되지 않는 HTTP Method 입니다."),
