@@ -3,14 +3,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { PencilFill } from "react-bootstrap-icons";
 import { Wrapper } from "./styles";
-import { request, requestGet } from "../../../api";
+import { request, requestGet, requestDelete } from "../../../api";
 import BookDetail from "../../../components/book/BookDetail";
 import BookCommentItem from "../../../components/book/BookCommentItem";
 import BookCommentModal from "../../../components/book/BookCommentModal";
 
-const BookInfo = ({ match, history }) => {
-  const TOKEN =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWR4IjoxOSwiaWF0IjoxNTk1NDAyMzU0LCJleHAiOjE2MjY5MzgzNTQsInN1YiI6InVzZXJJbmZvIn0.fzkgrs6wi4KPN2_TwFcvO2ab_dN2Ds46DEqQIvqBAD0";
+const BookInfo = ({ match }) => {
+  const LOGIN_USER = JSON.parse(localStorage.getItem("loginUser")).id;
   const {
     params: { isbn },
   } = match;
@@ -32,34 +31,29 @@ const BookInfo = ({ match, history }) => {
   }, []);
 
   const getBookInfo = async (isbn) => {
-    const response = await request("get", `/books/${isbn}`, {
-      headers: {
-        "X-ACCESS-TOKEN": TOKEN,
-      },
-    });
+    const { result } = await requestGet(`/books/${isbn}`);
     const bookData = {
-      ...response.result,
-      price: response.result.price.toLocaleString("ko-KR", {
+      ...result,
+      price: result.price.toLocaleString("ko-KR", {
         currency: "KRW",
       }),
-      date: `${response.result.dateTime.substr(
-        0,
-        4
-      )}년 ${response.result.dateTime.substr(
+      commentAvgScore: result.commentAvgScore.toFixed(1),
+      date: `${result.dateTime.substr(0, 4)}년 ${result.dateTime.substr(
         5,
         2
-      )}월 ${response.result.dateTime.substr(8, 2)}일 출간`,
+      )}월 ${result.dateTime.substr(8, 2)}일 출간`,
     };
     setBookInfo(bookData);
   };
 
   const getBookComments = async (isbn) => {
-    const response = await requestGet("/comments", {
+    const { result } = await requestGet("/comments", {
       bookId: isbn,
       page: 0,
       size: 4,
     });
-    setBookComments(response.result);
+    console.log(result);
+    setBookComments(result);
   };
 
   const modalToggle = () => {
@@ -90,11 +84,17 @@ const BookInfo = ({ match, history }) => {
     });
     const commentData = { isbn, score, content: newComment };
     const response = await request("post", "/comments", commentData);
+    // 토스트 메세지로 response 띄어주는 기능 추가
     getBookComments(isbn);
-
     modalToggle();
   };
-
+  const deleteComment = async (commentId) => {
+    // 지우는 값
+    console.log(commentId);
+    const response = await requestDelete(`/comments/${commentId}`);
+    console.log(response);
+    getBookComments(isbn);
+  };
   return (
     <Wrapper>
       <BookDetail bookInfo={bookInfo} />
@@ -104,9 +104,13 @@ const BookInfo = ({ match, history }) => {
           <PencilFill onClick={modalToggle} />
         </div>
         <ul className="comments-list">
-          {bookComments.map((comment, idx) => (
-            <li key={idx}>
-              <BookCommentItem comment={comment} />
+          {bookComments.map((comment) => (
+            <li key={comment.commentId}>
+              <BookCommentItem
+                comment={comment}
+                LOGIN_USER={LOGIN_USER}
+                deleteComment={deleteComment}
+              />
             </li>
           ))}
         </ul>
@@ -120,6 +124,7 @@ const BookInfo = ({ match, history }) => {
         starRatingState={starRatingState}
         handleStarRating={handleStarRating}
         createComment={createComment}
+        deleteComment={deleteComment}
       />
     </Wrapper>
   );

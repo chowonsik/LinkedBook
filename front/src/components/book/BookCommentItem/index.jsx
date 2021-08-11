@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Wrapper } from "./styles";
 import { StarFill, Star, SuitHeart } from "react-bootstrap-icons";
 
-const BookCommentItem = ({ comment }) => {
+const BookCommentItem = ({ comment, LOGIN_USER, deleteComment }) => {
   const commentTime = timeForToday(comment.created_at);
   function timeForToday(value) {
     const today = new Date();
@@ -38,10 +38,17 @@ const BookCommentItem = ({ comment }) => {
       <div className="content">
         <header className="header">
           <span className="username">{comment.userNickname}</span>
-          <div className="btn">
-            <button className="update-btn">수정</button>
-            <button className="delete-btn">삭제</button>
-          </div>
+          {comment.userId === LOGIN_USER && (
+            <div className="btn">
+              <button className="update-btn">수정</button>
+              <button
+                className="delete-btn"
+                onClick={() => deleteComment(comment.commentId)}
+              >
+                삭제
+              </button>
+            </div>
+          )}
         </header>
         <div className="book-evaluation">
           <div className="star-rating">
