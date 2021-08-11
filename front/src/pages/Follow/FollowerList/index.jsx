@@ -96,7 +96,7 @@ function FollowerList({
       <Header isBack={true} isAlarm={true} title={"팔로워"} />
       <Container onScroll={handleScroll} height={height}>
         {followerList &&
-          followerList.map((follower) => (
+          followerList.map((follower, idx) => (
             <FollowItem
               profileImage={follower.user.image}
               nickName={follower.user.nickname}
@@ -105,7 +105,7 @@ function FollowerList({
               userId={follower.user.id}
               followId={follower.follow.id}
               onClick={handleClick}
-              key={follower.user.userId}
+              key={idx}
             />
           ))}
       </Container>

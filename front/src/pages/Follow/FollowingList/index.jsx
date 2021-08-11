@@ -75,7 +75,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
       <Header isBack={true} isAlarm={true} title={"팔로잉"} />
       <Container onScroll={handleScroll} height={height}>
         {followingList &&
-          followingList.map((following) => (
+          followingList.map((following, idx) => (
             <FollowItem
               profileImage={following.user.image}
               nickName={following.user.nickname}
@@ -83,7 +83,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
               isF4F={following.f4f}
               followId={following.follow.id}
               onClick={handleClick}
-              key={following.user.userId}
+              key={idx}
             />
           ))}
       </Container>
