@@ -27,7 +27,7 @@ function FollowerList({
   const totalElements = useSelector(
     (state) => state.followReducer.totalElements
   );
-  const loginUser = useSelector((state) => state.followReducer.loginUser);
+  const loginUser = JSON.parse(window.localStorage.getItem("loginUser"));
 
   useEffect(() => {
     handleSetHeight();
