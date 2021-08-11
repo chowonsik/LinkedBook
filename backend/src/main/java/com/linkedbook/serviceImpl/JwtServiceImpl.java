@@ -58,4 +58,25 @@ public class JwtServiceImpl implements JwtService {
             return -1;
         }
     }
+
+    @Override
+    public UserDB getUserDB() {
+        String accessToken = getAccessToken();
+        try {
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(ACCESS_TOKEN_SECRET_KEY)
+                    .parseClaimsJws(accessToken);
+            if (accessToken == null) return null;
+
+            int userId = claims.getBody().get("userId", Integer.class);
+            if (!ValidationCheck.isValidId(userId)) return null;
+
+            UserDB userDB = userRepository.findById(userId).orElse(null);
+            if (userDB == null || userDB.getStatus().equals("DELETED")) return null;
+
+            return userDB;
+        } catch (Exception exception) {
+            return null;
+        }
+    }
 }

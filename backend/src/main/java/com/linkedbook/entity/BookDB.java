@@ -1,22 +1,27 @@
 package com.linkedbook.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "book")
 public class BookDB {
     @Id
     @Column(name = "id", nullable = false, updatable = false)
-    private int id;
+    private String id;
 
     @Column(name = "title", nullable = false, length = 60)
     private String title;
@@ -27,18 +32,26 @@ public class BookDB {
     @Column(name = "author", nullable = false, length = 45)
     private String author;
 
-    @Column(name = "publisher", nullable = false, length = 45)
+    @Column(name = "publisher", length = 45)
     private String publisher;
 
-    @Column(name = "contents", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "contents", columnDefinition = "TEXT")
     private String contents;
 
     @Column(name = "datetime", nullable = false, updatable = false)
-    private Date datetime;
+    private Date dateTime;
 
     @Column(name = "image", nullable = false, columnDefinition = "TEXT")
     private String image;
 
     @Column(name = "status", nullable = false, length = 45)
     private String status;
+
+    // 책 관심등록 정보
+    @OneToMany(mappedBy = "book")
+    private List<LikeBookDB> likeBooks = new ArrayList<>();
+
+    // 책에 등록된 한줄평 정보
+    @OneToMany(mappedBy = "book")
+    private List<CommentDB> comments = new ArrayList<>();
 }

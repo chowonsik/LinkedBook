@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Input from "../../../components/common/Input";
 import OAuth from "../../../components/user/signin/OAuth";
 import SignInForm from "../../../components/user/signin/SignInForm";
@@ -31,12 +31,20 @@ export default function SignIn() {
         accessToken: response.result.accessToken,
       };
       localStorage.setItem("loginUser", JSON.stringify(loginUser));
-      history.push({ pathname: "/" });
+      const needRecommend = localStorage.getItem("needRecommend");
+      if (needRecommend === "false") {
+        history.push({ pathname: "/" });
+      } else {
+        history.push({ pathname: "/recommend" });
+      }
     } else {
       alert("이메일과 패스워드를 확인하세요");
       return;
     }
   }
+  useEffect(() => {
+    localStorage.removeItem("signUpValues");
+  }, []);
   return (
     <>
       <Wrapper>
