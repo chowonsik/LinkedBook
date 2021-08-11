@@ -66,8 +66,8 @@ public class DealController {
             pageable = PageRequest.of(selectDealInput.getPage(), selectDealInput.getSize(), Sort.Direction.ASC,
                     "price");
         } else {
-            pageable = PageRequest.of(selectDealInput.getPage(), selectDealInput.getSize(), Sort.Direction.ASC,
-                    "quality");
+            pageable = PageRequest.of(selectDealInput.getPage(), selectDealInput.getSize(),
+                    Sort.by("quality").and(Sort.by("created_at").descending()));
         }
         return dealService.selectDealList(selectDealInput, pageable);
     }
