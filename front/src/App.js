@@ -10,9 +10,7 @@ import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
 import FollowerList from "./pages/Follow/FollowerList";
 import FollowingList from "./pages/Follow/FollowingList";
-<<<<<<< HEAD
 import Alarm from "./pages/Alarm";
-=======
 import LocationSetting from "./pages/Main/LocationSetting";
 import DealDetail from "./pages/Main/DealDetail";
 import DealCreate from "./pages/deal/CreateDeal";
@@ -21,7 +19,6 @@ import Report from "./pages/Report";
 import SearchUser from "./pages/SearchUser";
 import ToastMessage from "./components/common/ToastMessage";
 
->>>>>>> develop
 function App() {
   return (
     <div className="App">
