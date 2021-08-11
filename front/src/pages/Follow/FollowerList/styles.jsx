@@ -1,7 +1,17 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  position: relatvie;
   width: 100%;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const Container = styled.div`
+  width: 100%;
+  height: ${(props) => props.height + "px"};
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
