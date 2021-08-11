@@ -58,10 +58,6 @@ public class CommentServiceImpl implements CommentService {
                 log.error("[comments/post] NOT FOUND BOOK error");
                 return new Response<>(NOT_FOUND_BOOK);
             }
-            if(commentRepository.existsByUserAndBook(loginUserDB, bookDB)) {
-                log.error("[comments/post] DUPLICATE COMMENT INFO error");
-                return new Response<>(EXISTS_INFO);
-            }
 
             commentDB = CommentDB.builder()
                     .user(loginUserDB)
