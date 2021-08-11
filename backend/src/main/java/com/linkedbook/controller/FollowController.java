@@ -22,7 +22,7 @@ public class FollowController {
      * 팔로우(follower / following) 유저 정보 조회 API
      * [GET] /follow/{info}
      * @param info follower: 유저를 팔로우하는 타 유저 정보를 원하는 상태 / following: 유저가 팔로우하는 타 유저 정보를 원하는 상태
-     * @return Response<List<FollowOutput>>
+     * @return PageResponse<FollowOutput>
      */
     // Path-Variable, Params
     @ResponseBody
@@ -37,7 +37,7 @@ public class FollowController {
      * [POST] /follow
      * @return Response<Object>
      */
-    // ㅌ2Body
+    // Body
     @ResponseBody
     @PostMapping
     public Response<Object> createFollowRelation(@RequestBody FollowInput followInput) {

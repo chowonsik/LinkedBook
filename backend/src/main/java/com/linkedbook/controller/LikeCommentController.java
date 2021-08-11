@@ -1,11 +1,19 @@
 package com.linkedbook.controller;
 
+import com.linkedbook.configuration.ValidationCheck;
+import com.linkedbook.dto.comment.CommentOutput;
+import com.linkedbook.dto.comment.CommentSearchInput;
 import com.linkedbook.dto.comment.like.LikeCommentInput;
+import com.linkedbook.dto.comment.like.LikeCommentOutput;
+import com.linkedbook.dto.comment.like.LikeCommentSearchInput;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.LikeCommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import static com.linkedbook.response.ResponseStatus.BAD_REQUEST;
 
 @RestController
 @RequestMapping("/like-comments")
@@ -14,6 +22,19 @@ import org.springframework.web.bind.annotation.*;
 public class LikeCommentController {
 
     private final LikeCommentService likeCommentService;
+
+    /**
+     * 관심 한줄평 조회 API
+     * [GET] /like-comments
+     * @return PageResponse<LikeCommentOutput>
+     */
+    // Params
+    @ResponseBody
+    @GetMapping
+    public PageResponse<LikeCommentOutput> getLikeCommentList(LikeCommentSearchInput likeCommentSearchInput) {
+        log.info("[GET] /like-comments");
+        return likeCommentService.getLikeComment(likeCommentSearchInput);
+    }
 
     /**
      * 관심 한줄평 생성 API

@@ -2,16 +2,27 @@ package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.CommentRepository;
+import com.linkedbook.dao.FollowRepository;
 import com.linkedbook.dao.LikeCommentRepository;
 import com.linkedbook.dto.comment.like.LikeCommentInput;
+import com.linkedbook.dto.comment.like.LikeCommentOutput;
+import com.linkedbook.dto.comment.like.LikeCommentSearchInput;
+import com.linkedbook.dto.common.CommonFollowOutput;
+import com.linkedbook.dto.common.CommonUserOutput;
 import com.linkedbook.entity.CommentDB;
+import com.linkedbook.entity.FollowDB;
 import com.linkedbook.entity.LikeCommentDB;
 import com.linkedbook.entity.UserDB;
+import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.LikeCommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +35,7 @@ public class LikeCommentServiceImpl implements LikeCommentService {
 
     private final LikeCommentRepository likeCommentRepository;
     private final CommentRepository commentRepository;
+    private final FollowRepository followRepository;
     private final JwtService jwtService;
 
     @Override
@@ -88,5 +100,63 @@ public class LikeCommentServiceImpl implements LikeCommentService {
         }
         // 3. 결과 return
         return new Response<>(null, SUCCESS_DELETE_LIKE_COMMENT);
+    }
+
+    @Override
+    public PageResponse<LikeCommentOutput> getLikeComment(LikeCommentSearchInput likeCommentSearchInput) {
+        // 1. 값 형식 체크
+        if(likeCommentSearchInput == null) return new PageResponse<>(NO_VALUES);
+        if(!ValidationCheck.isValidId(likeCommentSearchInput.getId())
+                || !ValidationCheck.isValidPage(likeCommentSearchInput.getPage())
+                || !ValidationCheck.isValidId(likeCommentSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
+        // 2. 일치하는 관심 한줄평 정보 가져오기
+        Page<LikeCommentOutput> responseList;
+        try {
+            int loginUserId = jwtService.getUserId();
+            if(loginUserId < 0) {
+                log.error("[like-comments/get] NOT FOUND LOGIN USER error");
+                return new PageResponse<>(NOT_FOUND_USER);
+            }
+            CommentDB commentDB = commentRepository.findById(likeCommentSearchInput.getId()).orElse(null);
+            if(commentDB == null) {
+                log.error("[like-comments/get] NOT FOUND COMMENT error");
+                return new PageResponse<>(NOT_FOUND_COMMENT);
+            }
+            // 필요한 정보 가공
+            Pageable paging = PageRequest.of(likeCommentSearchInput.getPage(), likeCommentSearchInput.getSize(), Sort.Direction.DESC, "id");
+            Page<LikeCommentDB> likeCommentDBList = likeCommentRepository.findByComment(commentDB, paging);
+            // 최종 출력값 정리
+            responseList = likeCommentDBList.map(likeCommentDB -> {
+                UserDB targetUserDB = likeCommentDB.getUser();
+                FollowDB loginAndTargetDB = followRepository.findByFromUserIdAndToUserId(loginUserId, targetUserDB.getId());
+
+                return LikeCommentOutput.builder()
+                        .id(likeCommentDB.getId())
+                        .user(
+                                CommonUserOutput.builder()
+                                        .id(targetUserDB.getId())
+                                        .email(targetUserDB.getEmail())
+                                        .nickname(targetUserDB.getNickname())
+                                        .image(targetUserDB.getImage())
+                                        .created_at(targetUserDB.getCreated_at())
+                                        .updated_at(targetUserDB.getUpdated_at())
+                                        .build()
+                        )
+                        .follow(
+                                CommonFollowOutput.builder()
+                                        .f4f(loginAndTargetDB != null)
+                                        .id(loginAndTargetDB == null ? 0 : loginAndTargetDB.getId())
+                                        .build()
+                        )
+                        .created_at(likeCommentDB.getCreated_at())
+                        .updated_at(likeCommentDB.getUpdated_at())
+                        .build();
+            });
+        } catch (Exception e) {
+            log.error("[comments/get] database error", e);
+            return new PageResponse<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new PageResponse<>(responseList, SUCCESS_GET_LIKE_COMMENT_LIST);
     }
 }

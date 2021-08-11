@@ -19,12 +19,11 @@ public enum ResponseStatus {
     SUCCESS_SELECT_AREA(200, 204, "지역 조회에 성공하였습니다."),
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_DEAL_LIST(200, 205, "거래 조회에 성공하였습니다."), 
-    SUCCESS_UPDATE_DEAL(200, 206, "거래 수정에 성공하였습니다."),
-    SUCCESS_DELETE_DEAL(200, 207, "거래 삭제에 성공하였습니다."), 
     SUCCESS_SELECT_DEAL_DETAIL(200, 208, "거래 상세 조회에 성공하였습니다."),
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
     SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."),
     SUCCESS_GET_COMMENT_LIST(200, 215, "한줄평 리스트를 가져오는데 성공하였습니다."),
+    SUCCESS_GET_LIKE_COMMENT_LIST(200, 215, "관심 한줄평 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
