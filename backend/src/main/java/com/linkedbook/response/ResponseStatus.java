@@ -13,22 +13,24 @@ public enum ResponseStatus {
      * 2XX Success
      */
     // 200 OK - 클라이언트의 요청을 서버가 정상적으로 처리했다.
-    SUCCESS(200, 200, "요청에 성공하였습니다."), SUCCESS_SIGN_IN(200, 201, "로그인에 성공하였습니다."),
+    SUCCESS_SELECT_USERAREA(200, 204, "유저 거래지역 조회에 성공하였습니다."),
+    SUCCESS(200, 200, "요청에 성공하였습니다."), 
+    SUCCESS_SIGN_IN(200, 201, "로그인에 성공하였습니다."),
+    SUCCESS_SELECT_AREA(200, 204, "지역 조회에 성공하였습니다."),
     SUCCESS_GET_FOLLOW_LIST(200, 202, "팔로우 리스트를 가져오는데 성공하였습니다."),
-    SUCCESS_SELECT_DEAL_LIST(200, 205, "거래 조회에 성공하였습니다."),
+    SUCCESS_SELECT_DEAL_LIST(200, 205, "거래 조회에 성공하였습니다."), 
+    SUCCESS_UPDATE_DEAL(200, 206, "거래 수정에 성공하였습니다."),
+    SUCCESS_DELETE_DEAL(200, 207, "거래 삭제에 성공하였습니다."), 
     SUCCESS_SELECT_DEAL_DETAIL(200, 208, "거래 상세 조회에 성공하였습니다."),
-
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
     SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."),
     SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
-    CREATED(201, 200, "리소스 생성에 성공하였습니다."),
-    CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
-    CREATED_BOOK(201, 220, "책 등록에 성공하였습니다."),
-    CREATED_FOLLOW(201, 202, "새로운 팔로우 관계 등록에 성공하였습니다."),
-    CREATED_REPORT(201, 210, "신고 등록에 성공하였습니다."),
+    CREATED(201, 200, "리소스 생성에 성공하였습니다."), CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
+    CREATED_BOOK(201, 220, "책 등록에 성공하였습니다."), CREATED_FOLLOW(201, 202, "새로운 팔로우 관계 등록에 성공하였습니다."),
+    CREATED_REPORT(201, 210, "신고 등록에 성공하였습니다."), CREATED_USERAREA(201, 211, "유저 거래 지역 등록에 성공하였습니다."),
     CREATED_DEAL(201, 203, "거래글 등록에 성공하였습니다."),
 
     // 202 Accepted - 클라이언트의 요청은 정상적이나, 서버가 아직 요청을 완료하지 못했다. 비동기
