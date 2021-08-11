@@ -33,7 +33,7 @@ export default function Main() {
   );
   const [prevSearch, setPrevSearch] = useState("");
   const area = useSelector(
-    (state) => state.userReducer.areas[state.userReducer.selectedAreaIndex]
+    (state) => state.userReducer.areas?.[state.userReducer.selectedAreaIndex]
   );
 
   const history = useHistory();
