@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import Input from "../../../components/common/Input";
 import Header from "../../../components/Layout/Header";
 import { requestGet } from "../../../api.js";
 import { DongList, DongListItem, Wrapper } from "./style";
+import { useDispatch } from "react-redux";
+import { addArea } from "../../../actions/Users";
 
 export default function LocationSearch() {
   const [search, setSearch] = useState("");
-  const [location, setLocation] = useState({});
   const [searchList, setSearchList] = useState([]);
+
+  const location = useLocation();
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   function handleSearchChange(e) {
     setSearch(e.target.value);
@@ -36,6 +42,18 @@ export default function LocationSearch() {
     const page = parseInt(searchList.length / 10);
     fetchData(page);
   }
+
+  function handleAreaClick(selectedArea) {
+    if (location.state) {
+      if (location.state.isSignUp) {
+        history.push({ pathname: "/signup", state: { area: selectedArea } });
+      }
+      if (location.state.isAreaAdd) {
+        dispatch(addArea(selectedArea));
+        history.goBack();
+      }
+    }
+  }
   useEffect(() => {
     if (search !== "") fetchData();
     else setSearchList([]);
@@ -52,8 +70,15 @@ export default function LocationSearch() {
         />
       </Wrapper>
       <DongList height={getListHeight()} onScroll={handleScroll}>
-        {searchList.map((item, i) => (
-          <DongListItem key={i}>{item.areaFullName}</DongListItem>
+        {searchList.map((area, i) => (
+          <DongListItem
+            onClick={() => {
+              handleAreaClick(area);
+            }}
+            key={i}
+          >
+            {area.areaFullName}
+          </DongListItem>
         ))}
       </DongList>
     </>

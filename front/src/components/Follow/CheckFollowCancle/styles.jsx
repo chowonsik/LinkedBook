@@ -2,14 +2,18 @@ import styled from "styled-components";
 import { fonts, colors } from "../../../styles";
 
 export const Wrapper = styled.div`
-  position: absolute;
-  left: 10%;
-  width: 80%;
+  position: fixed;
+  bottom: ${(props) => (props.isActive ? "0px" : "-200px")};
+  transition: all 1000ms;
+  margin-right: auto;
+  margin-left: auto;
+`;
+
+export const Container = styled.div`
   height: 130px;
   background-color: ${colors.lightGray};
-
+  z-index: 2;
   border-radius: 24px;
-  display: ${(props) => (props.isActive ? "flex" : "none")};
   transition: 1000ms;
   flex-direction: column;
   justify-content: center;
@@ -19,15 +23,7 @@ export const Wrapper = styled.div`
     font-size: ${fonts.lg};
     margin-bottom: 1rem;
   }
-  @media screen and (min-width: 1024px) {
-    top: 0;
-  }
-  @media screen and (max-width: 1023px) {
-    bottom: 0;
-  }
-  z-index: 2;
 `;
-
 export const Buttons = styled.div`
   display: flex;
   justify-content: flex-end;

@@ -24,6 +24,16 @@ export function requestGet(url, params) {
     .catch((error) => error);
 }
 
+export function requestDelete(url) {
+  return axios({
+    method: "delete",
+    url: baseURL + url,
+    headers: getHeader(),
+  })
+    .then((result) => result)
+    .catch((error) => error);
+}
+
 function getHeader() {
   const loginUser = JSON.parse(localStorage.getItem("loginUser"));
   if (!loginUser) return {};
