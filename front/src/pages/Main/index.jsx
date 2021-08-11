@@ -22,6 +22,8 @@ import {
   setSearch,
   resetDeals,
 } from "../../actions/Deal/index.js";
+import { requestGet } from "../../api";
+import { setAreas } from "../../actions/Users";
 
 export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
@@ -30,10 +32,27 @@ export default function Main() {
     (state) => state.dealReducer.searchDealList[filter]
   );
   const [prevSearch, setPrevSearch] = useState("");
+  const area = useSelector(
+    (state) => state.userReducer.areas[state.userReducer.selectedAreaIndex]
+  );
 
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
+    if (!loginUser) {
+      history.push({ pathname: "/signin" });
+    }
+    setUserArea();
+    if (location.state && location.state.reset) {
+      dispatch(resetDeals());
+    }
+    if (searchDealList.length === 0) {
+      handleSearchButtonClick();
+    }
+  }, []);
 
   function handleSearchChange(e) {
     dispatch(setSearch(e.target.value));
@@ -44,8 +63,10 @@ export default function Main() {
   }
 
   function handleSearchButtonClick() {
-    setPrevSearch(search);
-    dispatch(searchDeals(search));
+    if (area) {
+      setPrevSearch(search);
+      dispatch(searchDeals(search, 0, area.areaId));
+    }
   }
 
   function getListHeight() {
@@ -54,12 +75,10 @@ export default function Main() {
   function getNextBook() {
     if (searchDealList.length % 10 != 0) return;
     const page = parseInt(searchDealList.length / 10);
-    console.log(prevSearch);
-    console.log(search);
     if (prevSearch === search) {
-      dispatch(searchDeals(search, page));
+      dispatch(searchDeals(search, page, area.areaId));
     } else {
-      dispatch(searchDeals(prevSearch, page));
+      dispatch(searchDeals(prevSearch, page, area.areaId));
     }
   }
   function handleScroll(e) {
@@ -67,31 +86,34 @@ export default function Main() {
     if (scrollTop + clientHeight < scrollHeight) return;
     getNextBook();
   }
-  useEffect(() => {
-    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
-    if (!loginUser) {
-      history.push({ pathname: "/signin" });
-    }
-    if (location.state && location.state.reset) {
-      dispatch(resetDeals());
-    }
-    if (searchDealList.length === 0) {
-      handleSearchButtonClick();
-    }
-  }, []);
+
+  async function setUserArea() {
+    const response = await requestGet("/user-areas");
+    dispatch(setAreas(response.result));
+  }
+
   useEffect(() => {
     if (searchDealList.length === 0 && location.state && location.state.reset) {
       handleSearchButtonClick();
     }
-    console.log(searchDealList);
   }, [searchDealList]);
+  useEffect(() => {
+    handleSearchButtonClick();
+  }, [area]);
 
   return (
     <>
       <Header isLogo isSearch isAlarm />
       <Wrapper>
         <LocationContainer>
-          <span className="location">덕명동</span>
+          <span
+            className="location"
+            onClick={() => {
+              history.push({ pathname: "/location" });
+            }}
+          >
+            {area ? area.areaDongmyeonri : ""}
+          </span>
           <span
             className="icon"
             onClick={() => {
