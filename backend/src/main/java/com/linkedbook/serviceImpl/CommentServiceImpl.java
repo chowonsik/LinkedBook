@@ -1,14 +1,9 @@
 package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
-import com.linkedbook.dao.BookRepository;
-import com.linkedbook.dao.CommentRepository;
-import com.linkedbook.dao.LikeCommentRepository;
-import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dao.*;
 import com.linkedbook.dto.comment.*;
-import com.linkedbook.entity.BookDB;
-import com.linkedbook.entity.CommentDB;
-import com.linkedbook.entity.UserDB;
+import com.linkedbook.entity.*;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.CommentService;
@@ -22,6 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("CommentService")
@@ -30,6 +28,8 @@ import static com.linkedbook.response.ResponseStatus.*;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
+    private final CategoryRepository categoryRepository;
+    private final CommentCategoryRepository commentCategoryRepository;
     private final LikeCommentRepository likeCommentRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
@@ -43,6 +43,7 @@ public class CommentServiceImpl implements CommentService {
         if (!ValidationCheck.isValid(commentInput.getIsbn())
                 || !ValidationCheck.isValid(commentInput.getContent())
                 || !ValidationCheck.isValidScore(commentInput.getScore())
+                || !ValidationCheck.isValidCategoryArray(commentInput.getCategories())
         )
             return new Response<>(BAD_REQUEST);
         // 2. 한줄평 정보 생성
@@ -58,15 +59,32 @@ public class CommentServiceImpl implements CommentService {
                 log.error("[comments/post] NOT FOUND BOOK error");
                 return new Response<>(NOT_FOUND_BOOK);
             }
-
+            // 한줄평 저장
             commentDB = CommentDB.builder()
                     .user(loginUserDB)
                     .book(bookDB)
                     .score(commentInput.getScore())
                     .content(commentInput.getContent())
                     .build();
-
+            // 카테고리 저장
+            List<CommentCategoryDB> commentCategoryDBList = new ArrayList<>();
+            for (int categoryId : commentInput.getCategories()) {
+                if(categoryId == 0)  continue;
+                CategoryDB categoryDB = categoryRepository.findById(categoryId).orElse(null);
+                if(categoryId < 0 || categoryId > 23 || categoryDB == null) {
+                    log.error("[comments/post] NOT FOUND CATEGORY error");
+                    return new Response<>(NOT_FOUND_CATEGORY);
+                }
+                commentCategoryDBList.add(
+                        CommentCategoryDB.builder()
+                                .comment(commentDB)
+                                .book(bookDB)
+                                .category(categoryDB)
+                                .build()
+                );
+            }
             commentRepository.save(commentDB);
+            commentCategoryRepository.saveAll(commentCategoryDBList);
         } catch (Exception e) {
             log.error("[comments/post] database error", e);
             return new Response<>(DATABASE_ERROR);

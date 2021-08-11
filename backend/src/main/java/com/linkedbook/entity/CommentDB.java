@@ -52,4 +52,8 @@ public class CommentDB {
     // 한줄평 관심등록 정보
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment", orphanRemoval = true)
     private List<LikeCommentDB> likeComments = new ArrayList<>();
+
+    // 카테고리 정보
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment", orphanRemoval = true)
+    private List<CommentCategoryDB> categories = new ArrayList<>();
 }

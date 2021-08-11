@@ -9,4 +9,5 @@ public class CommentInput {
     private String isbn;
     private double score;
     private String content;
+    private int[] categories;
 }
