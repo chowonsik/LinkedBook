@@ -2,7 +2,12 @@ import { useState } from "react";
 import { Wrapper } from "./styles";
 import { StarFill, Star, SuitHeart } from "react-bootstrap-icons";
 
-const BookCommentItem = ({ comment, LOGIN_USER, deleteComment }) => {
+const BookCommentItem = ({
+  comment,
+  LOGIN_USER,
+  deleteComment,
+  onUpdateClick,
+}) => {
   const commentTime = timeForToday(comment.created_at);
   function timeForToday(value) {
     const today = new Date();
@@ -40,7 +45,12 @@ const BookCommentItem = ({ comment, LOGIN_USER, deleteComment }) => {
           <span className="username">{comment.userNickname}</span>
           {comment.userId === LOGIN_USER && (
             <div className="btn">
-              <button className="update-btn">수정</button>
+              <button
+                className="update-btn"
+                onClick={() => onUpdateClick(comment)}
+              >
+                수정
+              </button>
               <button
                 className="delete-btn"
                 onClick={() => deleteComment(comment.commentId)}

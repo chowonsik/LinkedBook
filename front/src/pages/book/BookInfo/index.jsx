@@ -17,6 +17,7 @@ const BookInfo = ({ match }) => {
   const [bookComments, setBookComments] = useState([]);
   const [modalActive, setModalActive] = useState(false);
   const [newComment, setNewComment] = useState({});
+  const [editing, setEditing] = useState(false);
   const [starRatingState, setStarRatingState] = useState([
     false,
     false,
@@ -52,12 +53,14 @@ const BookInfo = ({ match }) => {
       page: 0,
       size: 4,
     });
-    console.log(result);
     setBookComments(result);
   };
 
   const modalToggle = () => {
     setModalActive((prev) => !prev);
+    setEditing(false);
+    setStarRatingState([false, false, false, false, false]);
+    setNewComment("");
   };
 
   const handleModalOutsideClick = (e) => {
@@ -66,35 +69,63 @@ const BookInfo = ({ match }) => {
     }
   };
 
-  const handleStarRating = (e, idx) => {
+  const handleStarRating = (num) => {
     let clickStates = [...starRatingState];
+    let score = 0;
     for (let i = 0; i < 5; i++) {
-      if (i <= idx) clickStates[i] = true;
-      else clickStates[i] = false;
+      if (i < num) {
+        clickStates[i] = true;
+        score++;
+      } else clickStates[i] = false;
     }
     setStarRatingState(clickStates);
+    setNewComment({ ...newComment, score });
+  };
+
+  const validCheck = () => {
+    if (!newComment.score) {
+      alert("별점을 선택하세요.");
+      return false;
+    }
+    if (!newComment.content) {
+      alert("한줄평을 입력하세요.");
+      return false;
+    }
+    return true;
   };
 
   const createComment = async () => {
-    let score = 0;
-    starRatingState.map((clicekdStar) => {
-      if (clicekdStar) {
-        score++;
-      }
-    });
-    const commentData = { isbn, score, content: newComment };
-    const response = await request("post", "/comments", commentData);
-    // 토스트 메세지로 response 띄어주는 기능 추가
-    getBookComments(isbn);
+    const valid = validCheck();
+    if (!valid) return;
+    const commentData = { isbn, ...newComment };
+    await request("post", "/comments", commentData);
     modalToggle();
+    getBookComments(isbn);
+  };
+
+  const onUpdateClick = async ({ commentContent, commentScore, commentId }) => {
+    setEditing(true);
+    handleStarRating(commentScore);
+    setNewComment({
+      id: commentId,
+      content: commentContent,
+      score: commentScore,
+    });
+    setModalActive((prev) => !prev);
+  };
+
+  const updateComment = async () => {
+    const valid = validCheck();
+    if (!valid) return;
+    await request("patch", `/comments/${newComment.id}`, newComment);
+    modalToggle();
+    getBookComments(isbn);
   };
   const deleteComment = async (commentId) => {
-    // 지우는 값
-    console.log(commentId);
-    const response = await requestDelete(`/comments/${commentId}`);
-    console.log(response);
+    await requestDelete(`/comments/${commentId}`);
     getBookComments(isbn);
   };
+
   return (
     <Wrapper>
       <BookDetail bookInfo={bookInfo} />
@@ -110,6 +141,7 @@ const BookInfo = ({ match }) => {
                 comment={comment}
                 LOGIN_USER={LOGIN_USER}
                 deleteComment={deleteComment}
+                onUpdateClick={onUpdateClick}
               />
             </li>
           ))}
@@ -124,7 +156,8 @@ const BookInfo = ({ match }) => {
         starRatingState={starRatingState}
         handleStarRating={handleStarRating}
         createComment={createComment}
-        deleteComment={deleteComment}
+        updateComment={updateComment}
+        editing={editing}
       />
     </Wrapper>
   );

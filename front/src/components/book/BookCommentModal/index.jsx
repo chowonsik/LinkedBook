@@ -3,12 +3,15 @@ import { StarFill, Star } from "react-bootstrap-icons";
 
 const BookCommentModal = ({
   starRatingState,
+  newComment,
+  editing,
   setNewComment,
   modalToggle,
   modalActive,
   handleModalOutsideClick,
   handleStarRating,
   createComment,
+  updateComment,
 }) => {
   return (
     <Wrapper>
@@ -25,7 +28,7 @@ const BookCommentModal = ({
                   <span
                     key={idx}
                     className="star"
-                    onClick={(e) => handleStarRating(e, idx)}
+                    onClick={() => handleStarRating(idx)}
                   >
                     {starRatingState[idx] ? <StarFill /> : <Star />}
                   </span>
@@ -34,12 +37,17 @@ const BookCommentModal = ({
             </div>
             <input
               onChange={(e) => {
-                setNewComment(e.target.value);
+                setNewComment({ ...newComment, content: e.target.value });
               }}
+              value={newComment.content || ""}
               type="text"
             />
             <footer>
-              <button onClick={createComment}>등록</button>
+              {editing ? (
+                <button onClick={() => updateComment()}>수정</button>
+              ) : (
+                <button onClick={createComment}>등록</button>
+              )}
               <button onClick={modalToggle}>취소</button>
             </footer>
           </div>
