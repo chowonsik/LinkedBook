@@ -1,10 +1,15 @@
 import React from "react";
 import { colors, fonts } from "../../../../styles";
-import RoundButton from "../../../common/Buttons/RoundButton";
 
-import { ButtonWrapper, ImageWrapper, TextWrapper, Wrapper } from "./style";
+import {
+  ButtonWrapper,
+  ImageWrapper,
+  TextWrapper,
+  Wrapper,
+  RoundButton,
+} from "./style";
 
-export default function RecommendUserListItem({ user }) {
+export default function RecommendUserListItem({ user, follow, unFollow }) {
   return (
     <Wrapper>
       <ImageWrapper>
@@ -22,14 +27,24 @@ export default function RecommendUserListItem({ user }) {
         <div className="count-book">등록한 책 : {user.dealCnt}</div>
       </TextWrapper>
       <ButtonWrapper>
-        <RoundButton
-          value="팔로우"
-          width="54px"
-          height="32px"
-          borderRadius="10px"
-          fontSize={fonts.md}
-          backgroundColor={colors.yellow}
-        />
+        {user.isFollowing ? (
+          <RoundButton
+            isFollowing={true}
+            onClick={() => {
+              unFollow(user.userId);
+            }}
+          >
+            팔로잉
+          </RoundButton>
+        ) : (
+          <RoundButton
+            onClick={() => {
+              follow(user.userId);
+            }}
+          >
+            팔로우
+          </RoundButton>
+        )}
       </ButtonWrapper>
     </Wrapper>
   );
