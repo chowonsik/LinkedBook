@@ -23,7 +23,7 @@ public enum ResponseStatus {
     SUCCESS_SELECT_PROFILE(200, 203, "프로필 조회에 성공하였습니다."),
     SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."),
     SUCCESS_GET_COMMENT_LIST(200, 215, "한줄평 리스트를 가져오는데 성공하였습니다."),
-    SUCCESS_GET_LIKE_COMMENT_LIST(200, 215, "관심 한줄평 리스트를 가져오는데 성공하였습니다."),
+    SUCCESS_GET_LIKE_COMMENT_LIST(200, 216, "관심 한줄평 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
@@ -38,34 +38,23 @@ public enum ResponseStatus {
     ACCEPTED(202, 200, "요청에 성공하였습니다."),
 
     // 204 No Content - 클라이언트의 요청은 정상적이다. 하지만 컨텐츠를 제공하지 않는다.
-    NO_CONTENT(204, 200, "요청에 성공하였습니다."),
-    SUCCESS_UPDATE_DEAL(204, 202, "거래 수정에 성공하였습니다."),
-    SUCCESS_DELETE_DEAL(204, 203, "거래 삭제에 성공하였습니다."),
-    SUCCESS_DELETE_FOLLOW(204, 201, "팔로우 관계를 삭제하는데 성공하였습니다."),
-    SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."),
-    SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
+    NO_CONTENT(204, 200, "요청에 성공하였습니다."), SUCCESS_UPDATE_DEAL(204, 202, "거래 수정에 성공하였습니다."),
+    SUCCESS_DELETE_DEAL(204, 203, "거래 삭제에 성공하였습니다."), SUCCESS_DELETE_FOLLOW(204, 201, "팔로우 관계를 삭제하는데 성공하였습니다."),
+    SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."), SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
     SUCCESS_DELETE_LIKE_COMMENT(204, 207, "관심 한줄평 삭제에 성공하였습니다."),
 
     /*
      * 4XX Client errors
      */
     // 400 Rad Request - 클라이언트의 요청이 유효하지 않아 더 이상 작업을 진행하지 않는 경우
-    BAD_REQUEST(400, 400, "요청에 실패하였습니다."),
-    FAILED_TO_REQUEST(400, 401, "데이터를 불러오는데 실패하였습니다."),
-    FAILED_TO_CREATE_TOKEN(400, 402, "토큰 생성에 실패하였습니다."),
-    FAILED_TO_SIGN_IN(400, 403, "로그인에 실패하였습니다."),
-    EXISTS_EMAIL(400, 404, "이미 존재하는 이메일입니다."),
-    EXISTS_NICKNAME(400, 405, "이미 존재하는 닉네임입니다."),
-    NO_VALUES(400, 410, "입력되지 않은 값이 존재합니다."),
-    BAD_ACCESS_TOKEN_VALUE(400, 411, "accessToken을 입력해주세요."),
-    BAD_EMAIL_VALUE(400, 412, "올바른 이메일을 입력해주세요."),
-    BAD_PASSWORD_VALUE(400, 413, "올바른 비밀번호를 입력해주세요."),
-    BAD_NAME_VALUE(400, 414, "올바른 이름을 입력해주세요."),
-    BAD_FOLLOW_INFO_VALUE(400, 415, "올바른 팔로우 관계를 입력해주세요."),
-    BAD_SEARCH_TYPE_VALUE(400, 420, "올바른 검색 타입을 입력해주세요."),
-    BAD_ID_VALUE(400, 416, "올바른 아이디를 입력해주세요."),
-    BAD_STATUS_VALUE(400, 417, "올바른 상태를 입력해주세요."),
-    BAD_AREA_VALUE(400, 416, "올바른 지역을 입력해주세요."),
+    BAD_REQUEST(400, 400, "요청에 실패하였습니다."), FAILED_TO_REQUEST(400, 401, "데이터를 불러오는데 실패하였습니다."),
+    FAILED_TO_CREATE_TOKEN(400, 402, "토큰 생성에 실패하였습니다."), FAILED_TO_SIGN_IN(400, 403, "로그인에 실패하였습니다."),
+    EXISTS_EMAIL(400, 404, "이미 존재하는 이메일입니다."), EXISTS_NICKNAME(400, 405, "이미 존재하는 닉네임입니다."),
+    NO_VALUES(400, 410, "입력되지 않은 값이 존재합니다."), BAD_ACCESS_TOKEN_VALUE(400, 411, "accessToken을 입력해주세요."),
+    BAD_EMAIL_VALUE(400, 412, "올바른 이메일을 입력해주세요."), BAD_PASSWORD_VALUE(400, 413, "올바른 비밀번호를 입력해주세요."),
+    BAD_NAME_VALUE(400, 414, "올바른 이름을 입력해주세요."), BAD_FOLLOW_INFO_VALUE(400, 415, "올바른 팔로우 관계를 입력해주세요."),
+    BAD_SEARCH_TYPE_VALUE(400, 420, "올바른 검색 타입을 입력해주세요."), BAD_ID_VALUE(400, 416, "올바른 아이디를 입력해주세요."),
+    BAD_STATUS_VALUE(400, 417, "올바른 상태를 입력해주세요."), BAD_AREA_VALUE(400, 416, "올바른 지역을 입력해주세요."),
     EXISTS_INFO(400, 420, "이미 존재하는 정보입니다."),
 
 
