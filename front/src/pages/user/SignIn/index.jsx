@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Input from "../../../components/common/Input";
 import OAuth from "../../../components/user/signin/OAuth";
 import SignInForm from "../../../components/user/signin/SignInForm";
@@ -42,6 +42,9 @@ export default function SignIn() {
       return;
     }
   }
+  useEffect(() => {
+    localStorage.removeItem("signUpValues");
+  }, []);
   return (
     <>
       <Wrapper>

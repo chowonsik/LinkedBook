@@ -58,10 +58,6 @@ public class CommentServiceImpl implements CommentService {
                 log.error("[comments/post] NOT FOUND BOOK error");
                 return new Response<>(NOT_FOUND_BOOK);
             }
-            if(commentRepository.existsByUserAndBook(loginUserDB, bookDB)) {
-                log.error("[comments/post] DUPLICATE COMMENT INFO error");
-                return new Response<>(EXISTS_INFO);
-            }
 
             commentDB = CommentDB.builder()
                     .user(loginUserDB)
@@ -145,6 +141,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public PageResponse<CommentOutput> getCommentList(CommentSearchInput commentSearchInput, boolean isUserPage) {
         // 1. 값 형식 체크
+        if(commentSearchInput == null) return new PageResponse<>(NO_VALUES);
         if(!ValidationCheck.isValidPage(commentSearchInput.getPage())
                 || !ValidationCheck.isValidId(commentSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
         // 2. 일치하는 한줄평 정보 가져오기

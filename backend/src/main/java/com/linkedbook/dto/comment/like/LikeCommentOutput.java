@@ -1,4 +1,4 @@
-package com.linkedbook.dto.follow;
+package com.linkedbook.dto.comment.like;
 
 import com.linkedbook.dto.common.CommonFollowOutput;
 import com.linkedbook.dto.common.CommonUserOutput;
@@ -11,9 +11,9 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder
-public class FollowOutput {
+@Getter
+public class LikeCommentOutput {
     private int id;
     private CommonUserOutput user;
     private CommonFollowOutput follow;

@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static com.linkedbook.response.ResponseStatus.*;
 
 @RestController
@@ -27,7 +25,7 @@ public class CommentController {
      * 한줄평 조회 API
      * [GET] /comments?userId={userId}
      * [GET] /comments?bookId={bookId}
-     * @return Response<Object>
+     * @return PageResponse<CommentOutput>
      */
     // Params
     @ResponseBody
