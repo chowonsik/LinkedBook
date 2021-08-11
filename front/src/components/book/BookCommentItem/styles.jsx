@@ -37,7 +37,6 @@ export const Wrapper = styled.div`
       }
       .book-evaluation {
         display: flex;
-        align-items: center;
         .star-rating {
           color: ${colors.yellow};
           height: auto;
@@ -50,7 +49,6 @@ export const Wrapper = styled.div`
         span {
           font-size: ${fonts.xs};
           color: ${colors.gray};
-          padding-bottom: 2px;
         }
       }
       .book-comment {

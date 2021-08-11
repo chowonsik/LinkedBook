@@ -11,7 +11,8 @@ export const Wrapper = styled.div`
     .book-img {
       position: absolute;
       z-index: 1;
-      transform: translateX(50%);
+      left: 50%;
+      transform: translateX(-50%);
       height: 270px;
     }
     .background-img {
@@ -52,7 +53,7 @@ export const Wrapper = styled.div`
         font-size: ${fonts.lg};
         margin-bottom: 4px;
       }
-      .book-info {
+      .publishing-info {
         font-size: ${fonts.md};
         color: ${colors.gray};
         margin-bottom: 15px;
