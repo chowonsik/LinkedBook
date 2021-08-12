@@ -22,18 +22,22 @@ import {
   UserInfo,
   Wrapper,
 } from "./style";
-import { useParams } from "react-router-dom";
-import { requestGet } from "../../../api";
+import { useHistory, useParams } from "react-router-dom";
+import { request, requestGet } from "../../../api";
 import { useDispatch } from "react-redux";
 import { addLikeDeal, deleteLikeDeal } from "../../../actions/Deal";
+import { showToast } from "../../../actions/Notification";
+import DeleteConfirm from "../../../components/deal/DeleteConfirm";
 export default function DealDetail() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { dealId } = useParams();
   const [dealData, setDealData] = useState({
     dealImages: [],
   });
+  const [confirmShow, setConfirmShow] = useState(false);
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   function goLeft() {
     if (selectedIndex === 0) return;
@@ -59,6 +63,22 @@ export default function DealDetail() {
     return price ? price.toLocaleString() : 0;
   }
 
+  async function handleDeleteButtonClick() {
+    const response = await request("PATCH", `/deals/${dealData.dealId}`, {
+      status: "DELETED",
+    });
+    console.log(response);
+    if (response.isSuccess) {
+      dispatch(showToast("게시글이 삭제되었습니다."));
+      history.goBack();
+    } else {
+      dispatch(showToast("삭제 실패"));
+    }
+  }
+  function handleCancleButtonClick() {
+    setConfirmShow(false);
+  }
+
   useEffect(() => {
     fetchData();
     getLoginUser();
@@ -66,6 +86,11 @@ export default function DealDetail() {
 
   return (
     <>
+      <DeleteConfirm
+        confirmShow={confirmShow}
+        onCancleButtonClick={handleCancleButtonClick}
+        onDeleteButtonClick={handleDeleteButtonClick}
+      />
       <Header title="거래 정보" isBack />
       <Wrapper>
         <ImageWrapper>
@@ -217,6 +242,9 @@ export default function DealDetail() {
               width="40%"
               fontSize={fonts.xl}
               backgroundColor={colors.red}
+              onClick={() => {
+                setConfirmShow(true);
+              }}
             />
           ) : (
             <RoundButton
