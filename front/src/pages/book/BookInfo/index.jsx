@@ -1,12 +1,14 @@
 // import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { PencilFill } from "react-bootstrap-icons";
-import { Wrapper } from "./styles";
+import { BookmarkFill, PencilFill } from "react-bootstrap-icons";
+import { Wrapper, Footer } from "./styles";
 import { request, requestGet, requestDelete } from "../../../api";
 import BookDetail from "../../../components/book/BookDetail";
 import BookCommentItem from "../../../components/book/BookCommentItem";
 import BookCommentModal from "../../../components/book/BookCommentModal";
+import Header from "../../../components/Layout/Header";
+import RoundButton from "../../../components/common/Buttons/RoundButton";
 
 const BookInfo = ({ match }) => {
   const LOGIN_USER = JSON.parse(localStorage.getItem("loginUser")).id;
@@ -38,7 +40,7 @@ const BookInfo = ({ match }) => {
       price: result.price.toLocaleString("ko-KR", {
         currency: "KRW",
       }),
-      commentAvgScore: result.commentAvgScore.toFixed(1),
+      commentAvgScore: result.commentAvgScore,
       date: `${result.dateTime.substr(0, 4)}년 ${result.dateTime.substr(
         5,
         2
@@ -101,6 +103,7 @@ const BookInfo = ({ match }) => {
     await request("post", "/comments", commentData);
     modalToggle();
     getBookComments(isbn);
+    getBookInfo(isbn);
   };
 
   const onUpdateClick = async ({ commentContent, commentScore, commentId }) => {
@@ -120,46 +123,57 @@ const BookInfo = ({ match }) => {
     await request("patch", `/comments/${newComment.id}`, newComment);
     modalToggle();
     getBookComments(isbn);
+    getBookInfo(isbn);
   };
   const deleteComment = async (commentId) => {
     await requestDelete(`/comments/${commentId}`);
     getBookComments(isbn);
+    getBookInfo(isbn);
   };
 
   return (
-    <Wrapper>
-      <BookDetail bookInfo={bookInfo} />
-      <div className="book-comments">
-        <div className="section-header">
-          <h4>한줄평</h4>
-          <PencilFill onClick={modalToggle} />
+    <>
+      <Header isBack isSearch isAlarm title={bookInfo.title} />
+      <Wrapper>
+        <BookDetail bookInfo={bookInfo} />
+        <div className="book-comments">
+          <div className="section-header">
+            <h4>한줄평</h4>
+            <PencilFill onClick={modalToggle} />
+          </div>
+          <ul className="comments-list">
+            {bookComments
+              ? bookComments.map((comment) => (
+                  <li key={comment.commentId}>
+                    <BookCommentItem
+                      comment={comment}
+                      LOGIN_USER={LOGIN_USER}
+                      deleteComment={deleteComment}
+                      onUpdateClick={onUpdateClick}
+                    />
+                  </li>
+                ))
+              : "한줄평이 존재하지 않습니다."}
+          </ul>
         </div>
-        <ul className="comments-list">
-          {bookComments.map((comment) => (
-            <li key={comment.commentId}>
-              <BookCommentItem
-                comment={comment}
-                LOGIN_USER={LOGIN_USER}
-                deleteComment={deleteComment}
-                onUpdateClick={onUpdateClick}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-      <BookCommentModal
-        modalToggle={modalToggle}
-        modalActive={modalActive}
-        handleModalOutsideClick={handleModalOutsideClick}
-        setNewComment={setNewComment}
-        newComment={newComment}
-        starRatingState={starRatingState}
-        handleStarRating={handleStarRating}
-        createComment={createComment}
-        updateComment={updateComment}
-        editing={editing}
-      />
-    </Wrapper>
+        <BookCommentModal
+          modalToggle={modalToggle}
+          modalActive={modalActive}
+          handleModalOutsideClick={handleModalOutsideClick}
+          setNewComment={setNewComment}
+          newComment={newComment}
+          starRatingState={starRatingState}
+          handleStarRating={handleStarRating}
+          createComment={createComment}
+          updateComment={updateComment}
+          editing={editing}
+        />
+      </Wrapper>
+      <Footer>
+        <BookmarkFill className="bookmark-icon" />
+        <RoundButton value="거래보기" width="70%" />
+      </Footer>
+    </>
   );
 };
 

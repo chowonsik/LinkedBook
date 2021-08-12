@@ -19,7 +19,10 @@ const BookDetail = ({ bookInfo }) => {
           <div>
             <strong className="score">
               <StarFill className="icon" />
-              {bookInfo.commentAvgScore} / 5
+              {bookInfo.commentAvgScore === "NaN"
+                ? 0
+                : bookInfo.commentAvgScore}
+              / 5
             </strong>
             <strong className="bookmark-cnt">
               <BookmarkFill className="icon" />
