@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
 import {
   ArrowLeft,
   Search,
@@ -13,6 +14,7 @@ import {
   LogoAndTitle,
   IconsAndDone,
   DoneButton,
+  Block,
 } from "./styles";
 
 /*
@@ -30,23 +32,26 @@ function Header({
   isDeclare = false,
   isDone = false,
   DoneBtnClick,
+  onClickSearch,
 }) {
   function handleClickBack() {
     history.goBack();
   }
   return (
-    <>
+    <Block>
       <Wrapper>
         <BackButton isBack={isBack}>
           <ArrowLeft className="back-btn" onClick={handleClickBack} />
         </BackButton>
 
         <LogoAndTitle isLogo={isLogo} isTitle={title}>
-          <img
-            src="assets/images/logo/main-logo.png"
-            alt="Linked Book"
-            className="logo"
-          />
+          <Link to="/">
+            <img
+              src="assets/images/logo/main-logo.png"
+              alt="Linked Book"
+              className="logo"
+            />
+          </Link>
           <h3>{title}</h3>
         </LogoAndTitle>
 
@@ -56,7 +61,9 @@ function Header({
           isDeclare={isDeclare}
           isDone={isDone}
         >
-          <Search className="search-btn" />
+          <Link to="/search/user">
+            <Search className="search-btn" onClick={onClickSearch} />
+          </Link>
           <BellFill className="alarm-btn" />
           <PatchExclamationFill className="declare" />
           <DoneButton className="done-btn" onClick={DoneBtnClick}>
@@ -64,7 +71,7 @@ function Header({
           </DoneButton>
         </IconsAndDone>
       </Wrapper>
-    </>
+    </Block>
   );
 }
 

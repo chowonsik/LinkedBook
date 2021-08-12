@@ -3,18 +3,18 @@ import RecommendUserListItem from "../RecommendUserListItem";
 
 import { Wrapper } from "./style";
 
-export default function RecommendUserList() {
+export default function RecommendUserList({ userList, follow, unFollow }) {
   return (
     <>
       <Wrapper>
-        <RecommendUserListItem />
-        <RecommendUserListItem />
-        <RecommendUserListItem />
-        <RecommendUserListItem />
-        <RecommendUserListItem />
-        <RecommendUserListItem />
-        <RecommendUserListItem />
-        <RecommendUserListItem />
+        {userList.map((user) => (
+          <RecommendUserListItem
+            user={user}
+            key={user.userId}
+            follow={follow}
+            unFollow={unFollow}
+          />
+        ))}
       </Wrapper>
     </>
   );

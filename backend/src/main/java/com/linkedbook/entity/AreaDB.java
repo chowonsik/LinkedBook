@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
-import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 

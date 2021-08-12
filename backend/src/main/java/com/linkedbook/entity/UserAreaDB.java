@@ -32,5 +32,4 @@ public class UserAreaDB {
 
     @Column(name = "orders", nullable = false)
     private int orders;
-
 }
