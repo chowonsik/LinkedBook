@@ -3,18 +3,22 @@ import { colors, fonts } from "../../styles";
 
 export const Wrapper = styled.div`
   margin: 0 0 60px 0;
-  padding: 10px 20px;
+  padding: 10px 0;
 `;
 
 export const DealList = styled.div`
   margin-top: 10px;
   height: ${(props) => props.height}px;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const LocationContainer = styled.div`
   display: flex;
   margin-bottom: 10px;
+  padding: 0 20px;
   .location {
     font-size: ${fonts.xxl};
     margin-right: 10px;
@@ -29,11 +33,13 @@ export const InputContainer = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
+  padding: 0 20px;
 `;
 export const SortByList = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
+  padding: 0 20px;
 `;
 
 export const SortButton = styled.button`
