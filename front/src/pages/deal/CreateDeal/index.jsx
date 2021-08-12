@@ -112,7 +112,7 @@ export default function CreateDeal() {
     setListShow(false);
   }
   // 책 검색 결과 리스트에서 책 클릭 이벤트 처리
-  function handleBookClick(book) {
+  async function handleBookClick(book) {
     const data = {
       isbn: book.isbn.split(" ")[1],
       title: book.title,
@@ -124,8 +124,12 @@ export default function CreateDeal() {
       thumbnail: book.thumbnail,
       status: book.status,
     };
-    request("POST", "/books", data);
-    setBookInfo(book);
+    const response = await request("POST", "/books", data);
+    if (response.isSuccess) {
+      setBookInfo(book);
+    } else {
+      dispatch(showToast("등록할수 없는 책입니다."));
+    }
   }
   // 책 검색 인풋 onChange 처리
   function handleSearchChange(e) {

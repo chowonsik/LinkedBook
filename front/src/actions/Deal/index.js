@@ -2,7 +2,7 @@ import { requestGet } from "../../api.js";
 
 export const SET_SEARCH = "SET_SEARCH";
 export const SET_FILTER = "SET_FILTER";
-export const SET_SELECT = "SET_SELECT";
+export const SET_SELECT_DEALS = "SET_SELECT_DEALS";
 export const SET_SELECTED_DEALS = "SET_SELECTED_DEALS";
 export const SEARCH_DEALS = "SEARCH_DEALS";
 export const RESET_DEALS = "RESET_DEALS";
@@ -23,7 +23,7 @@ export const setSearch = (search) => {
   };
 };
 
-export const setSelect = (filter) => (dispatch, getState) => {
+export const setSelectDeals = (filter) => (dispatch, getState) => {
   dispatch(setFilter(filter));
   dispatch(setSelectedDeals(getState().dealReducer.deals[filter]));
 };
@@ -72,7 +72,7 @@ export const searchDeals =
           QUALITY: QUALITY.result,
         })
       );
-      dispatch(setSelect("NEW"));
+      dispatch(setSelectDeals("NEW"));
     } else {
       dispatch(
         setDeals({
@@ -81,7 +81,7 @@ export const searchDeals =
           QUALITY: newQUALITY,
         })
       );
-      dispatch(setSelect(getState().dealReducer.filter));
+      dispatch(setSelectDeals(getState().dealReducer.filter));
     }
     dispatch(setIsLoading(false));
   };
