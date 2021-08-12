@@ -41,6 +41,7 @@ export default function Main() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    localStorage.removeItem("persist:root");
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser) {
       history.push({ pathname: "/signin" });
