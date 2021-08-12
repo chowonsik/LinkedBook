@@ -69,9 +69,8 @@ public class CommentServiceImpl implements CommentService {
             // 카테고리 저장
             List<CommentCategoryDB> commentCategoryDBList = new ArrayList<>();
             for (int categoryId : commentInput.getCategories()) {
-                if(categoryId == 0)  continue;
                 CategoryDB categoryDB = categoryRepository.findById(categoryId).orElse(null);
-                if(categoryId < 0 || categoryId > 23 || categoryDB == null) {
+                if(categoryId < 1 || categoryId > 23 || categoryDB == null) {
                     log.error("[comments/post] NOT FOUND CATEGORY error");
                     return new Response<>(NOT_FOUND_CATEGORY);
                 }
@@ -101,6 +100,7 @@ public class CommentServiceImpl implements CommentService {
         if (!ValidationCheck.isValidId(id)
                 || !ValidationCheck.isValid(commentInput.getContent())
                 || !ValidationCheck.isValidScore(commentInput.getScore())
+                || !ValidationCheck.isValidCategoryArray(commentInput.getCategories())
         )
             return new Response<>(BAD_REQUEST);
         // 2. 한줄평 정보 수정
@@ -116,11 +116,35 @@ public class CommentServiceImpl implements CommentService {
                 log.error("[comments/patch] NOT FOUND COMMENT error");
                 return new Response<>(NOT_FOUND_COMMENT);
             }
-
+            List<CommentCategoryDB> commentCategoryDBList = commentDB.getCategories(); // 기존 카테고리 정보
+            int idx = 0, size = commentCategoryDBList.size();
+            for (int categoryId : commentInput.getCategories()) {
+                CategoryDB categoryDB = categoryRepository.findById(categoryId).orElse(null);
+                if(categoryId < 1 || categoryId > 23 || categoryDB == null) { // DB에 카테고리 존재 여부 체크
+                    log.error("[comments/patch] NOT FOUND CATEGORY error");
+                    return new Response<>(NOT_FOUND_CATEGORY);
+                }
+                if(idx < size) { // 기존 정보에서 카테고리 정보만 수정
+                    commentCategoryDBList.get(idx++).setCategory(categoryDB);
+                } else { // 새로운 카테고리 생성
+                    commentCategoryDBList.add(
+                            CommentCategoryDB.builder()
+                                    .comment(commentDB)
+                                    .book(commentDB.getBook())
+                                    .category(categoryDB)
+                                    .build()
+                    );
+                }
+            }
             commentDB.setScore(commentInput.getScore());
             commentDB.setContent(commentInput.getContent());
 
             commentRepository.save(commentDB);
+            for (int i = idx; i < size; i++) { // 삭제될 카테고리가 있으면 삭제
+                commentCategoryRepository.delete(commentCategoryDBList.get(idx));
+                commentCategoryDBList.remove(idx);
+            }
+            commentCategoryRepository.saveAll(commentCategoryDBList);
         } catch (Exception e) {
             log.error("[comments/patch] database error", e);
             return new Response<>(DATABASE_ERROR);
