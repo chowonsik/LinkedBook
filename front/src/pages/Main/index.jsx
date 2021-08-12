@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
 import DealItem from "../../components/deal/DealListItem";
@@ -19,14 +19,14 @@ import { ChevronDown } from "react-bootstrap-icons";
 import { fonts } from "../../styles";
 import RoundButton from "../../components/common/Buttons/RoundButton";
 import {
-  setFilter,
   searchDeals,
   setSearch,
   resetDeals,
   setSelectDeals,
+  addLikeDeal,
+  deleteLikeDeal,
 } from "../../actions/Deal/index.js";
-import { requestGet } from "../../api";
-import { fetchAreas, setAreas } from "../../actions/Users";
+import { fetchAreas } from "../../actions/Users";
 
 export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
@@ -47,14 +47,14 @@ export default function Main() {
     } else {
       setUserArea();
       // 거래 등록 후
-      if (location.state && location.state.reset) {
-        dispatch(resetDeals());
-      }
-      if (selectedDeals) {
-        if (selectedDeals.length === 0) {
-          handleSearchButtonClick();
-        }
-      }
+      // if (location.state && location.state.reset) {
+      //   dispatch(resetDeals());
+      // }
+      // if (selectedDeals) {
+      //   if (selectedDeals.length === 0) {
+      //     handleSearchButtonClick();
+      //   }
+      // }
     }
   }, []);
 
@@ -97,6 +97,20 @@ export default function Main() {
 
   function setUserArea() {
     dispatch(fetchAreas());
+  }
+
+  function addLike(dealId, e) {
+    dispatch(addLikeDeal(dealId));
+    e.stopPropagation();
+  }
+  function deleteLike(dealId, e) {
+    dispatch(deleteLikeDeal(dealId));
+    e.stopPropagation();
+  }
+
+  function getDealItemWidth() {
+    const width = `${window.innerWidth - 40}px`;
+    return width;
   }
 
   useEffect(() => {
@@ -169,6 +183,9 @@ export default function Main() {
                   }}
                   key={i}
                   dealObj={deal}
+                  addLikeDeal={addLike}
+                  deleteLikeDeal={deleteLike}
+                  width={getDealItemWidth()}
                 />
               ))
             : ""}

@@ -24,12 +24,16 @@ import {
 } from "./style";
 import { useParams } from "react-router-dom";
 import { requestGet } from "../../../api";
+import { useDispatch } from "react-redux";
+import { addLikeDeal, deleteLikeDeal } from "../../../actions/Deal";
 export default function DealDetail() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { dealId } = useParams();
   const [dealData, setDealData] = useState({
     dealImages: [],
   });
+
+  const dispatch = useDispatch();
 
   function goLeft() {
     if (selectedIndex === 0) return;
@@ -180,9 +184,25 @@ export default function DealDetail() {
       <Footer>
         <div className="icon-container">
           {dealData.isLikeDeal === 1 ? (
-            <HeartFill color={colors.yellow} size="24px" />
+            <span
+              className="icon"
+              onClick={() => {
+                setDealData({ ...dealData, isLikeDeal: 0 });
+                dispatch(deleteLikeDeal(dealData.dealId));
+              }}
+            >
+              <HeartFill color={colors.yellow} size="24px" />
+            </span>
           ) : (
-            <Heart color={colors.yellow} size="24px" />
+            <span
+              className="icon"
+              onClick={() => {
+                setDealData({ ...dealData, isLikeDeal: 1 });
+                dispatch(addLikeDeal(dealData.dealId));
+              }}
+            >
+              <Heart color={colors.yellow} size="24px" />
+            </span>
           )}
         </div>
         <div className="button-container">

@@ -24,11 +24,9 @@ public class PageResponse<T> {
     private int status;
     private int code;
     private String message;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private PaginationDto page;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-
     private List<T> result;
     private Date timestamp;
 
