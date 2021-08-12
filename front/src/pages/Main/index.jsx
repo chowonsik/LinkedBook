@@ -23,7 +23,7 @@ import {
   searchDeals,
   setSearch,
   resetDeals,
-  setSelect,
+  setSelectDeals,
 } from "../../actions/Deal/index.js";
 import { requestGet } from "../../api";
 import { fetchAreas, setAreas } from "../../actions/Users";
@@ -44,16 +44,17 @@ export default function Main() {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser) {
       history.push({ pathname: "/signin" });
-    }
-    setUserArea();
-
-    // 거래 등록 후
-    if (location.state && location.state.reset) {
-      dispatch(resetDeals());
-    }
-    //
-    if (selectedDeals.length === 0) {
-      handleSearchButtonClick();
+    } else {
+      setUserArea();
+      // 거래 등록 후
+      if (location.state && location.state.reset) {
+        dispatch(resetDeals());
+      }
+      if (selectedDeals) {
+        if (selectedDeals.length === 0) {
+          handleSearchButtonClick();
+        }
+      }
     }
   }, []);
 
@@ -70,7 +71,7 @@ export default function Main() {
   }
 
   function handleSortButtonClick(filter) {
-    dispatch(setSelect(filter));
+    dispatch(setSelectDeals(filter));
   }
 
   function getListHeight() {
@@ -78,7 +79,7 @@ export default function Main() {
   }
 
   function getNextBook() {
-    if (selectedDeals.length % 10 != 0) return;
+    if (selectedDeals && selectedDeals.length % 10 != 0) return;
     const page = parseInt(selectedDeals.length / 10);
     if (prevSearch === search) {
       dispatch(searchDeals(search, page, area.areaId));
@@ -97,12 +98,6 @@ export default function Main() {
   function setUserArea() {
     dispatch(fetchAreas());
   }
-
-  useEffect(() => {
-    if (selectedDeals.length === 0 && location.state && location.state.reset) {
-      handleSearchButtonClick();
-    }
-  }, [selectedDeals]);
 
   useEffect(() => {
     dispatch(resetDeals());
@@ -166,15 +161,17 @@ export default function Main() {
           </SortButton>
         </SortByList>
         <DealList height={getListHeight()} onScroll={handleScroll}>
-          {selectedDeals.map((deal, i) => (
-            <DealItem
-              onClick={() => {
-                history.push({ pathname: `/deal/${deal.dealId}` });
-              }}
-              key={i}
-              dealObj={deal}
-            />
-          ))}
+          {selectedDeals
+            ? selectedDeals.map((deal, i) => (
+                <DealItem
+                  onClick={() => {
+                    history.push({ pathname: `/deal/${deal.dealId}` });
+                  }}
+                  key={i}
+                  dealObj={deal}
+                />
+              ))
+            : ""}
           {isLoading ? (
             <SpinnerContainer>
               <Spinner />
