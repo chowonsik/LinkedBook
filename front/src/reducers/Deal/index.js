@@ -10,13 +10,13 @@ import {
 const INIT_STATE = {
   search: "",
   filter: "NEW",
+  selectedDeals: [],
+  isLoading: false,
   deals: {
     NEW: [],
     PRICE: [],
     QUALITY: [],
   },
-  selectedDeals: [],
-  isLoading: false,
 };
 
 export const dealReducer = (state = INIT_STATE, action) => {
