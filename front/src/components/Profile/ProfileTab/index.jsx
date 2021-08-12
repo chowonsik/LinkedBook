@@ -17,12 +17,6 @@ const ProfileTab = ({ handleTabClick, activeTab }) => {
         >
           관심거래
         </li>
-        <li
-          onClick={() => handleTabClick(2)}
-          className={activeTab === 2 ? "active" : ""}
-        >
-          한줄평
-        </li>
       </ul>
     </Wrapper>
   );

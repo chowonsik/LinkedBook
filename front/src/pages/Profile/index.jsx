@@ -10,25 +10,25 @@ import CommentItem from "../../components/CommentItem";
 import ProfileTab from "../../components/Profile/ProfileTab";
 import { Wrapper } from "./styles";
 import { request } from "../../api";
-import axios from "axios";
-
-const TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYyNzM5Mzg1NH0.D07COiIiT_BVqFvyfr7wjAhZLcQ-svD3vpx0-HUgkZ4";
 
 const Profile = ({ match }) => {
-  // 내프로필이면,useSelector로 가져오고(내프로필은 이미 app에서 요청해놓기)
-  const userObjStore = useSelector((state) => state.userReducer.userProfile);
+  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
+  const dispatch = useDispatch();
+  const userObjStore = useSelector(
+    (state) => state.userProfileReducer.userProfile
+  );
   const [userObj, setUserObj] = useState({});
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState(0);
   const [tabInfo, setTabInfo] = useState([]);
 
   useEffect(() => {
-    // current user가 자기자신인경우(자기자신 프로필, 임시로 2로 설정)
-    if (parseInt(match.params.id) === 2) {
+    if (parseInt(match.params.id) === LOGIN_USER_ID) {
+      dispatch(getUserProfile(LOGIN_USER_ID));
       setUserObj(userObjStore);
     } else {
       getUserObj(match.params.id);
     }
+
     setTabInfo([
       {
         id: 12,
@@ -79,19 +79,10 @@ const Profile = ({ match }) => {
         time: "몇시간전",
       },
     ]);
-    setActiveTab(0);
-  }, [match.params.id]);
-
-  useEffect(() => {
-    setUserObj(userObjStore);
-  }, [userObjStore]);
+  }, [match.params.id, userObjStore]);
 
   const getUserObj = async (userId) => {
-    const response = await request("get", `/users/${userId}/profile`, {
-      headers: {
-        "X-ACCESS-TOKEN": TOKEN,
-      },
-    });
+    const response = await request("get", `/users/${userId}/profile`);
     setUserObj(response.result);
   };
 
@@ -106,8 +97,6 @@ const Profile = ({ match }) => {
     // 내거래인지, 관심거래인지, 한줄평인지에 따라 api 받아서
     if (activeTab === 0) {
       // setTabInfo
-    } else if (activeTab === 1) {
-      //api 요청
     } else {
       //api 요청
     }
@@ -123,11 +112,8 @@ const Profile = ({ match }) => {
             followerCnt={userObj.followerCnt}
           />
           <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
-          {activeTab !== 2
-            ? tabInfo.map((deal) => <DealItem key={deal.id} dealObj={deal} />)
-            : tabInfo.map((comment) => (
-                <CommentItem key={comment.id} commentObj={comment} />
-              ))}
+          {tabInfo &&
+            tabInfo.map((deal) => <DealItem key={deal.id} dealObj={deal} />)}
         </>
       )}
     </Wrapper>

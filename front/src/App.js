@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
@@ -9,8 +9,6 @@ import RecommendUser from "./pages/user/RecommendUser";
 import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
 import Profile from "./pages/Profile";
-import { useDispatch } from "react-redux";
-import { getUserProfile } from "./actions/Users";
 import ProfileUpdate from "./pages/Profile/ProfileUpdate";
 import UserHistory from "./pages/Profile/UserHistory";
 import ChangePassword from "./pages/Profile/ChangePassword";
@@ -25,12 +23,6 @@ import SearchUser from "./pages/SearchUser";
 import ToastMessage from "./components/common/ToastMessage";
 
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    // 내프로필 가져오기 여기선 2가 내 아이디로 가정
-    dispatch(getUserProfile(2));
-  }, []);
-
   return (
     <div className="App">
       <Router>

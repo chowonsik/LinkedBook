@@ -11,24 +11,20 @@ import { getUserProfile, updateUserProfile } from "../../../actions/Users";
 
 const ProfileUpdate = () => {
   let history = useHistory();
-  const userObj = useSelector((state) => state.userReducer.userProfile);
+  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
+  const userObj = useSelector((state) => state.userProfileReducer.userProfile);
   const dispatch = useDispatch();
-
-  // 유저이메일 값은 안받아서 조회 못하고 있음. 근데 보이게는 해야하지 않나.?
   const nickname = useInput(userObj.nickname, nicknameValidator);
   const description = useInput(userObj.info, descValidator);
   const [userImg, setUserImg] = useState(userObj.image);
   const [changedData, setChangedData] = useState({});
+
   useEffect(() => {
     setChangedData({ ...changedData, image: userImg });
   }, [userImg]);
   useEffect(() => {
     setChangedData({ ...changedData, nickname: nickname.value });
   }, [nickname.value]);
-  useEffect(() => {
-    setChangedData({ ...changedData, info: description.value });
-  }, [description.value]);
-
   useEffect(() => {
     setChangedData({ ...changedData, info: description.value });
   }, [description.value]);
@@ -77,10 +73,8 @@ const ProfileUpdate = () => {
   }
   function submitUserData() {
     dispatch(updateUserProfile(changedData));
-    dispatch(getUserProfile(2));
-    // current user id를 2대신 넣기
-    history.push("/profile/2");
-    history.go(0);
+    dispatch(getUserProfile(LOGIN_USER_ID));
+    history.push(`/profile/${LOGIN_USER_ID}`);
   }
 
   return (
