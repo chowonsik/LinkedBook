@@ -17,8 +17,9 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   const totalElements = useSelector(
     (state) => state.followReducer.totalElements
   );
-
+  const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(setFollowReset());
     handleSetHeight();
     const params = {
       page: 0,
@@ -47,7 +48,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
       deleteFollowing(followingUserId);
       const params = {
         page: 0,
-        size: followingList.length,
+        size: followingList.length - 1,
       };
       getFollowingList(params);
     }
