@@ -41,3 +41,14 @@ export const ButtonWrapper = styled.div`
   align-items: center;
   flex: 1;
 `;
+
+export const RoundButton = styled.button`
+  width: 54px;
+  height: 32px;
+  border-radius: 10px;
+  border: ${(props) =>
+    props.isFollowing ? `1px solid ${colors.yellow}` : "none"};
+  background-color: ${(props) => (props.isFollowing ? "white" : colors.yellow)};
+  color: ${(props) => (props.isFollowing ? colors.yellow : "white")};
+  font-size: ${fonts.md};
+`;
