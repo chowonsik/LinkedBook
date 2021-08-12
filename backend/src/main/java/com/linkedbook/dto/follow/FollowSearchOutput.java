@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Builder
-public class FollowOutput {
+public class FollowSearchOutput {
     private int id;
     private CommonUserOutput user;
     private CommonFollowOutput follow;

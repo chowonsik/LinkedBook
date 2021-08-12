@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LikeCommentRepository extends JpaRepository<LikeCommentDB, Integer> {
-    boolean existsByUserAndComment(UserDB commentUserDB, CommentDB commentDB);
     Page<LikeCommentDB> findByComment(CommentDB commentDB, Pageable paging);
+    boolean existsByUserAndComment(UserDB commentUserDB, CommentDB commentDB);
+    LikeCommentDB findByUserAndComment(UserDB commentUserDB, CommentDB commentDB);
 }

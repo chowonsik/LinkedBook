@@ -40,7 +40,6 @@ public class BookServiceImpl implements BookService {
                 || !ValidationCheck.isValid(bookInfoInput.getAuthor())
                 || !ValidationCheck.isValidDate(bookInfoInput.getDateTime())
                 || !ValidationCheck.isValid(bookInfoInput.getThumbnail())
-                || !ValidationCheck.isValid(bookInfoInput.getStatus())
         )
             return new Response<>(BAD_REQUEST);
 
@@ -103,10 +102,12 @@ public class BookServiceImpl implements BookService {
             // 서버에서 클라이언트로 null값을 보내지 않도록 가공
             if(bookDB.getPublisher() == null) bookDB.setPublisher("");
             if(bookDB.getContents() == null) bookDB.setContents("");
+            if(bookDB.getStatus() == null) bookDB.setStatus("");
 
             // 책 한줄평 평균 점수 구하기
             double commentAvgScore = bookDB.getComments().stream()
                     .mapToDouble(CommentDB::getScore).average().orElse(Double.NaN);
+            commentAvgScore = Math.round(commentAvgScore*10)/10.0;
 
             // 로그인된 유저의 관심 책 등록 여부 확인하기
             boolean isUserLikeBook = false;

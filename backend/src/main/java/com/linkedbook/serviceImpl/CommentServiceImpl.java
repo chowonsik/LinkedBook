@@ -3,6 +3,10 @@ package com.linkedbook.serviceImpl;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.*;
 import com.linkedbook.dto.comment.*;
+import com.linkedbook.dto.common.CommonCategoryOutput;
+import com.linkedbook.dto.common.CommonCommentOutput;
+import com.linkedbook.dto.common.CommonLikeOutput;
+import com.linkedbook.dto.common.CommonUserOutput;
 import com.linkedbook.entity.*;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -50,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
         CommentDB commentDB;
         try {
             UserDB loginUserDB = jwtService.getUserDB();
-            if(loginUserDB == null) {
+            if (loginUserDB == null) {
                 log.error("[comments/post] NOT FOUND LOGIN USER error");
                 return new Response<>(NOT_FOUND_USER);
             }
@@ -69,9 +74,8 @@ public class CommentServiceImpl implements CommentService {
             // 카테고리 저장
             List<CommentCategoryDB> commentCategoryDBList = new ArrayList<>();
             for (int categoryId : commentInput.getCategories()) {
-                if(categoryId == 0)  continue;
                 CategoryDB categoryDB = categoryRepository.findById(categoryId).orElse(null);
-                if(categoryId < 0 || categoryId > 23 || categoryDB == null) {
+                if (categoryId < 1 || categoryId > 23 || categoryDB == null) {
                     log.error("[comments/post] NOT FOUND CATEGORY error");
                     return new Response<>(NOT_FOUND_CATEGORY);
                 }
@@ -101,13 +105,14 @@ public class CommentServiceImpl implements CommentService {
         if (!ValidationCheck.isValidId(id)
                 || !ValidationCheck.isValid(commentInput.getContent())
                 || !ValidationCheck.isValidScore(commentInput.getScore())
+                || !ValidationCheck.isValidCategoryArray(commentInput.getCategories())
         )
             return new Response<>(BAD_REQUEST);
         // 2. 한줄평 정보 수정
         CommentDB commentDB;
         try {
             UserDB loginUserDB = jwtService.getUserDB();
-            if(loginUserDB == null) {
+            if (loginUserDB == null) {
                 log.error("[comments/patch] NOT FOUND LOGIN USER error");
                 return new Response<>(NOT_FOUND_USER);
             }
@@ -116,11 +121,35 @@ public class CommentServiceImpl implements CommentService {
                 log.error("[comments/patch] NOT FOUND COMMENT error");
                 return new Response<>(NOT_FOUND_COMMENT);
             }
-
+            List<CommentCategoryDB> commentCategoryDBList = commentDB.getCategories(); // 기존 카테고리 정보
+            int idx = 0, size = commentCategoryDBList.size();
+            for (int categoryId : commentInput.getCategories()) {
+                CategoryDB categoryDB = categoryRepository.findById(categoryId).orElse(null);
+                if (categoryId < 1 || categoryId > 23 || categoryDB == null) { // DB에 카테고리 존재 여부 체크
+                    log.error("[comments/patch] NOT FOUND CATEGORY error");
+                    return new Response<>(NOT_FOUND_CATEGORY);
+                }
+                if (idx < size) { // 기존 정보에서 카테고리 정보만 수정
+                    commentCategoryDBList.get(idx++).setCategory(categoryDB);
+                } else { // 새로운 카테고리 생성
+                    commentCategoryDBList.add(
+                            CommentCategoryDB.builder()
+                                    .comment(commentDB)
+                                    .book(commentDB.getBook())
+                                    .category(categoryDB)
+                                    .build()
+                    );
+                }
+            }
             commentDB.setScore(commentInput.getScore());
             commentDB.setContent(commentInput.getContent());
 
             commentRepository.save(commentDB);
+            for (int i = idx; i < size; i++) { // 삭제될 카테고리가 있으면 삭제
+                commentCategoryRepository.delete(commentCategoryDBList.get(idx));
+                commentCategoryDBList.remove(idx);
+            }
+            commentCategoryRepository.saveAll(commentCategoryDBList);
         } catch (Exception e) {
             log.error("[comments/patch] database error", e);
             return new Response<>(DATABASE_ERROR);
@@ -137,12 +166,12 @@ public class CommentServiceImpl implements CommentService {
         // 2. 한줄평 정보 삭제
         try {
             int loginUserId = jwtService.getUserId();
-            if(loginUserId < 0) {
+            if (loginUserId < 0) {
                 log.error("[comments/delete] NOT FOUND LOGIN USER error");
                 return new Response<>(NOT_FOUND_USER);
             }
             CommentDB commentDB = commentRepository.findById(id).orElse(null);
-            if(commentDB == null || commentDB.getUser().getId() != loginUserId) {
+            if (commentDB == null || commentDB.getUser().getId() != loginUserId) {
                 log.error("[comments/delete] NOT FOUND COMMENT error");
                 return new Response<>(NOT_FOUND_COMMENT);
             }
@@ -157,25 +186,25 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageResponse<CommentOutput> getCommentList(CommentSearchInput commentSearchInput, boolean isUserPage) {
+    public PageResponse<CommentSearchOutput> getCommentList(CommentSearchInput commentSearchInput, boolean isUserPage) {
         // 1. 값 형식 체크
-        if(commentSearchInput == null) return new PageResponse<>(NO_VALUES);
-        if(!ValidationCheck.isValidPage(commentSearchInput.getPage())
-                || !ValidationCheck.isValidId(commentSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
+        if (commentSearchInput == null) return new PageResponse<>(NO_VALUES);
+        if (!ValidationCheck.isValidPage(commentSearchInput.getPage())
+                || !ValidationCheck.isValidId(commentSearchInput.getSize())) return new PageResponse<>(BAD_REQUEST);
         // 2. 일치하는 한줄평 정보 가져오기
-        Page<CommentOutput> responseList;
+        Page<CommentSearchOutput> responseList;
         try {
             UserDB loginUserDB = jwtService.getUserDB();
-            if(loginUserDB == null) {
+            if (loginUserDB == null) {
                 log.error("[comments/get] NOT FOUND LOGIN USER error");
                 return new PageResponse<>(NOT_FOUND_USER);
             }
             Pageable paging = PageRequest.of(commentSearchInput.getPage(), commentSearchInput.getSize(), Sort.Direction.DESC, "id");
             // 필요한 정보 가공
             Page<CommentDB> commentDBList;
-            if(isUserPage) { // 유저 프로필 페이지에서 조회할 때
+            if (isUserPage) { // 유저 프로필 페이지에서 조회할 때
                 UserDB userDB;
-                if(loginUserDB.getId() == commentSearchInput.getUserId()) {
+                if (loginUserDB.getId() == commentSearchInput.getUserId()) {
                     userDB = loginUserDB;
                 } else {
                     userDB = userRepository.findById(commentSearchInput.getUserId()).orElse(null);
@@ -187,7 +216,7 @@ public class CommentServiceImpl implements CommentService {
                 commentDBList = commentRepository.findByUser(userDB, paging);
             } else { // 책 상세 페이지에서 조회할 때
                 BookDB bookDB = bookRepository.findById(commentSearchInput.getBookId()).orElse(null);
-                if(bookDB == null) {
+                if (bookDB == null) {
                     log.error("[comments/get] NOT FOUND BOOK error");
                     return new PageResponse<>(NOT_FOUND_BOOK);
                 }
@@ -195,23 +224,43 @@ public class CommentServiceImpl implements CommentService {
             }
             // 최종 출력값 정리
             responseList = commentDBList.map(commentDB -> {
+                LikeCommentDB likeCommentDB = likeCommentRepository.findByUserAndComment(loginUserDB, commentDB);
                 UserDB commentUserDB = commentDB.getUser();
                 BookDB commentBookDB = commentDB.getBook();
 
-                return CommentOutput.builder()
-                        .commentId(commentDB.getId())
-                        .commentScore(commentDB.getScore())
-                        .commentContent(commentDB.getContent())
-                        .created_at(commentDB.getCreated_at())
-                        .updated_at(commentDB.getUpdated_at())
-                        .likeCommentCnt(commentDB.getLikeComments().size())
-                        .userLikeComment(likeCommentRepository.existsByUserAndComment(loginUserDB, commentDB))
-                        .userId(commentUserDB.getId())
-                        .userNickname(commentUserDB.getNickname())
-                        .userImage(commentUserDB.getImage())
-                        .bookId(commentBookDB.getId())
-                        .bookTitle(commentBookDB.getTitle())
-                        .bookImage(commentBookDB.getImage())
+                return CommentSearchOutput.builder()
+                        .comment(CommonCommentOutput.builder()
+                                .id(commentDB.getId())
+                                .score(commentDB.getScore())
+                                .content(commentDB.getContent())
+                                .categories(
+                                        commentDB.getCategories().stream().map(
+                                                categoryDB -> CommonCategoryOutput.builder()
+                                                        .id(categoryDB.getCategory().getId())
+                                                        .title(categoryDB.getCategory().getTitle()).build()
+                                        ).collect(Collectors.toList())
+                                )
+                                .created_at(commentDB.getCreated_at())
+                                .updated_at(commentDB.getUpdated_at())
+                                .build())
+                        .like(CommonLikeOutput.builder()
+                                .totalLikeCnt(commentDB.getLikeComments().size())
+                                .userLike(likeCommentDB != null)
+                                .id(likeCommentDB == null ? 0 : likeCommentDB.getId())
+                                .build())
+                        .user(CommonUserOutput.builder()
+                                .id(commentUserDB.getId())
+                                .email(commentUserDB.getEmail())
+                                .nickname(commentUserDB.getNickname())
+                                .image(commentUserDB.getImage())
+                                .created_at(commentUserDB.getCreated_at())
+                                .updated_at(commentUserDB.getUpdated_at())
+                                .build())
+                        .book(CommentBookOutput.builder()
+                                .id(commentBookDB.getId())
+                                .title(commentBookDB.getTitle())
+                                .image(commentBookDB.getImage())
+                                .build())
                         .build();
             });
         } catch (Exception e) {

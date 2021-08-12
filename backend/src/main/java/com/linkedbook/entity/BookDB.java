@@ -44,7 +44,7 @@ public class BookDB {
     @Column(name = "image", nullable = false, columnDefinition = "TEXT")
     private String image;
 
-    @Column(name = "status", nullable = false, length = 45)
+    @Column(name = "status", length = 45)
     private String status;
 
     // 책 관심등록 정보

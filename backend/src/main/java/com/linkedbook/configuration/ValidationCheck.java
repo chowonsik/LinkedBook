@@ -80,6 +80,6 @@ public class ValidationCheck {
     }
 
     public static boolean isValidCategoryArray(int[] categories) {
-        return (categories != null && categories.length == 3);
+        return (categories != null && categories.length <= 3);
     }
 }
