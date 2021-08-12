@@ -48,3 +48,26 @@ export const SortButton = styled.button`
   padding: 0 10px;
   border-radius: 100px;
 `;
+
+export const SpinnerContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+`;
+export const Spinner = styled.span`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 6px solid ${colors.yellow};
+  border-top-color: transparent;
+  animation: spinner 0.8s ease-in infinite;
+
+  @keyframes spinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
