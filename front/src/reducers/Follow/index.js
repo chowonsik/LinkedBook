@@ -4,6 +4,7 @@ import {
   SET_FOLLOW_PAGE_INFO,
   SET_FOLLOW_RESET,
   SET_LOGIN_USER_INFO,
+  UPDATE_FOLLOWING_LIST,
 } from "../../actions/Follow";
 
 const INIT_STATE = {
@@ -50,6 +51,13 @@ export const followReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         loginUser: JSON.parse(window.localStorage.getItem("loginUser")),
+      };
+    case UPDATE_FOLLOWING_LIST:
+      return {
+        ...state,
+        followingList: state.followingList.filter(
+          (following) => following.follow.id !== action.followId
+        ),
       };
     default:
       return state;

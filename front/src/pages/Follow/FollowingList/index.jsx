@@ -7,7 +7,7 @@ import { Wrapper, Container } from "./styles";
 import Header from "../../../components/Layout/Header";
 import FollowItem from "../../../components/Follow/FollowItem";
 import CheckFollowCancle from "../../../components/Follow/CheckFollowCancle";
-import { setFollowReset } from "../../../actions/Follow";
+import { updateFollowingList } from "../../../actions/Follow";
 function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   const [followingUserId, setFollowingUserId] = useState("");
   const [height, setHeight] = useState(0);
@@ -19,7 +19,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(setFollowReset());
+    //dispatch(setFollowReset());
     handleSetHeight();
     const params = {
       page: 0,
@@ -29,7 +29,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   }, []);
 
   // 팔로잉 버튼을 클릭했을 때 실행되는 함수
-  function handleClick(e) {
+  function handleClick(followId) {
     if (active) {
       return;
     }
@@ -37,7 +37,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
     setActive(true);
 
     // 팔로잉하는 유저의 id를 string 형태로 저장한다.
-    setFollowingUserId(e.target.id);
+    setFollowingUserId(parseInt(followId));
   }
 
   // 알림창에서 취소 또는 확인 버튼을 클릭했을 때 실행되는 함수
@@ -46,18 +46,16 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
     // 팔로잉 취소했을 때 지금까지의 개수만큼 다시 불러옴
     if (value === "check") {
       deleteFollowing(followingUserId);
-      const params = {
-        page: 0,
-        size: followingList.length - 1,
-      };
-      getFollowingList(params);
     }
     setActive(false);
     setFollowingUserId("");
   }
 
   function handleScroll(e) {
-    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+    if (
+      parseInt(e.target.scrollTop) + parseInt(e.target.clientHeight) ===
+      parseInt(e.target.scrollHeight)
+    ) {
       if (currentPage < totalPages && followingList.length < totalElements) {
         const params = {
           page: currentPage + 1,
@@ -76,7 +74,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
       <Header isBack={true} isAlarm={true} title={"팔로잉"} />
       <Container onScroll={handleScroll} height={height}>
         {followingList &&
-          followingList.map((following, idx) => (
+          [...new Set(followingList)].map((following, idx) => (
             <FollowItem
               profileImage={following.user.image}
               nickName={following.user.nickname}
