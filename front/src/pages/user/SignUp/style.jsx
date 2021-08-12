@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { colors } from "../../../styles";
 
 export const Wrapper = styled.div`
-  margin: 60px 0;
-  padding: 20px;
+  margin: 0 0 60px 0;
+  padding: 90px 12.5% 20px 12.5%;
 `;
 
 export const LocationButton = styled.input.attrs((props) => ({
