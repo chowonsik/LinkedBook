@@ -1,5 +1,6 @@
 package com.linkedbook.dto.book.search;
 
+import com.linkedbook.dto.common.CommonLikeOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,6 @@ public class BookSearchOutput {
     private Date dateTime;
     private String image;
     private String status;
-    private int likeBookCnt;
     private double commentAvgScore;
-    private boolean userLikeBook;
+    private CommonLikeOutput like;
 }
