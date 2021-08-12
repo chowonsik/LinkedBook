@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Plus, X } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { deleteArea, setSelectedAreaIndex } from "../../../actions/Users";
+import { deleteArea, setSelect } from "../../../actions/Users";
 import { request } from "../../../api";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
 import Header from "../../../components/Layout/Header";
@@ -17,6 +17,10 @@ export default function LocationSetting() {
 
   const history = useHistory();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    requestUpdate();
+  }, [areas]);
 
   function handleDeleteLocation(deleteIndex) {
     if (deleteIndex < selectedIndex) {
@@ -34,8 +38,18 @@ export default function LocationSetting() {
   }
 
   function handleComplete() {
-    dispatch(setSelectedAreaIndex(selectedIndex));
+    dispatch(setSelect(selectedIndex));
     history.push({ pathname: "/" });
+  }
+
+  function requestUpdate() {
+    const data = areas.map((area, i) => {
+      return { areaId: area.areaId, orders: i + 1 };
+    });
+    const requestData = {
+      area: data,
+    };
+    request("POST", "/user-areas", requestData);
   }
 
   function renderLocation(location, i) {
@@ -84,20 +98,6 @@ export default function LocationSetting() {
     }
     return components;
   }
-
-  function requestUpdate() {
-    const data = areas.map((area, i) => {
-      return { areaId: area.areaId, orders: i + 1 };
-    });
-    const requestData = {
-      area: data,
-    };
-    request("POST", "/user-areas", requestData);
-  }
-
-  useEffect(() => {
-    requestUpdate();
-  }, [areas]);
 
   return (
     <>
