@@ -1,13 +1,19 @@
 import { React } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { Wrapper } from "./styles";
 import useInput from "../../../hooks/useInput";
 import { passwordValidator } from "../../../validators.js";
 import Input from "../../../components/common/Input";
 import Header from "../../../components/Layout/Header";
+import { updateUserProfile } from "../../../actions/Users";
 
 const ChangePassword = () => {
+  let history = useHistory();
+
   const password = useInput("", passwordValidator);
   const passwordConfirm = useInput("", passwordConfirmValidator);
+  const dispatch = useDispatch();
 
   function passwordConfirmValidator(value) {
     if (password.value !== value) {
@@ -16,16 +22,22 @@ const ChangePassword = () => {
       return { isValid: true, errorMessage: "" };
     }
   }
+
+  function updatePassword() {
+    dispatch(updateUserProfile({ password: password.value }));
+    // 비밀번호 변경 메세지 띄우기
+    history.go(-1);
+  }
+
   return (
     <>
-      <Header isBack isDone title="비밀번호 변경" />
+      <Header
+        isBack
+        isDone
+        title="비밀번호 변경"
+        DoneBtnClick={updatePassword}
+      />
       <Wrapper>
-        <label htmlFor="current">현재 비밀번호</label>
-        <Input
-          id="current"
-          type="password"
-          placeholder="현재 비밀번호를 입력하세요"
-        />
         <label htmlFor="new">새로운 비밀번호</label>
         <Input
           id="new"
