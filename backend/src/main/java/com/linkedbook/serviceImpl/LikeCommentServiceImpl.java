@@ -5,7 +5,7 @@ import com.linkedbook.dao.CommentRepository;
 import com.linkedbook.dao.FollowRepository;
 import com.linkedbook.dao.LikeCommentRepository;
 import com.linkedbook.dto.comment.like.LikeCommentInput;
-import com.linkedbook.dto.comment.like.LikeCommentOutput;
+import com.linkedbook.dto.comment.like.LikeCommentSearchOutput;
 import com.linkedbook.dto.comment.like.LikeCommentSearchInput;
 import com.linkedbook.dto.common.CommonFollowOutput;
 import com.linkedbook.dto.common.CommonUserOutput;
@@ -103,14 +103,14 @@ public class LikeCommentServiceImpl implements LikeCommentService {
     }
 
     @Override
-    public PageResponse<LikeCommentOutput> getLikeComment(LikeCommentSearchInput likeCommentSearchInput) {
+    public PageResponse<LikeCommentSearchOutput> getLikeComment(LikeCommentSearchInput likeCommentSearchInput) {
         // 1. 값 형식 체크
         if(likeCommentSearchInput == null) return new PageResponse<>(NO_VALUES);
         if(!ValidationCheck.isValidId(likeCommentSearchInput.getId())
                 || !ValidationCheck.isValidPage(likeCommentSearchInput.getPage())
                 || !ValidationCheck.isValidId(likeCommentSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
         // 2. 일치하는 관심 한줄평 정보 가져오기
-        Page<LikeCommentOutput> responseList;
+        Page<LikeCommentSearchOutput> responseList;
         try {
             int loginUserId = jwtService.getUserId();
             if(loginUserId < 0) {
@@ -130,7 +130,7 @@ public class LikeCommentServiceImpl implements LikeCommentService {
                 UserDB targetUserDB = likeCommentDB.getUser();
                 FollowDB loginAndTargetDB = followRepository.findByFromUserIdAndToUserId(loginUserId, targetUserDB.getId());
 
-                return LikeCommentOutput.builder()
+                return LikeCommentSearchOutput.builder()
                         .id(likeCommentDB.getId())
                         .user(
                                 CommonUserOutput.builder()

@@ -2,7 +2,7 @@ package com.linkedbook.controller;
 
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dto.comment.CommentInput;
-import com.linkedbook.dto.comment.CommentOutput;
+import com.linkedbook.dto.comment.CommentSearchOutput;
 import com.linkedbook.dto.comment.CommentSearchInput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
@@ -25,12 +25,12 @@ public class CommentController {
      * 한줄평 조회 API
      * [GET] /comments?userId={userId}
      * [GET] /comments?bookId={bookId}
-     * @return PageResponse<CommentOutput>
+     * @return PageResponse<CommentSearchOutput>
      */
     // Params
     @ResponseBody
     @GetMapping
-    public PageResponse<CommentOutput> getCommentList(CommentSearchInput commentSearchInput) {
+    public PageResponse<CommentSearchOutput> getCommentList(CommentSearchInput commentSearchInput) {
         if(!ValidationCheck.isValidId(commentSearchInput.getUserId()) && !ValidationCheck.isValid(commentSearchInput.getBookId())) {
             log.info("[GET] /comments?NO_VALID_STATUS");
             return new PageResponse<>(BAD_REQUEST);
