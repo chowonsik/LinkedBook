@@ -11,6 +11,8 @@ import {
   Wrapper,
   SortButton,
   DealList,
+  Spinner,
+  SpinnerContainer,
 } from "./style";
 import Input from "../../components/common/Input";
 import { ChevronDown } from "react-bootstrap-icons";
@@ -21,20 +23,18 @@ import {
   searchDeals,
   setSearch,
   resetDeals,
+  setSelect,
 } from "../../actions/Deal/index.js";
 import { requestGet } from "../../api";
-import { setAreas } from "../../actions/Users";
+import { fetchAreas, setAreas } from "../../actions/Users";
 
 export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
   const filter = useSelector((state) => state.dealReducer.filter);
-  const searchDealList = useSelector(
-    (state) => state.dealReducer.searchDealList[filter]
-  );
+  const selectedDeals = useSelector((state) => state.dealReducer.selectedDeals);
   const [prevSearch, setPrevSearch] = useState("");
-  const area = useSelector(
-    (state) => state.userReducer.areas?.[state.userReducer.selectedAreaIndex]
-  );
+  const area = useSelector((state) => state.userReducer.selectedArea);
+  const isLoading = useSelector((state) => state.dealReducer.isLoading);
 
   const history = useHistory();
   const location = useLocation();
@@ -46,35 +46,40 @@ export default function Main() {
       history.push({ pathname: "/signin" });
     }
     setUserArea();
+
+    // 거래 등록 후
     if (location.state && location.state.reset) {
       dispatch(resetDeals());
     }
-    if (searchDealList.length === 0) {
+    //
+    if (selectedDeals.length === 0) {
       handleSearchButtonClick();
     }
   }, []);
+
+  function handleSearchButtonClick() {
+    if (area) {
+      dispatch(resetDeals());
+      setPrevSearch(search);
+      dispatch(searchDeals(search, 0, area.areaId));
+    }
+  }
 
   function handleSearchChange(e) {
     dispatch(setSearch(e.target.value));
   }
 
   function handleSortButtonClick(filter) {
-    dispatch(setFilter(filter));
-  }
-
-  function handleSearchButtonClick() {
-    if (area) {
-      setPrevSearch(search);
-      dispatch(searchDeals(search, 0, area.areaId));
-    }
+    dispatch(setSelect(filter));
   }
 
   function getListHeight() {
     return window.innerHeight - 120 - 140;
   }
+
   function getNextBook() {
-    if (searchDealList.length % 10 != 0) return;
-    const page = parseInt(searchDealList.length / 10);
+    if (selectedDeals.length % 10 != 0) return;
+    const page = parseInt(selectedDeals.length / 10);
     if (prevSearch === search) {
       dispatch(searchDeals(search, page, area.areaId));
     } else {
@@ -83,21 +88,24 @@ export default function Main() {
   }
   function handleScroll(e) {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
-    if (scrollTop + clientHeight < scrollHeight) return;
+    if (isLoading) return;
+    if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
+      return;
     getNextBook();
   }
 
-  async function setUserArea() {
-    const response = await requestGet("/user-areas");
-    dispatch(setAreas(response.result));
+  function setUserArea() {
+    dispatch(fetchAreas());
   }
 
   useEffect(() => {
-    if (searchDealList.length === 0 && location.state && location.state.reset) {
+    if (selectedDeals.length === 0 && location.state && location.state.reset) {
       handleSearchButtonClick();
     }
-  }, [searchDealList]);
+  }, [selectedDeals]);
+
   useEffect(() => {
+    dispatch(resetDeals());
     handleSearchButtonClick();
   }, [area]);
 
@@ -158,7 +166,7 @@ export default function Main() {
           </SortButton>
         </SortByList>
         <DealList height={getListHeight()} onScroll={handleScroll}>
-          {searchDealList.map((deal, i) => (
+          {selectedDeals.map((deal, i) => (
             <DealItem
               onClick={() => {
                 history.push({ pathname: `/deal/${deal.dealId}` });
@@ -167,6 +175,13 @@ export default function Main() {
               dealObj={deal}
             />
           ))}
+          {isLoading ? (
+            <SpinnerContainer>
+              <Spinner />
+            </SpinnerContainer>
+          ) : (
+            ""
+          )}
         </DealList>
       </Wrapper>
 
