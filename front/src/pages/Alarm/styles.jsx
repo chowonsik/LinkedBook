@@ -18,3 +18,10 @@ export const AlarmTypeItem = styled.div`
   border-bottom: 1px solid
     ${(props) => (props.isType ? colors.black : colors.lightGray)};
 `;
+
+export const ContentContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+`;
