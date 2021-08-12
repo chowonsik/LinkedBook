@@ -1,12 +1,14 @@
 import {
   ADD_AREA,
   SET_AREAS,
+  SET_SELECTED_AREA,
   SET_SELECTED_AREA_INDEX,
 } from "../../actions/Users";
 
 const INIT_STATE = {
   areas: [],
-  selectedAreaIndex: 0,
+  selectedAreaIndex: -1,
+  selectedArea: {},
 };
 
 export const userReducer = (state = INIT_STATE, action) => {
@@ -20,6 +22,11 @@ export const userReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         selectedAreaIndex: action.index,
+      };
+    case SET_SELECTED_AREA:
+      return {
+        ...state,
+        selectedArea: action.area,
       };
     case ADD_AREA:
       return {
