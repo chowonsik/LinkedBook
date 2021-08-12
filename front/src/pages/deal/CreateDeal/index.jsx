@@ -225,7 +225,11 @@ export default function CreateDeal() {
   }
 
   useEffect(() => {
-    fetchData();
+    if (search) {
+      fetchData();
+    } else {
+      hideList();
+    }
   }, [search]);
 
   return (
