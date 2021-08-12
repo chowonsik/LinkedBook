@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 import { SET_USER_PROFILE } from "../../actions/Users";
 
 const INIT_STATE = {
   userProfile: {},
-=======
 import {
   ADD_AREA,
   SET_AREAS,
@@ -15,17 +13,14 @@ const INIT_STATE = {
   areas: [],
   selectedAreaIndex: -1,
   selectedArea: {},
->>>>>>> ed581201451a0fb9236c24403f1b4aa727e78d2e
 };
 
 export const userReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
-<<<<<<< HEAD
     case SET_USER_PROFILE:
       return {
         ...state,
         userProfile: action.userObj,
-=======
     case SET_AREAS:
       return {
         ...state,
@@ -45,7 +40,6 @@ export const userReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         areas: state.areas.concat(action.area),
->>>>>>> ed581201451a0fb9236c24403f1b4aa727e78d2e
       };
     default:
       return state;
