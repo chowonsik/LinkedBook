@@ -107,6 +107,7 @@ public class BookServiceImpl implements BookService {
             // 책 한줄평 평균 점수 구하기
             double commentAvgScore = bookDB.getComments().stream()
                     .mapToDouble(CommentDB::getScore).average().orElse(Double.NaN);
+            commentAvgScore = Math.round(commentAvgScore*10)/10.0;
 
             // 로그인된 유저의 관심 책 등록 여부 확인하기
             boolean isUserLikeBook = false;
