@@ -54,11 +54,44 @@ const BookInfo = ({ match }) => {
     false,
     false,
   ]);
+  const category = [
+    "",
+    "킬링타임",
+    "몽환적",
+    "가족애 ",
+    "교훈적",
+    "명작",
+    "재밌는",
+    "잔인한",
+    "어려운",
+    "등골오싹",
+    "강추b",
+    "소장각",
+    "눈물버튼",
+    "감성자극",
+    "새로운관점",
+    "이해쏙쏙",
+    "자기계발",
+    "로맨틱",
+    "기분전환",
+    "인생책",
+    "유용해요",
+    "수면제",
+    "대반전",
+    "상상력UP",
+  ];
 
   useEffect(() => {
     getBookInfo();
     getBookComments();
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", infiniteScroll);
+    return () => {
+      window.removeEventListener("scroll", infiniteScroll);
+    };
+  });
 
   const getBookInfo = async () => {
     const { result } = await requestGet(`/books/${isbn}`);
@@ -76,13 +109,24 @@ const BookInfo = ({ match }) => {
     setBookInfo(bookData);
   };
 
+  const infiniteScroll = () => {
+    let { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight === scrollHeight) {
+      getBookComments();
+    }
+  };
+
   const getBookComments = async () => {
     const { result } = await requestGet("/comments", {
       bookId: isbn,
-      page: 0,
+      page: parseInt(bookComments.length / 5),
       size: 5,
     });
-    setBookComments(result);
+    if (bookComments.length < 5) {
+      setBookComments(result);
+    } else {
+      setBookComments([...bookComments, ...result]);
+    }
   };
 
   const modalToggle = () => {
@@ -165,7 +209,7 @@ const BookInfo = ({ match }) => {
         return;
       }
     } else {
-      selectedState[id] = true;
+      selectedState[id] = !selectedState[id];
     }
     setSelectedTag(selectedState);
   };
@@ -186,9 +230,14 @@ const BookInfo = ({ match }) => {
     if (!valid) return;
     const commentData = { isbn, ...newComment, categories: tagData };
     await request("post", "/comments", commentData);
-    modalToggle();
-    getBookComments();
+    const { result } = await requestGet("/comments", {
+      bookId: isbn,
+      page: 0,
+      size: bookComments.length,
+    });
+    setBookComments(result);
     getBookInfo();
+    modalToggle();
   };
 
   const onUpdateClick = async ({ comment }) => {
@@ -209,28 +258,71 @@ const BookInfo = ({ match }) => {
     const valid = validCheck();
     if (!valid) return;
     const tagData = findSelectedTag();
+    const updatedBookComments = bookComments.map((comment) =>
+      comment.comment.id !== newComment.id
+        ? comment
+        : {
+            ...comment,
+            comment: {
+              ...newComment,
+              categories: tagData.map((tagNum) => {
+                return { id: tagNum, title: category[tagNum] };
+              }),
+              created_at: comment.comment.created_at,
+            },
+          }
+    );
+    setBookComments(updatedBookComments);
     await request("patch", `/comments/${newComment.id}`, {
       ...newComment,
       categories: tagData,
     });
     modalToggle();
-    getBookComments();
     getBookInfo();
   };
+
   const deleteComment = async (commentId) => {
     await requestDelete(`/comments/${commentId}`);
-    getBookComments();
+    setBookComments(
+      bookComments.filter((comment) => comment.comment.id !== commentId)
+    );
     getBookInfo();
   };
 
-  const createLikeComment = async (commentId) => {
+  const likeComment = async (commentId) => {
     await request("post", "/like-comments", { id: commentId });
-    getBookComments();
+    setBookComments(
+      bookComments.map((comment) =>
+        comment.comment.id === commentId
+          ? {
+              ...comment,
+              like: {
+                id: comment.comment.id,
+                userLike: !comment.like.userLike,
+                totalLikeCnt: comment.like.totalLikeCnt + 1,
+              },
+            }
+          : comment
+      )
+    );
   };
 
-  const deleteLikeComment = async (commentId) => {
-    await requestDelete(`/like-comments/${parseInt(commentId)}`);
-    getBookComments();
+  const unlikeComment = async (likeId) => {
+    await requestDelete(`/like-comments/${likeId}`);
+    setBookComments(
+      bookComments.map((comment) =>
+        comment.like.id === likeId
+          ? {
+              ...comment,
+              like: {
+                id: comment.like.id,
+                userLike: !comment.like.userLike,
+                totalLikeCnt: comment.like.totalLikeCnt - 1,
+              },
+            }
+          : comment
+      )
+    );
   };
 
   return (
@@ -252,8 +344,8 @@ const BookInfo = ({ match }) => {
                     LOGIN_USER={LOGIN_USER}
                     deleteComment={deleteComment}
                     onUpdateClick={onUpdateClick}
-                    createLikeComment={createLikeComment}
-                    deleteLikeComment={deleteLikeComment}
+                    likeComment={likeComment}
+                    unlikeComment={unlikeComment}
                   />
                 </li>
               ))}
