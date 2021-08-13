@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import Header from "../../components/Layout/Header";
@@ -25,6 +25,8 @@ import {
   setSelectDeals,
   addLikeDeal,
   deleteLikeDeal,
+  setScroll,
+  doRefresh,
 } from "../../actions/Deal/index.js";
 import { fetchAreas } from "../../actions/Users";
 
@@ -32,10 +34,12 @@ export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
   const filter = useSelector((state) => state.dealReducer.filter);
   const selectedDeals = useSelector((state) => state.dealReducer.selectedDeals);
-  const [prevSearch, setPrevSearch] = useState("");
   const area = useSelector((state) => state.userReducer.selectedArea);
   const isLoading = useSelector((state) => state.dealReducer.isLoading);
+  const needRefresh = useSelector((state) => state.dealReducer.needRefresh);
+  const scroll = useSelector((state) => state.dealReducer.scroll);
 
+  const dealListRef = useRef(null);
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -58,10 +62,22 @@ export default function Main() {
     }
   }, []);
 
+  useEffect(() => {
+    if (needRefresh) {
+      handleSearchButtonClick();
+    } else {
+      setDealListScroll();
+      dispatch(doRefresh());
+    }
+  }, [area]);
+
+  function setDealListScroll() {
+    dealListRef.current.scrollTo(0, scroll);
+  }
+
   function handleSearchButtonClick() {
     if (area) {
       dispatch(resetDeals());
-      setPrevSearch(search);
       dispatch(searchDeals(search, 0, area.areaId));
     }
   }
@@ -81,15 +97,12 @@ export default function Main() {
   function getNextBook() {
     if (selectedDeals && selectedDeals.length % 10 != 0) return;
     const page = parseInt(selectedDeals.length / 10);
-    if (prevSearch === search) {
-      dispatch(searchDeals(search, page, area.areaId));
-    } else {
-      dispatch(searchDeals(prevSearch, page, area.areaId));
-    }
+    dispatch(searchDeals(search, page, area.areaId));
   }
   function handleScroll(e) {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
     if (isLoading) return;
+    dispatch(setScroll(scrollTop));
     if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
       return;
     getNextBook();
@@ -112,11 +125,6 @@ export default function Main() {
     const width = `${window.innerWidth - 40}px`;
     return width;
   }
-
-  useEffect(() => {
-    dispatch(resetDeals());
-    handleSearchButtonClick();
-  }, [area]);
 
   return (
     <>
@@ -174,7 +182,11 @@ export default function Main() {
             상태
           </SortButton>
         </SortByList>
-        <DealList height={getListHeight()} onScroll={handleScroll}>
+        <DealList
+          height={getListHeight()}
+          onScroll={handleScroll}
+          ref={dealListRef}
+        >
           {selectedDeals
             ? selectedDeals.map((deal, i) => (
                 <DealItem
