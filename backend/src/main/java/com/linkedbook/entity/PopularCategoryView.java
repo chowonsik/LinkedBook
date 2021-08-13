@@ -25,6 +25,6 @@ public class PopularCategoryView implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "like_cnt")
-    private int likeCnt;
+    @Column(name = "cnt")
+    private int cnt;
 }
