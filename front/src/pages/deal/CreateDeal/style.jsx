@@ -92,14 +92,6 @@ export const ImageContainer = styled.div`
     }
   }
   .image {
-    &:first-child::before {
-      content: "대표 이미지";
-      position: absolute;
-      font-size: ${fonts.md};
-      color: white;
-      background-color: ${colors.yellow};
-      padding: 2px 2px;
-    }
     img {
       width: 100%;
       height: 100%;
@@ -146,6 +138,7 @@ export const CheckBoxContainer = styled.div`
       display: flex;
       width: 40%;
       justify-content: space-between;
+      margin: 5px 0;
       .text {
         font-size: ${fonts.sm};
       }
@@ -189,6 +182,7 @@ export const QualityContainer = styled.div`
       border-radius: 100px;
       border: 1px solid ${colors.gray};
       color: ${colors.gray};
+      transition: all 0.2s;
       &.selected {
         background-color: ${colors.yellow};
         border: none;
