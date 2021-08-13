@@ -6,6 +6,27 @@ export const SET_SELECTED_DEALS = "SET_SELECTED_DEALS";
 export const RESET_DEALS = "RESET_DEALS";
 export const SET_DEALS = "SET_DEALS";
 export const SET_IS_LOADING = "SET_IS_LOADING";
+export const DO_NOT_REFRESH = "DO_NOT_REFRESH";
+export const DO_REFRESH = "DO_REFRESH";
+export const SET_SCROLL = "SET_SCROLL";
+
+export const doNotRefresh = () => {
+  return {
+    type: DO_NOT_REFRESH,
+  };
+};
+export const doRefresh = () => {
+  return {
+    type: DO_REFRESH,
+  };
+};
+
+export const setScroll = (scroll) => {
+  return {
+    type: SET_SCROLL,
+    scroll: scroll,
+  };
+};
 
 export const addLikeDeal = (dealId) => async (dispatch, getState) => {
   console.log(dealId);

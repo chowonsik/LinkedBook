@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   & {
     display: flex;
     align-items: center;
-    width: ${(props) => props.width ?? "90%"};
+    width: 90%;
     height: 90px;
     margin: 20px 0;
     .image-container {
