@@ -29,6 +29,7 @@ import ReactS3Client from "../../../S3.js";
 import { request } from "../../../api.js";
 import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
+import { doRefresh } from "../../../actions/Deal";
 
 export default function CreateDeal() {
   const [search, setSearch] = useState("");
@@ -98,21 +99,12 @@ export default function CreateDeal() {
   }
 
   function setUpdateBookData() {
-    axios
-      .get(
-        `https://dapi.kakao.com/v3/search/book?target=title&query=${updateDealData.bookTitle}&page=1&size=1`,
-        {
-          headers: {
-            Authorization: "KakaoAK 781ed2f07eb684a67bab44bffdcf861b",
-          },
-        }
-      )
-      .then((res) => {
-        setBookInfo(res.data.documents[0]);
-      })
-      .catch((err) => {
-        dispatch(showToast("책을 다시 선택해주세요"));
-      });
+    setBookInfo({
+      title: updateDealData.bookTitle,
+      author: updateDealData.bookAuthor,
+      publisher: updateDealData.bookPublisher,
+      price: parseInt(updateDealData.bookPrice),
+    });
   }
   function setUpdateData() {
     if (!updateDealData) return;
@@ -186,30 +178,44 @@ export default function CreateDeal() {
     const valid = validCheck();
     if (!valid) return;
     const images = await getImages();
-    const data = {
-      bookId: bookInfo.isbn.split(" ")[1],
-      title: dealTitle.value,
-      price: parseInt(dealPrice.value),
-      quality: quality,
-      content: dealContent.value,
-      images: images,
-    };
-    console.log(data);
 
     if (isUpdatePage()) {
+      const data = {
+        title: dealTitle.value,
+        price: parseInt(dealPrice.value),
+        quality: quality,
+        content: dealContent.value,
+        images: images,
+      };
+      if (bookInfo.isbn) {
+        data.bookId = bookInfo.isbn.split(" ")[1];
+      }
+      console.log(data);
       const result = await request(
         "PATCH",
         `/deals/${updateDealData.dealId}`,
         data
       );
-      console.log(result);
-      dispatch(showToast("거래 수정이 완료되었습니다."));
-      history.goBack();
+      if (result.isSuccess) {
+        dispatch(showToast("거래 수정이 완료되었습니다."));
+      } else {
+        dispatch(showToast("거래 수정 실패"));
+      }
+      dispatch(doRefresh());
+      history.push({ pathname: "/" });
     } else {
+      const data = {
+        bookId: bookInfo.isbn.split(" ")[1],
+        title: dealTitle.value,
+        price: parseInt(dealPrice.value),
+        quality: quality,
+        content: dealContent.value,
+        images: images,
+      };
       const result = await request("POST", "/deals", data);
       console.log(result);
       dispatch(showToast("판매 등록이 완료되었습니다."));
-      history.push({ pathname: "/", state: { reset: true } });
+      history.push({ pathname: "/" });
     }
   }
   // 책 검색 결과 리스트 보이기
