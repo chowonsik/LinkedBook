@@ -19,6 +19,7 @@ import {
 import ReactS3Client from "../../../S3.js";
 import { request } from "../../../api.js";
 import { useHistory } from "react-router";
+import { useLocation } from "react-router-dom";
 
 export default function CreateDeal() {
   const [search, setSearch] = useState("");
@@ -32,6 +33,47 @@ export default function CreateDeal() {
   const [postImg, setPostImg] = useState([]);
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
+  const [updateDealData, setUpdateDealData] = useState(
+    location.state?.dealData
+  );
+
+  useEffect(() => {
+    if (isUpdatePage() && !location.state) {
+      history.goBack();
+    }
+    setUpdateData();
+  }, []);
+
+  function setUpdateBookData() {
+    axios
+      .get(
+        `https://dapi.kakao.com/v3/search/book?target=title&query=${updateDealData.bookTitle}&page=1&size=1`,
+        {
+          headers: {
+            Authorization: "KakaoAK 781ed2f07eb684a67bab44bffdcf861b",
+          },
+        }
+      )
+      .then((res) => {
+        setBookInfo(res.data.documents[0]);
+      })
+      .catch((err) => {
+        dispatch(showToast("책을 다시 선택해주세요"));
+      });
+  }
+  function setUpdateData() {
+    if (!updateDealData) return;
+    setUpdateBookData();
+    setQuality(updateDealData.dealQuality);
+    setPostImg(updateDealData.dealImages);
+    dealTitle.setValue(updateDealData.dealTitle);
+    dealPrice.setValue(updateDealData.dealPrice);
+    dealContent.setValue(updateDealData.dealContent);
+  }
+  function isUpdatePage() {
+    return location.pathname === "/update/deal" ? true : false;
+  }
 
   // 등록 전 인풋, 책 정보 체크
   function validCheck() {
@@ -71,16 +113,20 @@ export default function CreateDeal() {
     const images = [];
     for (let i = 0; i < postImg.length; i++) {
       const image = postImg[i];
-      const file = image.files[0];
-      const newFileName = getFileName(file, i);
-      await ReactS3Client.uploadFile(file, newFileName)
-        .then((data) => {
-          images.push({
-            imageUrl: data.location,
-            orders: i + 1,
-          });
-        })
-        .catch((err) => console.error(err));
+      if (image.files) {
+        const file = image.files[0];
+        const newFileName = getFileName(file, i);
+        await ReactS3Client.uploadFile(file, newFileName)
+          .then((data) => {
+            images.push({
+              imageUrl: data.location,
+              orders: i + 1,
+            });
+          })
+          .catch((err) => console.error(err));
+      } else {
+        images.push({ imageUrl: image.imageurl, orders: i + 1 });
+      }
     }
     return images;
   }
@@ -97,11 +143,23 @@ export default function CreateDeal() {
       content: dealContent.value,
       images: images,
     };
+    console.log(data);
 
-    const result = await request("POST", "/deals", data);
-    console.log(result);
-    dispatch(showToast("판매 등록이 완료되었습니다."));
-    history.push({ pathname: "/", state: { reset: true } });
+    if (isUpdatePage()) {
+      const result = await request(
+        "PATCH",
+        `/deals/${updateDealData.dealId}`,
+        data
+      );
+      console.log(result);
+      dispatch(showToast("거래 수정이 완료되었습니다."));
+      history.goBack();
+    } else {
+      const result = await request("POST", "/deals", data);
+      console.log(result);
+      dispatch(showToast("판매 등록이 완료되었습니다."));
+      history.push({ pathname: "/", state: { reset: true } });
+    }
   }
   // 책 검색 결과 리스트 보이기
   function showList() {
@@ -234,7 +292,7 @@ export default function CreateDeal() {
 
   return (
     <>
-      <Header isBack title="판매하기" />
+      <Header isBack title={isUpdatePage() ? "수정하기" : "판매하기"} />
       <Wrapper onClick={hideList}>
         <InputContainer>
           <div className="input-container">
@@ -289,7 +347,10 @@ export default function CreateDeal() {
                 ]);
               }}
             >
-              <img src={image.imgUrl} alt="noimage" />
+              <img
+                src={image.files ? image.imgUrl : image.imageurl}
+                alt="noimage"
+              />
               <span
                 className="delete"
                 onClick={(e) => {
@@ -372,7 +433,10 @@ export default function CreateDeal() {
           />
         </TextContainer>
       </Wrapper>
-      <FooterButton value="등록" onClick={createDeal} />
+      <FooterButton
+        value={isUpdatePage() ? "완료" : "등록"}
+        onClick={createDeal}
+      />
     </>
   );
 }

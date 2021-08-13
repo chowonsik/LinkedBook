@@ -79,6 +79,10 @@ export default function DealDetail() {
     setConfirmShow(false);
   }
 
+  function handleModifyButtonClick() {
+    history.push({ pathname: "/update/deal", state: { dealData: dealData } });
+  }
+
   useEffect(() => {
     fetchData();
     getLoginUser();
@@ -232,7 +236,12 @@ export default function DealDetail() {
         </div>
         <div className="button-container">
           {dealData.userId === getLoginUser().id ? (
-            <RoundButton value="수정하기" width="40%" fontSize={fonts.xl} />
+            <RoundButton
+              value="수정하기"
+              width="40%"
+              fontSize={fonts.xl}
+              onClick={handleModifyButtonClick}
+            />
           ) : (
             <RoundButton value="거래하기" width="40%" fontSize={fonts.xl} />
           )}
