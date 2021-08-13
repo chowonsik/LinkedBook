@@ -13,6 +13,7 @@ const BookCommentModal = ({
   createComment,
   updateComment,
   handleTagClick,
+  selectedTag,
 }) => {
   const category = [
     "#킬링타임",
@@ -49,7 +50,11 @@ const BookCommentModal = ({
             </header>
             <ul className="category-list">
               {category.map((el, idx) => (
-                <li key={idx + 1} onClick={(e) => handleTagClick(e, idx + 1)}>
+                <li
+                  key={idx + 1}
+                  className={selectedTag[idx + 1] ? "selected" : ""}
+                  onClick={(e) => handleTagClick(idx + 1)}
+                >
                   {el}
                 </li>
               ))}
@@ -60,7 +65,7 @@ const BookCommentModal = ({
                   <span
                     key={idx}
                     className="star"
-                    onClick={() => handleStarRating(idx)}
+                    onClick={() => handleStarRating(idx + 1)}
                   >
                     {starRatingState[idx] ? <StarFill /> : <Star />}
                   </span>

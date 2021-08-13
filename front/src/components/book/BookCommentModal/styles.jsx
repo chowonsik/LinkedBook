@@ -36,9 +36,9 @@ export const Wrapper = styled.div`
           justify-content: center;
           flex-wrap: wrap;
           li {
-            padding: 2px;
+            padding: 2px 3px;
             margin: 5px;
-            font-size: ${fonts.sm};
+            font-size: 11px;
             height: 16px;
             color: ${colors.gray};
             border: solid 1 ${colors.lightGray};

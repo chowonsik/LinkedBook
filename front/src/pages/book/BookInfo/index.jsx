@@ -26,8 +26,34 @@ const BookInfo = ({ match }) => {
     false,
     false,
     false,
+    false,
   ]);
-  const [selectedTag, setSelectedTag] = useState([]);
+  const [selectedTag, setSelectedTag] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   useEffect(() => {
     getBookInfo(isbn);
@@ -54,7 +80,7 @@ const BookInfo = ({ match }) => {
     const { result } = await requestGet("/comments", {
       bookId: isbn,
       page: 0,
-      size: 4,
+      size: 5,
     });
     setBookComments(result);
   };
@@ -63,8 +89,33 @@ const BookInfo = ({ match }) => {
     setModalActive((prev) => !prev);
     setEditing(false);
     setStarRatingState([false, false, false, false, false]);
+    setSelectedTag([
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
     setNewComment("");
-    setSelectedTag([]);
   };
 
   const handleModalOutsideClick = (e) => {
@@ -77,7 +128,7 @@ const BookInfo = ({ match }) => {
     let clickStates = [...starRatingState];
     let score = 0;
     for (let i = 0; i < 5; i++) {
-      if (i <= num) {
+      if (i < num) {
         clickStates[i] = true;
         score++;
       } else clickStates[i] = false;
@@ -98,50 +149,59 @@ const BookInfo = ({ match }) => {
     return true;
   };
 
-  useEffect(() => {
-    console.log(selectedTag);
-  }, [selectedTag]);
-
-  const handleTagClick = (e, idx) => {
-    let newData = idx;
-    if (selectedTag.length >= 3) {
-      if (selectedTag.indexOf(idx) !== -1) {
-        newData = selectedTag.filter((tag) => tag !== idx);
-        e.target.classList.remove("selected");
-        setSelectedTag(newData);
+  const handleTagClick = (id) => {
+    let selectedState = [...selectedTag];
+    let selectedCnt = 0;
+    for (let i = 0; i < 24; i++) {
+      if (selectedState[i]) {
+        selectedCnt++;
+      }
+    }
+    if (selectedCnt >= 3) {
+      if (selectedState[id]) {
+        selectedState[id] = false;
       } else {
         alert("태그는 최대 3개까지 등록가능합니다.");
         return;
       }
     } else {
-      if (selectedTag && selectedTag.indexOf(idx) !== -1) {
-        newData = selectedTag.filter((tag) => tag !== idx);
-        e.target.classList.remove("selected");
-        setSelectedTag(newData);
-      } else {
-        e.target.classList.add("selected");
-        setSelectedTag([...selectedTag, newData]);
+      selectedState[id] = true;
+    }
+    setSelectedTag(selectedState);
+  };
+
+  const findSelectedTag = () => {
+    let tagData = [];
+    for (let i = 0; i < 24; i++) {
+      if (selectedTag[i]) {
+        tagData.push(i);
       }
     }
+    return tagData;
   };
 
   const createComment = async () => {
     const valid = validCheck();
+    const tagData = findSelectedTag();
     if (!valid) return;
-    const commentData = { isbn, ...newComment, categories: selectedTag };
+    const commentData = { isbn, ...newComment, categories: tagData };
     await request("post", "/comments", commentData);
     modalToggle();
     getBookComments(isbn);
     getBookInfo(isbn);
   };
 
-  const onUpdateClick = async ({ commentContent, commentScore, commentId }) => {
+  const onUpdateClick = async ({ comment }) => {
     setEditing(true);
-    handleStarRating(commentScore);
+    handleStarRating(comment.score);
+    console.log(comment.score);
+    let selectedState = [...selectedTag];
+    comment.categories.map((category) => (selectedState[category.id] = true));
+    setSelectedTag(selectedState);
     setNewComment({
-      id: commentId,
-      content: commentContent,
-      score: commentScore,
+      id: comment.id,
+      content: comment.content,
+      score: comment.score,
     });
     setModalActive((prev) => !prev);
   };
@@ -149,7 +209,11 @@ const BookInfo = ({ match }) => {
   const updateComment = async () => {
     const valid = validCheck();
     if (!valid) return;
-    await request("patch", `/comments/${newComment.id}`, newComment);
+    const tagData = findSelectedTag();
+    await request("patch", `/comments/${newComment.id}`, {
+      ...newComment,
+      categories: tagData,
+    });
     modalToggle();
     getBookComments(isbn);
     getBookInfo(isbn);
@@ -172,10 +236,10 @@ const BookInfo = ({ match }) => {
           </div>
           <ul className="comments-list">
             {bookComments
-              ? bookComments.map((comment, idx) => (
+              ? bookComments.map((commentInfo, idx) => (
                   <li key={idx}>
                     <BookCommentItem
-                      comment={comment}
+                      commentInfo={commentInfo}
                       LOGIN_USER={LOGIN_USER}
                       deleteComment={deleteComment}
                       onUpdateClick={onUpdateClick}
