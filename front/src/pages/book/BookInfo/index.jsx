@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { BookmarkFill, PencilFill } from "react-bootstrap-icons";
-import { Wrapper, Footer } from "./styles";
+import { Wrapper, BookComments, Footer } from "./styles";
 import { request, requestGet, requestDelete } from "../../../api";
 import BookDetail from "../../../components/book/BookDetail";
 import BookCommentItem from "../../../components/book/BookCommentItem";
@@ -56,11 +56,11 @@ const BookInfo = ({ match }) => {
   ]);
 
   useEffect(() => {
-    getBookInfo(isbn);
-    getBookComments(isbn);
+    getBookInfo();
+    getBookComments();
   }, []);
 
-  const getBookInfo = async (isbn) => {
+  const getBookInfo = async () => {
     const { result } = await requestGet(`/books/${isbn}`);
     const bookData = {
       ...result,
@@ -76,7 +76,7 @@ const BookInfo = ({ match }) => {
     setBookInfo(bookData);
   };
 
-  const getBookComments = async (isbn) => {
+  const getBookComments = async () => {
     const { result } = await requestGet("/comments", {
       bookId: isbn,
       page: 0,
@@ -187,14 +187,13 @@ const BookInfo = ({ match }) => {
     const commentData = { isbn, ...newComment, categories: tagData };
     await request("post", "/comments", commentData);
     modalToggle();
-    getBookComments(isbn);
-    getBookInfo(isbn);
+    getBookComments();
+    getBookInfo();
   };
 
   const onUpdateClick = async ({ comment }) => {
     setEditing(true);
     handleStarRating(comment.score);
-    console.log(comment.score);
     let selectedState = [...selectedTag];
     comment.categories.map((category) => (selectedState[category.id] = true));
     setSelectedTag(selectedState);
@@ -215,13 +214,23 @@ const BookInfo = ({ match }) => {
       categories: tagData,
     });
     modalToggle();
-    getBookComments(isbn);
-    getBookInfo(isbn);
+    getBookComments();
+    getBookInfo();
   };
   const deleteComment = async (commentId) => {
     await requestDelete(`/comments/${commentId}`);
-    getBookComments(isbn);
-    getBookInfo(isbn);
+    getBookComments();
+    getBookInfo();
+  };
+
+  const createLikeComment = async (commentId) => {
+    await request("post", "/like-comments", { id: commentId });
+    getBookComments();
+  };
+
+  const deleteLikeComment = async (commentId) => {
+    await requestDelete(`/like-comments/${parseInt(commentId)}`);
+    getBookComments();
   };
 
   return (
@@ -229,25 +238,26 @@ const BookInfo = ({ match }) => {
       <Header isBack isSearch isAlarm title={bookInfo.title} />
       <Wrapper>
         <BookDetail bookInfo={bookInfo} />
-        <div className="book-comments">
+        <div className="book-comments-container">
           <div className="section-header">
             <h4>한줄평</h4>
             <PencilFill onClick={modalToggle} />
           </div>
-          <ul className="comments-list">
-            {bookComments
-              ? bookComments.map((commentInfo, idx) => (
-                  <li key={idx}>
-                    <BookCommentItem
-                      commentInfo={commentInfo}
-                      LOGIN_USER={LOGIN_USER}
-                      deleteComment={deleteComment}
-                      onUpdateClick={onUpdateClick}
-                    />
-                  </li>
-                ))
-              : "한줄평이 존재하지 않습니다."}
-          </ul>
+          <BookComments>
+            {bookComments &&
+              bookComments.map((commentInfo, idx) => (
+                <li key={idx}>
+                  <BookCommentItem
+                    commentInfo={commentInfo}
+                    LOGIN_USER={LOGIN_USER}
+                    deleteComment={deleteComment}
+                    onUpdateClick={onUpdateClick}
+                    createLikeComment={createLikeComment}
+                    deleteLikeComment={deleteLikeComment}
+                  />
+                </li>
+              ))}
+          </BookComments>
         </div>
         <BookCommentModal
           modalToggle={modalToggle}

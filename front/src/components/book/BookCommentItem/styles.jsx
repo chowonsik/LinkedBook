@@ -82,6 +82,10 @@ export const Wrapper = styled.div`
             color: ${colors.gray};
             margin-bottom: 1px;
           }
+          .heart-fill-icon {
+            color: ${colors.yellow};
+            margin-bottom: 1px;
+          }
         }
       }
     }

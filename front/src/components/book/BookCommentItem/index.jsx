@@ -12,6 +12,8 @@ const BookCommentItem = ({
   LOGIN_USER,
   deleteComment,
   onUpdateClick,
+  createLikeComment,
+  deleteLikeComment,
 }) => {
   const commentTime = timeForToday(commentInfo.user.created_at);
   function timeForToday(value) {
@@ -90,9 +92,15 @@ const BookCommentItem = ({
           <span className="like">
             <span className="like-cnt">{commentInfo.like.totalLikeCnt}</span>
             {commentInfo.like.userLike ? (
-              <SuitHeartFill />
+              <SuitHeartFill
+                onClick={() => deleteLikeComment(commentInfo.like.id)}
+                className="heart-fill-icon"
+              />
             ) : (
-              <SuitHeart className="heart-icon" />
+              <SuitHeart
+                onClick={() => createLikeComment(commentInfo.comment.id)}
+                className="heart-icon"
+              />
             )}
           </span>
         </div>
