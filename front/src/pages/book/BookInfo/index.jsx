@@ -27,6 +27,7 @@ const BookInfo = ({ match }) => {
     false,
     false,
   ]);
+  const [selectedTag, setSelectedTag] = useState([]);
 
   useEffect(() => {
     getBookInfo(isbn);
@@ -63,6 +64,7 @@ const BookInfo = ({ match }) => {
     setEditing(false);
     setStarRatingState([false, false, false, false, false]);
     setNewComment("");
+    setSelectedTag([]);
   };
 
   const handleModalOutsideClick = (e) => {
@@ -75,7 +77,7 @@ const BookInfo = ({ match }) => {
     let clickStates = [...starRatingState];
     let score = 0;
     for (let i = 0; i < 5; i++) {
-      if (i < num) {
+      if (i <= num) {
         clickStates[i] = true;
         score++;
       } else clickStates[i] = false;
@@ -96,10 +98,37 @@ const BookInfo = ({ match }) => {
     return true;
   };
 
+  useEffect(() => {
+    console.log(selectedTag);
+  }, [selectedTag]);
+
+  const handleTagClick = (e, idx) => {
+    let newData = idx;
+    if (selectedTag.length >= 3) {
+      if (selectedTag.indexOf(idx) !== -1) {
+        newData = selectedTag.filter((tag) => tag !== idx);
+        e.target.classList.remove("selected");
+        setSelectedTag(newData);
+      } else {
+        alert("태그는 최대 3개까지 등록가능합니다.");
+        return;
+      }
+    } else {
+      if (selectedTag && selectedTag.indexOf(idx) !== -1) {
+        newData = selectedTag.filter((tag) => tag !== idx);
+        e.target.classList.remove("selected");
+        setSelectedTag(newData);
+      } else {
+        e.target.classList.add("selected");
+        setSelectedTag([...selectedTag, newData]);
+      }
+    }
+  };
+
   const createComment = async () => {
     const valid = validCheck();
     if (!valid) return;
-    const commentData = { isbn, ...newComment };
+    const commentData = { isbn, ...newComment, categories: selectedTag };
     await request("post", "/comments", commentData);
     modalToggle();
     getBookComments(isbn);
@@ -143,8 +172,8 @@ const BookInfo = ({ match }) => {
           </div>
           <ul className="comments-list">
             {bookComments
-              ? bookComments.map((comment) => (
-                  <li key={comment.commentId}>
+              ? bookComments.map((comment, idx) => (
+                  <li key={idx}>
                     <BookCommentItem
                       comment={comment}
                       LOGIN_USER={LOGIN_USER}
@@ -162,11 +191,13 @@ const BookInfo = ({ match }) => {
           handleModalOutsideClick={handleModalOutsideClick}
           setNewComment={setNewComment}
           newComment={newComment}
+          handleTagClick={handleTagClick}
           starRatingState={starRatingState}
           handleStarRating={handleStarRating}
           createComment={createComment}
           updateComment={updateComment}
           editing={editing}
+          selectedTag={selectedTag}
         />
       </Wrapper>
       <Footer>

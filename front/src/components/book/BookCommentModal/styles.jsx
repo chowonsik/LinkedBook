@@ -31,6 +31,25 @@ export const Wrapper = styled.div`
         header h5 {
           font-size: ${fonts.xl};
         }
+        .category-list {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          li {
+            padding: 2px;
+            margin: 5px;
+            font-size: ${fonts.sm};
+            height: 16px;
+            color: ${colors.gray};
+            border: solid 1 ${colors.lightGray};
+            border-radius: 10px;
+            background-color: #fff;
+          }
+          .selected {
+            color: ${colors.black};
+            font-weight: 500;
+          }
+        }
         .star-rating {
           display: flex;
           .star {
