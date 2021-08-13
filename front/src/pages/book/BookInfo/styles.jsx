@@ -3,7 +3,10 @@ import { colors, fonts } from "../../../styles";
 
 export const Wrapper = styled.div`
   & {
-    .book-comments {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 60px;
+    .book-comments-container {
       padding: 0 25px;
       .section-header {
         display: flex;
@@ -19,6 +22,8 @@ export const Wrapper = styled.div`
     }
   }
 `;
+
+export const BookComments = styled.ul``;
 
 export const Footer = styled.div`
   position: fixed;

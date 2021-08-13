@@ -46,9 +46,13 @@ export const Wrapper = styled.div`
             margin-right: 1px;
           }
         }
-        span {
-          font-size: ${fonts.xs};
-          color: ${colors.gray};
+      }
+      .comment-category-list {
+        display: flex;
+        font-size: ${fonts.xs};
+        color: ${colors.gray};
+        li {
+          margin-right: 4px;
         }
       }
       .book-comment {
@@ -76,6 +80,10 @@ export const Wrapper = styled.div`
           }
           .heart-icon {
             color: ${colors.gray};
+            margin-bottom: 1px;
+          }
+          .heart-fill-icon {
+            color: ${colors.yellow};
             margin-bottom: 1px;
           }
         }

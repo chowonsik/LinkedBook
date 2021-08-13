@@ -1,14 +1,21 @@
 import { useState } from "react";
 import { Wrapper } from "./styles";
-import { StarFill, Star, SuitHeart } from "react-bootstrap-icons";
+import {
+  StarFill,
+  Star,
+  SuitHeart,
+  SuitHeartFill,
+} from "react-bootstrap-icons";
 
 const BookCommentItem = ({
-  comment,
+  commentInfo,
   LOGIN_USER,
   deleteComment,
   onUpdateClick,
+  createLikeComment,
+  deleteLikeComment,
 }) => {
-  const commentTime = timeForToday(comment.created_at);
+  const commentTime = timeForToday(commentInfo.user.created_at);
   function timeForToday(value) {
     const today = new Date();
     const timeValue = new Date(value);
@@ -42,18 +49,18 @@ const BookCommentItem = ({
       />
       <div className="content">
         <header className="header">
-          <span className="username">{comment.userNickname}</span>
-          {comment.userId === LOGIN_USER && (
+          <span className="username">{commentInfo.user.nickname}</span>
+          {commentInfo.user.id === LOGIN_USER && (
             <div className="btn">
               <button
                 className="update-btn"
-                onClick={() => onUpdateClick(comment)}
+                onClick={() => onUpdateClick(commentInfo)}
               >
                 수정
               </button>
               <button
                 className="delete-btn"
-                onClick={() => deleteComment(comment.commentId)}
+                onClick={() => deleteComment(commentInfo.comment.id)}
               >
                 삭제
               </button>
@@ -63,25 +70,38 @@ const BookCommentItem = ({
         <div className="book-evaluation">
           <div className="star-rating">
             {[0, 1, 2, 3, 4].map((el, idx) => {
-              if (el < parseInt(comment.commentScore))
+              if (el < parseInt(commentInfo.comment.score))
                 return <StarFill key={idx} />;
               else return <Star key={idx} />;
             })}
           </div>
-          <span> #감동적 #교훈적 #소장각</span>
+          <ul className="comment-category-list">
+            {commentInfo["comment"].categories.map((category, idx) => (
+              <li key={idx}>#{category.title}</li>
+            ))}
+          </ul>
         </div>
 
         <div className="book-comment">
           <div className="comment-info">
             <p className="comment">
-              {comment.commentContent}{" "}
+              {commentInfo.comment.content}
               <span className="created-time">{commentTime}</span>
             </p>
           </div>
           <span className="like">
-            <span className="like-cnt">{comment.likeCommentCnt}</span>
-            {/* 조건부로 주기 */}
-            <SuitHeart className="heart-icon" />
+            <span className="like-cnt">{commentInfo.like.totalLikeCnt}</span>
+            {commentInfo.like.userLike ? (
+              <SuitHeartFill
+                onClick={() => deleteLikeComment(commentInfo.like.id)}
+                className="heart-fill-icon"
+              />
+            ) : (
+              <SuitHeart
+                onClick={() => createLikeComment(commentInfo.comment.id)}
+                className="heart-icon"
+              />
+            )}
           </span>
         </div>
       </div>
