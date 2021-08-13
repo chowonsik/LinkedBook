@@ -129,19 +129,19 @@ export default function CreateDeal() {
   // 등록 전 인풋, 책 정보 체크
   function validCheck() {
     if (!bookInfo.title) {
-      alert("책을 선택하세요.");
+      dispatch(showToast("책을 선택하세요."));
       return false;
     }
     if (!dealTitle.value) {
-      alert("제목을 입력하세요.");
+      dispatch(showToast("제목을 입력하세요."));
       return false;
     }
     if (!dealPrice.value) {
-      alert("가격을 입력하세요.");
+      dispatch(showToast("가격을 입력하세요."));
       return false;
     }
     if (!dealContent.value) {
-      alert("내용을 입력하세요.");
+      dispatch(showToast("내용을 입력하세요."));
       return false;
     }
     return true;
