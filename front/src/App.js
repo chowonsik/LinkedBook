@@ -24,8 +24,9 @@ function App() {
       <Router>
         <Route path="/" exact={true} component={Main} />
         <Route path="/location" exact={true} component={LocationSetting} />
-        <Route path="/deal" exact={true} component={DealCreate} />
+        <Route path="/create/deal" exact={true} component={DealCreate} />
         <Route path="/deal/:dealId" exact={true} component={DealDetail} />
+        <Route path="/update/deal" exact={true} component={DealCreate} />
         <Route path="/signin" exact={true} component={SignIn} />
         <Route path="/signup" exact={true} component={SignUp} />
         <Route
