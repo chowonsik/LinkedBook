@@ -6,8 +6,10 @@ import com.linkedbook.dao.LikeBookRepository;
 import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.book.search.BookInfoInput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
+import com.linkedbook.dto.common.CommonLikeOutput;
 import com.linkedbook.entity.BookDB;
 import com.linkedbook.entity.CommentDB;
+import com.linkedbook.entity.LikeBookDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
@@ -110,10 +112,8 @@ public class BookServiceImpl implements BookService {
             commentAvgScore = Math.round(commentAvgScore*10)/10.0;
 
             // 로그인된 유저의 관심 책 등록 여부 확인하기
-            boolean isUserLikeBook = false;
-            if(likeBookRepository.existsByUserAndBook(loginUserDB, bookDB)) {
-                isUserLikeBook = true;
-            }
+            LikeBookDB likeBookDB = likeBookRepository.findByUserAndBook(loginUserDB, bookDB);
+
             // 최종 출력값 정리
             bookSearchOutput = BookSearchOutput.builder()
                     .id(bookDB.getId())
@@ -125,9 +125,14 @@ public class BookServiceImpl implements BookService {
                     .dateTime(bookDB.getDateTime())
                     .image(bookDB.getImage())
                     .status(bookDB.getStatus())
-                    .likeBookCnt(bookDB.getLikeBooks().size())
                     .commentAvgScore(commentAvgScore)
-                    .userLikeBook(isUserLikeBook)
+                    .like(
+                            CommonLikeOutput.builder()
+                                    .totalLikeCnt(bookDB.getLikeBooks().size())
+                                    .userLike(likeBookDB != null)
+                                    .id(likeBookDB == null ? 0 : likeBookDB.getId())
+                                    .build()
+                    )
                     .build();
         } catch (Exception e) {
             log.error("[books/get] database error", e);
