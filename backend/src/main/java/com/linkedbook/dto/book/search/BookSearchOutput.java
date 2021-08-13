@@ -22,6 +22,6 @@ public class BookSearchOutput {
     private Date dateTime;
     private String image;
     private String status;
-    private double commentAvgScore;
+    private BookPopularOutput popular;
     private CommonLikeOutput like;
 }
