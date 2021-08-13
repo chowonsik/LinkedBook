@@ -3,7 +3,15 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { showToast } from "../../../actions/Notification";
-import { Plus, Search, Upc, X } from "react-bootstrap-icons";
+import {
+  Check,
+  Check2,
+  Plus,
+  Search,
+  Square,
+  Upc,
+  X,
+} from "react-bootstrap-icons";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
 import BookItem from "../../../components/deal/BookItem";
 import Header from "../../../components/Layout/Header";
@@ -15,6 +23,7 @@ import {
   QualityContainer,
   TextContainer,
   Wrapper,
+  CheckBoxContainer,
 } from "./style";
 import ReactS3Client from "../../../S3.js";
 import { request } from "../../../api.js";
@@ -37,6 +46,7 @@ export default function CreateDeal() {
   const [updateDealData, setUpdateDealData] = useState(
     location.state?.dealData
   );
+  const [checkedList, setCheckedList] = useState([false, false, false, false]);
 
   useEffect(() => {
     if (isUpdatePage() && !location.state) {
@@ -44,6 +54,48 @@ export default function CreateDeal() {
     }
     setUpdateData();
   }, []);
+
+  useEffect(() => {
+    calcPrice();
+  }, [checkedList]);
+
+  useEffect(() => {
+    calcPrice();
+  }, [bookInfo]);
+
+  function calcPrice() {
+    let price = bookInfo.price;
+    console.log("정가 : " + price);
+    let discountPercent = 0;
+    const today = new Date();
+    const bookDate = new Date(bookInfo.datetime);
+    const diff = today - bookDate;
+    const diffYear = diff / (24 * 60 * 60 * 1000 * 30 * 12);
+    if (diffYear < 1) {
+    } else if (diffYear < 5) {
+      discountPercent += 10;
+    } else if (diffYear < 10) {
+      discountPercent += 15;
+    } else {
+      discountPercent += 20;
+    }
+
+    const checkedCount = checkedList.filter((checked) => checked).length;
+    if (checkedCount <= 1) {
+      discountPercent += 30;
+      setQuality("상");
+    } else if (checkedCount <= 3) {
+      discountPercent += 45;
+      setQuality("중");
+    } else {
+      discountPercent += 60;
+      setQuality("하");
+    }
+    console.log("할인율 : " + discountPercent);
+    price = parseInt((price * (100 - discountPercent)) / 100);
+    price -= price % 100;
+    dealPrice.setValue(price);
+  }
 
   function setUpdateBookData() {
     axios
@@ -68,7 +120,6 @@ export default function CreateDeal() {
     setQuality(updateDealData.dealQuality);
     setPostImg(updateDealData.dealImages);
     dealTitle.setValue(updateDealData.dealTitle);
-    dealPrice.setValue(updateDealData.dealPrice);
     dealContent.setValue(updateDealData.dealContent);
   }
   function isUpdatePage() {
@@ -281,6 +332,9 @@ export default function CreateDeal() {
     if (scrollTop + clientHeight < scrollHeight) return;
     getNextBookData();
   }
+  function priceToString(price) {
+    return price ? price.toLocaleString() : 0;
+  }
 
   useEffect(() => {
     if (search) {
@@ -382,31 +436,93 @@ export default function CreateDeal() {
             ""
           )}
         </ImageContainer>
-        <QualityContainer>
+        <CheckBoxContainer>
           <div className="title">책 상태</div>
+          <div className="content">
+            <div className="container">
+              <div className="text">낙서가 있나요?</div>
+              <div
+                className="icon"
+                onClick={() => {
+                  const newState = [...checkedList];
+                  newState[0] = !newState[0];
+                  setCheckedList(newState);
+                }}
+              >
+                <Square />
+                {checkedList[0] && (
+                  <span className="check">
+                    <Check />
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="container">
+              <div className="text">찢어짐이 있나요?</div>
+              <div
+                className="icon"
+                onClick={() => {
+                  const newState = [...checkedList];
+                  newState[1] = !newState[1];
+                  setCheckedList(newState);
+                }}
+              >
+                <Square />
+                {checkedList[1] && (
+                  <span className="check">
+                    <Check />
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="container">
+              <div className="text">변색이 있나요?</div>
+              <div
+                className="icon"
+                onClick={() => {
+                  const newState = [...checkedList];
+                  newState[2] = !newState[2];
+                  setCheckedList(newState);
+                }}
+              >
+                <Square />
+                {checkedList[2] && (
+                  <span className="check">
+                    <Check />
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="container">
+              <div className="text">오염이 있나요?</div>
+              <div
+                className="icon"
+                onClick={() => {
+                  const newState = [...checkedList];
+                  newState[3] = !newState[3];
+                  setCheckedList(newState);
+                }}
+              >
+                <Square />
+                {checkedList[3] && (
+                  <span className="check">
+                    <Check />
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </CheckBoxContainer>
+        <QualityContainer>
+          <div className="title">나의 책 등급</div>
           <div className="quality-container">
-            <div
-              className={`round-box ${quality === "상" ? "selected" : ""}`}
-              onClick={() => {
-                setQuality("상");
-              }}
-            >
+            <div className={`round-box ${quality === "상" ? "selected" : ""}`}>
               상
             </div>
-            <div
-              className={`round-box ${quality === "중" ? "selected" : ""}`}
-              onClick={() => {
-                setQuality("중");
-              }}
-            >
+            <div className={`round-box ${quality === "중" ? "selected" : ""}`}>
               중
             </div>
-            <div
-              className={`round-box ${quality === "하" ? "selected" : ""}`}
-              onClick={() => {
-                setQuality("하");
-              }}
-            >
+            <div className={`round-box ${quality === "하" ? "selected" : ""}`}>
               하
             </div>
           </div>
@@ -414,20 +530,19 @@ export default function CreateDeal() {
         <TextContainer>
           <input
             type="text"
+            placeholder="가격"
+            value={priceToString(dealPrice.value)}
+            readOnly
+          />
+          <input
+            type="text"
             placeholder="글 제목"
             value={dealTitle.value}
             onChange={dealTitle.onChange}
           />
-          <div className="low-high">최저가: 1,000원 최고가: 9,000원</div>
-          <input
-            type="number"
-            placeholder="가격"
-            value={dealPrice.value}
-            onChange={dealPrice.onChange}
-          />
           <textarea
             type="text"
-            placeholder="설명"
+            placeholder="책을 판매하게된 이유 또는 책에 대한 리뷰를 작성해주세요."
             value={dealContent.value}
             onChange={dealContent.onChange}
           />
