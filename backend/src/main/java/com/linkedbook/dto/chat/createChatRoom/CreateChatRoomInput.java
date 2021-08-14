@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CreateChatRoomInput {
     private String name;
+    private int dealId;
 }

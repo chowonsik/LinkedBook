@@ -13,9 +13,12 @@ import com.linkedbook.response.Response;
 import com.linkedbook.service.ChatRoomService;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.ChatRoomRepository;
+import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dto.chat.createChatRoom.CreateChatRoomInput;
 import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomInput;
+import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomOutput;
 import com.linkedbook.entity.ChatRoomDB;
+import com.linkedbook.entity.DealDB;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -38,13 +41,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private ValueOperations<String, String> valueOps;
 
     private final ChatRoomRepository chatRoomRepository;
+    private final DealRepository dealRepository;
 
     // 모든 채팅방 조회
     @Override
-    public Response<List<ChatRoomDB>> findAllRoom(SelectChatRoomInput selectChatRoomInput) {
-        List<ChatRoomDB> chatRoomDBs;
+    public Response<List<SelectChatRoomOutput>> findAllRoom(SelectChatRoomInput selectChatRoomInput) {
+        List<SelectChatRoomOutput> selectChatRoomOutput;
         try {
-            chatRoomDBs = chatRoomRepository.findByUserId(selectChatRoomInput.getUserId());
+            selectChatRoomOutput = chatRoomRepository.findByUserId(selectChatRoomInput.getUserId());
         } catch (IllegalArgumentException e) {
             log.error("[GET]/chat-room undefined status exception", e);
             return new Response<>(BAD_STATUS_VALUE);
@@ -53,7 +57,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             return new Response<>(DATABASE_ERROR);
         }
 
-        return new Response<>(chatRoomDBs, CREATED_DEAL);
+        return new Response<>(selectChatRoomOutput, CREATED_DEAL);
     }
 
     // 특정 채팅방 조회
@@ -70,8 +74,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             return new Response<>(NO_VALUES);
         ChatRoomDB chatRoomDB;
         try {
-            chatRoomDB = ChatRoomDB.builder().room_id(UUID.randomUUID().toString()).name(createChatRoomInput.getName())
-                    .build();
+
+            // deal 정보 가져오기
+            chatRoomDB = ChatRoomDB.builder().deal_id(createChatRoomInput.getDealId())
+                    .room_id(UUID.randomUUID().toString()).name(createChatRoomInput.getName()).build();
             chatRoomRepository.save(chatRoomDB);
             hashOpsChatRoom.put(CHAT_ROOMS, chatRoomDB.getRoom_id(), chatRoomDB);
 

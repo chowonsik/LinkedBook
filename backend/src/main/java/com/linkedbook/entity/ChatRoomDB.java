@@ -26,6 +26,9 @@ public class ChatRoomDB implements Serializable { // redis에 저장되는 객�
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
+    @Column(name = "deal_id", nullable = false)
+    private int deal_id;
+
     @Column(name = "room_id", nullable = false, length = 45)
     private String room_id;
 

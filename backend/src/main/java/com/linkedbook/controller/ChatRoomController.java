@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.linkedbook.dto.chat.createChatRoom.CreateChatRoomInput;
 import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomInput;
+import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomOutput;
 import com.linkedbook.entity.ChatRoomDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.PageResponse;
@@ -27,15 +28,21 @@ public class ChatRoomController {
     /**
      * 채팅방 리스트 조회 API
      * 
-     * @return List<ChatRoom>
+     * @return Response<List<SelectChatRoomOutput>>
      */
-    // Body
+    // params
     @GetMapping("/rooms")
     @ResponseBody
-    public Response<List<ChatRoomDB>> findAllRoom(SelectChatRoomInput selectChatRoomInput) {
+    public Response<List<SelectChatRoomOutput>> findAllRoom(SelectChatRoomInput selectChatRoomInput) {
         return chatRoomService.findAllRoom(selectChatRoomInput);
     }
 
+    /**
+     * 채팅방 생성 API
+     * 
+     * @return Response<ChatRoomDB>
+     */
+    // Body
     @PostMapping("/room")
     @ResponseBody
     public Response<ChatRoomDB> createRoom(@RequestBody CreateChatRoomInput createChatRoomInput) {
