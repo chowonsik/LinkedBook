@@ -2,23 +2,18 @@ package com.linkedbook.controller;
 
 import java.util.List;
 
-import com.linkedbook.dao.ChatRoomRepository;
-import com.linkedbook.dto.area.selectArea.SelectAreaInput;
-import com.linkedbook.dto.area.selectArea.SelectAreaOutput;
-import com.linkedbook.dto.chat.ChatMessage;
-import com.linkedbook.dto.chat.ChatRoom;
+import com.linkedbook.dto.chat.createChatRoom.CreateChatRoomInput;
+import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomInput;
+import com.linkedbook.entity.ChatRoomDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.PageResponse;
-import com.linkedbook.service.AreaService;
-import com.linkedbook.service.JwtService;
+import com.linkedbook.response.Response;
+import com.linkedbook.service.ChatRoomService;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
@@ -27,25 +22,30 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/chat")
 public class ChatRoomController {
 
-    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomService chatRoomService;
 
+    /**
+     * 채팅방 리스트 조회 API
+     * 
+     * @return List<ChatRoom>
+     */
+    // Body
     @GetMapping("/rooms")
     @ResponseBody
-    public List<ChatRoom> room() {
-        List<ChatRoom> chatRooms = chatRoomRepository.findAllRoom();
-        return chatRooms;
+    public Response<List<ChatRoomDB>> findAllRoom(SelectChatRoomInput selectChatRoomInput) {
+        return chatRoomService.findAllRoom(selectChatRoomInput);
     }
 
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoom createRoom(@RequestBody String name) {
-        return chatRoomRepository.createChatRoom(name);
+    public Response<ChatRoomDB> createRoom(@RequestBody CreateChatRoomInput createChatRoomInput) {
+        return chatRoomService.createChatRoom(createChatRoomInput);
     }
 
     @GetMapping("/room/{roomId}")
     @ResponseBody
-    public ChatRoom roomInfo(@PathVariable String roomId) {
-        return chatRoomRepository.findRoomById(roomId);
+    public Response<ChatRoomDB> findByRoomId(@PathVariable String roomId) {
+        return chatRoomService.findByRoomId(roomId);
     }
 
 }

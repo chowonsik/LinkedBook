@@ -1,8 +1,6 @@
-package com.linkedbook.configuration;
+package com.linkedbook.configuration.redis;
 
 import lombok.RequiredArgsConstructor;
-
-import com.linkedbook.service.RedisSubscriber;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.linkedbook.configuration;
+package com.linkedbook.configuration.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,17 +19,12 @@ import lombok.RequiredArgsConstructor;
 
 import javax.servlet.Filter;
 
-import com.linkedbook.configuration.security.CustomAuthenticationEntryPoint;
-import com.linkedbook.configuration.security.CustomUserDetailsService;
-import com.linkedbook.configuration.security.JwtAuthenticationFilter;
 import com.linkedbook.service.JwtService;
 
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final CustomUserDetailsService customUserDetailsService;
 
