@@ -62,6 +62,7 @@ public enum ResponseStatus {
     BAD_STATUS_VALUE(400, 417, "올바른 상태를 입력해주세요."), BAD_AREA_VALUE(400, 416, "올바른 지역을 입력해주세요."),
     EXISTS_INFO(400, 420, "이미 존재하는 정보입니다."),
 
+
     // 401 Unauthorized - 클라이언트가 권한이 없기 때문에 작업을 진행할 수 없는 경우
     UNAUTHORIZED(401, 400, "권한이 없습니다."), UNAUTHORIZED_TOKEN(401, 410, "유효하지 않은 토큰입니다."),
 
@@ -69,10 +70,13 @@ public enum ResponseStatus {
     FORBIDDEN(403, 400, "권한이 없습니다."), FORBIDDEN_USER_ID(403, 410, "해당 userId에 대한 권한이 없습니다."),
 
     // 404 Not Found - 클라이언트가 요청한 자원이 존재하지 않다.
-    NOT_FOUND(404, 400, "NOT FOUND"), NOT_FOUND_USER(404, 405, "사용자 정보가 존재하지 않습니다."),
-    
-    NOT_FOUND_FOLLOW(404, 406, "팔로우 정보가 존재하지 않습니다."), NOT_FOUND_BOOK(404, 410, "책 정보가 존재하지 않습니다."),
-    NOT_FOUND_DEAL(404, 415, "거래 정보가 존재하지 않습니다."), NOT_FOUND_COMMENT(404, 420, "한줄평 정보가 존재하지 않습니다."),
+    NOT_FOUND(404, 400, "NOT FOUND"),
+    NOT_FOUND_USER(404, 405, "사용자 정보가 존재하지 않습니다."),
+    NOT_FOUND_FOLLOW(404, 406, "팔로우 정보가 존재하지 않습니다."),
+    NOT_FOUND_BOOK(404, 410, "책 정보가 존재하지 않습니다."),
+    NOT_FOUND_DEAL(404, 415, "거래 정보가 존재하지 않습니다."),
+    NOT_FOUND_COMMENT(404, 420, "한줄평 정보가 존재하지 않습니다."),
+    NOT_FOUND_CATEGORY(404, 425, "카테고리 정보가 존재하지 않습니다."),
 
     // 405 Method Not Allowed - 클라이언트의 요청이 허용되지 않는 메소드인 경우
     METHOD_NOT_ALLOWED(405, 400, "허용되지 않는 HTTP Method 입니다."),
@@ -87,7 +91,8 @@ public enum ResponseStatus {
      * 5XX Server errors
      */
     // 500 내부 서버 오류가 발생한 경우
-    SERVER_ERROR(500, 500, "서버와의 통신에 실패하였습니다."), INFOTECH_SERVER_ERROR(500, 501, "서버와의 통신에 실패하였습니다."),
+    SERVER_ERROR(500, 500, "서버와의 통신에 실패하였습니다."), 
+    INFOTECH_SERVER_ERROR(500, 501, "서버와의 통신에 실패하였습니다."),
     DATABASE_ERROR(500, 502, "데이터베이스 연결에 실패하였습니다.");
 
     private final int status;

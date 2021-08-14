@@ -1,6 +1,7 @@
 package com.linkedbook.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,9 +15,10 @@ import java.util.List;
 import static javax.persistence.GenerationType.*;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "comment")
 public class CommentDB {
@@ -48,6 +50,10 @@ public class CommentDB {
     private Date updated_at;
 
     // 한줄평 관심등록 정보
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment", orphanRemoval = true)
     private List<LikeCommentDB> likeComments = new ArrayList<>();
+
+    // 카테고리 정보
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment", orphanRemoval = true)
+    private List<CommentCategoryDB> categories = new ArrayList<>();
 }

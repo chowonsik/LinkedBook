@@ -1,7 +1,7 @@
 package com.linkedbook.controller;
 
 import com.linkedbook.dto.follow.FollowInput;
-import com.linkedbook.dto.follow.FollowOutput;
+import com.linkedbook.dto.follow.FollowSearchOutput;
 import com.linkedbook.dto.follow.FollowSearchInput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
@@ -22,12 +22,12 @@ public class FollowController {
      * 팔로우(follower / following) 유저 정보 조회 API
      * [GET] /follow/{info}
      * @param info follower: 유저를 팔로우하는 타 유저 정보를 원하는 상태 / following: 유저가 팔로우하는 타 유저 정보를 원하는 상태
-     * @return Response<List<FollowOutput>>
+     * @return PageResponse<FollowSearchOutput>
      */
     // Path-Variable, Params
     @ResponseBody
     @GetMapping("/{info}")
-    public PageResponse<FollowOutput> getFollowList(@PathVariable("info") String info, FollowSearchInput followSearchInput) {
+    public PageResponse<FollowSearchOutput> getFollowList(@PathVariable("info") String info, FollowSearchInput followSearchInput) {
         log.info("[GET] /follow/" + info);
         return followService.getFollowList(info, followSearchInput);
     }

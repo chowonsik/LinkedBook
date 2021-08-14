@@ -21,11 +21,11 @@ public class BookController {
      * @param isbn 검색하고 싶은 책의 isbn
      * @return Response<BookSearchOutput>
      */
-    // Body
+    // Params
     @ResponseBody
     @GetMapping("/{isbn}")
     public Response<BookSearchOutput> getBookInfo(@PathVariable("isbn") String isbn) {
-        log.info("[GET] /books/{isbn}");
+        log.info("[GET] /books/" + isbn);
         return bookService.getBookInfo(isbn);
     }
 
