@@ -37,6 +37,7 @@ public enum ResponseStatus {
     CREATED_COMMENT(201, 209, "한줄평 등록에 성공하였습니다."),
     CREATED_LIKE_COMMENT(201, 208, "관심 한줄평 등록에 성공하였습니다."),
     CREATED_DEAL(201, 203, "거래글 등록에 성공하였습니다."),
+    CREATED_ALERT(201, 222, "알림 메세지 등록에 성공하였습니다."),
 
     // 202 Accepted - 클라이언트의 요청은 정상적이나, 서버가 아직 요청을 완료하지 못했다. 비동기
     ACCEPTED(202, 200, "요청에 성공하였습니다."),
@@ -78,6 +79,7 @@ public enum ResponseStatus {
     NOT_FOUND_DEAL(404, 415, "거래 정보가 존재하지 않습니다."),
     NOT_FOUND_COMMENT(404, 420, "한줄평 정보가 존재하지 않습니다."),
     NOT_FOUND_CATEGORY(404, 425, "카테고리 정보가 존재하지 않습니다."),
+    NOT_FOUND_USER_DEAL(404, 430, "유저 거래 내역 정보가 존재하지 않습니다."),
 
     // 405 Method Not Allowed - 클라이언트의 요청이 허용되지 않는 메소드인 경우
     METHOD_NOT_ALLOWED(405, 400, "허용되지 않는 HTTP Method 입니다."),

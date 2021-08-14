@@ -26,7 +26,6 @@ import static com.linkedbook.response.ResponseStatus.*;
 public class ReportServiceImpl implements ReportService {
 
     private final ReportRepository reportRepository;
-    private final UserRepository userRepository;
     private final DealRepository dealRepository;
     private final JwtService jwtService;
 
@@ -39,12 +38,12 @@ public class ReportServiceImpl implements ReportService {
 
         // 2. 신고 정보 생성
         try {
-            UserDB loginUserDB = userRepository.findById(jwtService.getUserId()).orElse(null);
-            DealDB dealDB = dealRepository.findById(reportInput.getDealId()).orElse(null);
+            UserDB loginUserDB = jwtService.getUserDB();
             if(loginUserDB == null) {
-                log.error("[reports/post] NOT FOUND USER error");
+                log.error("[reports/post] NOT FOUND LOGIN USER error");
                 return new Response<>(NOT_FOUND_USER);
             }
+            DealDB dealDB = dealRepository.findById(reportInput.getDealId()).orElse(null);
             if(dealDB == null) {
                 log.error("[reports/post] NOT FOUND DEAL error");
                 return new Response<>(NOT_FOUND_DEAL);
