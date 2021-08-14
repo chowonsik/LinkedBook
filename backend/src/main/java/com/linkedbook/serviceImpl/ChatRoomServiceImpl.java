@@ -57,7 +57,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             return new Response<>(DATABASE_ERROR);
         }
 
-        return new Response<>(selectChatRoomOutput, CREATED_DEAL);
+        return new Response<>(selectChatRoomOutput, SUCCESS_SELECT_CHATROOM);
     }
 
     // 특정 채팅방 조회
@@ -89,7 +89,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             return new Response<>(DATABASE_ERROR);
         }
         // 3. 결과 return
-        return new Response<>(chatRoomDB, CREATED_DEAL);
+        return new Response<>(chatRoomDB, CREATED_CHATROOM);
     }
 
     // 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장

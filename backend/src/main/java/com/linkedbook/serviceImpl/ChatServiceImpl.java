@@ -84,7 +84,7 @@ public class ChatServiceImpl implements ChatService {
             return new Response<>(DATABASE_ERROR);
         }
 
-        return new Response<>(messages, CREATED_DEAL);
+        return new Response<>(messages, SUCCESS_SELECT_CHATLIST);
     }
 
 }
