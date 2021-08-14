@@ -13,9 +13,13 @@ public interface SelectChatRoomOutput {
 
     Integer getToUserId();
 
+    String getToUserNickname();
+
     String getFromUserImage();
 
     Integer getFromUserId();
+
+    String getFromUserNickname();
 
     String getMessage();
 

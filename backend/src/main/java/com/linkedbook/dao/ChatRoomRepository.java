@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoomDB, Integer> {
 
-    @Query(value = "select c.room_id as room_id, c.deal_id as deal_id, b.image as bookImage, u1.image as toUserImage, c.to_user_id as toUserId, u2.image as fromUserImage, c.from_user_id as fromUserId, c.message as message, c.created_at as messageCreatedAt"
+    @Query(value = "select c.room_id as room_id, c.deal_id as deal_id, b.image as bookImage, u1.image as toUserImage, c.to_user_id as toUserId, u1.nickname as toUserNickname, u2.image as fromUserImage, c.from_user_id as fromUserId, u2.nickname as fromUserNickname, c.message as message, c.created_at as messageCreatedAt"
             + " from (select cr.*, cm.to_user_id, cm.from_user_id, cm.message, max(cm.created_at) as created_at"
             + " from chat_room cr" + " left outer join chat_message cm on cr.id = cm.room_id group by cr.id) c"
             + " join deal d on c.deal_id = d.id" + " join book b on d.book_id = b.id"

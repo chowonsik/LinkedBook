@@ -15,8 +15,10 @@ import lombok.Setter;
 @Setter
 
 public class SelectChatMessageOutput {
+    private int userId;
     private String image;
     private String nickname;
     private Date created_at;
     private MessageType type;
+    private String message;
 }
