@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { KakaoBook } from "../../../api.jsx";
+import { KakaoBook } from "../../../api.js";
 import { useHistory } from "react-router-dom";
 import BookItem from "../../../components/book/BookItem";
 import { Wrapper } from "./styles";
-import axios from "axios";
+import { request } from "../../../api";
 
 const SearchBook = () => {
   const TOKEN =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWR4IjoxOSwiaWF0IjoxNTk1NDAyMzU0LCJleHAiOjE2MjY5MzgzNTQsInN1YiI6InVzZXJJbmZvIn0.fzkgrs6wi4KPN2_TwFcvO2ab_dN2Ds46DEqQIvqBAD0";
   const [query, setQuery] = useState("");
   const [books, setBooks] = useState([]);
-  const [pageNum, setPageNum] = useState(1);
   let history = useHistory();
 
   useEffect(() => {
@@ -34,7 +33,7 @@ const SearchBook = () => {
     const params = {
       query: query,
       sort: "accuracy",
-      page: pageNum,
+      page: parseInt(books.length / 10) + 1,
       size: 10,
     };
     const { data } = await KakaoBook(params);
@@ -56,7 +55,6 @@ const SearchBook = () => {
     );
     let clientHeight = document.documentElement.clientHeight;
     if (scrollTop + clientHeight === scrollHeight) {
-      setPageNum(pageNum + 1);
       getBooksData(query, false);
     }
   };
@@ -82,19 +80,12 @@ const SearchBook = () => {
       thumbnail,
       status,
     };
-    axios
-      .post(`/books`, data, {
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/json",
-          "X-ACCESS-TOKEN": TOKEN,
-        },
-      })
-      .then((res) => {
-        console.log(data);
-        console.log(res);
-      })
-      .catch((err) => {});
+
+    await request("post", `/books`, data, {
+      headers: {
+        "X-ACCESS-TOKEN": TOKEN,
+      },
+    });
   };
 
   const handleBookItemClick = (bookObj) => {
