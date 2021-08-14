@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
 import DealItem from "../../components/deal/DealListItem";
@@ -11,31 +11,36 @@ import {
   Wrapper,
   SortButton,
   DealList,
+  Spinner,
+  SpinnerContainer,
 } from "./style";
 import Input from "../../components/common/Input";
 import { ChevronDown } from "react-bootstrap-icons";
 import { fonts } from "../../styles";
 import RoundButton from "../../components/common/Buttons/RoundButton";
 import {
-  setFilter,
   searchDeals,
   setSearch,
   resetDeals,
+  setSelectDeals,
+  addLikeDeal,
+  deleteLikeDeal,
+  setScroll,
+  doRefresh,
 } from "../../actions/Deal/index.js";
-import { requestGet } from "../../api";
-import { setAreas } from "../../actions/Users";
+import { fetchAreas } from "../../actions/Users";
 
 export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
   const filter = useSelector((state) => state.dealReducer.filter);
-  const searchDealList = useSelector(
-    (state) => state.dealReducer.searchDealList[filter]
-  );
-  const [prevSearch, setPrevSearch] = useState("");
-  const area = useSelector(
-    (state) => state.userReducer.areas[state.userReducer.selectedAreaIndex]
-  );
+  const selectedDeals = useSelector((state) => state.dealReducer.selectedDeals);
+  const area = useSelector((state) => state.userReducer.selectedArea);
+  const isLoading = useSelector((state) => state.dealReducer.isLoading);
+  const needRefresh = useSelector((state) => state.dealReducer.needRefresh);
+  const scroll = useSelector((state) => state.dealReducer.scroll);
+  const [listHeight, setListHeight] = useState(window.innerHeight - 260);
 
+  const dealListRef = useRef(null);
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -44,62 +49,84 @@ export default function Main() {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser) {
       history.push({ pathname: "/signin" });
+    } else {
+      setUserArea();
     }
-    setUserArea();
-    if (location.state && location.state.reset) {
-      dispatch(resetDeals());
-    }
-    if (searchDealList.length === 0) {
-      handleSearchButtonClick();
-    }
+    window.addEventListener("resize", getListHeight);
+
+    return () => {
+      window.removeEventListener("resize", getListHeight);
+    };
   }, []);
+
+  useEffect(() => {
+    if (needRefresh) {
+      handleSearchButtonClick();
+    } else {
+      setDealListScroll();
+      dispatch(doRefresh());
+    }
+  }, [area]);
+
+  useEffect(() => {
+    if (isLoading) {
+      dealListRef.current.scrollTo({
+        top: dealListRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [isLoading]);
+
+  function getListHeight() {
+    setListHeight(window.innerHeight - 260);
+  }
+
+  function setDealListScroll() {
+    dealListRef.current.scrollTo(0, scroll);
+  }
+
+  function handleSearchButtonClick() {
+    if (area) {
+      dispatch(resetDeals());
+      dispatch(searchDeals(search, 0, area.areaId));
+    }
+  }
 
   function handleSearchChange(e) {
     dispatch(setSearch(e.target.value));
   }
 
   function handleSortButtonClick(filter) {
-    dispatch(setFilter(filter));
+    dispatch(setSelectDeals(filter));
   }
 
-  function handleSearchButtonClick() {
-    if (area) {
-      setPrevSearch(search);
-      dispatch(searchDeals(search, 0, area.areaId));
-    }
-  }
-
-  function getListHeight() {
-    return window.innerHeight - 120 - 140;
-  }
   function getNextBook() {
-    if (searchDealList.length % 10 != 0) return;
-    const page = parseInt(searchDealList.length / 10);
-    if (prevSearch === search) {
-      dispatch(searchDeals(search, page, area.areaId));
-    } else {
-      dispatch(searchDeals(prevSearch, page, area.areaId));
-    }
+    if (selectedDeals && selectedDeals.length % 10 != 0) return;
+    const page = parseInt(selectedDeals.length / 10);
+    dispatch(searchDeals(search, page, area.areaId));
   }
+
   function handleScroll(e) {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
-    if (scrollTop + clientHeight < scrollHeight) return;
+    if (isLoading) return;
+    dispatch(setScroll(scrollTop));
+    if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
+      return;
     getNextBook();
   }
 
-  async function setUserArea() {
-    const response = await requestGet("/user-areas");
-    dispatch(setAreas(response.result));
+  function setUserArea() {
+    dispatch(fetchAreas());
   }
 
-  useEffect(() => {
-    if (searchDealList.length === 0 && location.state && location.state.reset) {
-      handleSearchButtonClick();
-    }
-  }, [searchDealList]);
-  useEffect(() => {
-    handleSearchButtonClick();
-  }, [area]);
+  function addLike(dealId, e) {
+    dispatch(addLikeDeal(dealId));
+    e.stopPropagation();
+  }
+  function deleteLike(dealId, e) {
+    dispatch(deleteLikeDeal(dealId));
+    e.stopPropagation();
+  }
 
   return (
     <>
@@ -157,16 +184,27 @@ export default function Main() {
             상태
           </SortButton>
         </SortByList>
-        <DealList height={getListHeight()} onScroll={handleScroll}>
-          {searchDealList.map((deal, i) => (
-            <DealItem
-              onClick={() => {
-                history.push({ pathname: `/deal/${deal.dealId}` });
-              }}
-              key={i}
-              dealObj={deal}
-            />
-          ))}
+        <DealList height={listHeight} onScroll={handleScroll} ref={dealListRef}>
+          {selectedDeals
+            ? selectedDeals.map((deal, i) => (
+                <DealItem
+                  onClick={() => {
+                    history.push({ pathname: `/deal/${deal.dealId}` });
+                  }}
+                  key={i}
+                  dealObj={deal}
+                  addLikeDeal={addLike}
+                  deleteLikeDeal={deleteLike}
+                />
+              ))
+            : ""}
+          {isLoading ? (
+            <SpinnerContainer>
+              <Spinner />
+            </SpinnerContainer>
+          ) : (
+            ""
+          )}
         </DealList>
       </Wrapper>
 

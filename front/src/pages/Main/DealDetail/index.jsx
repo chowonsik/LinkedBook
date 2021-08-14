@@ -22,14 +22,26 @@ import {
   UserInfo,
   Wrapper,
 } from "./style";
-import { useParams } from "react-router-dom";
-import { requestGet } from "../../../api";
+import { useHistory, useParams } from "react-router-dom";
+import { request, requestGet } from "../../../api";
+import { useDispatch } from "react-redux";
+import {
+  addLikeDeal,
+  deleteLikeDeal,
+  doNotRefresh,
+} from "../../../actions/Deal";
+import { showToast } from "../../../actions/Notification";
+import DeleteConfirm from "../../../components/deal/DeleteConfirm";
 export default function DealDetail() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { dealId } = useParams();
   const [dealData, setDealData] = useState({
     dealImages: [],
   });
+  const [confirmShow, setConfirmShow] = useState(false);
+
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   function goLeft() {
     if (selectedIndex === 0) return;
@@ -55,13 +67,39 @@ export default function DealDetail() {
     return price ? price.toLocaleString() : 0;
   }
 
+  async function handleDeleteButtonClick() {
+    const response = await request("PATCH", `/deals/${dealData.dealId}`, {
+      status: "DELETED",
+    });
+    console.log(response);
+    if (response.isSuccess) {
+      dispatch(showToast("게시글이 삭제되었습니다."));
+      history.goBack();
+    } else {
+      dispatch(showToast("삭제 실패"));
+    }
+  }
+  function handleCancleButtonClick() {
+    setConfirmShow(false);
+  }
+
+  function handleModifyButtonClick() {
+    history.push({ pathname: "/update/deal", state: { dealData: dealData } });
+  }
+
   useEffect(() => {
     fetchData();
     getLoginUser();
+    dispatch(doNotRefresh());
   }, []);
 
   return (
     <>
+      <DeleteConfirm
+        confirmShow={confirmShow}
+        onCancleButtonClick={handleCancleButtonClick}
+        onDeleteButtonClick={handleDeleteButtonClick}
+      />
       <Header title="거래 정보" isBack />
       <Wrapper>
         <ImageWrapper>
@@ -180,14 +218,35 @@ export default function DealDetail() {
       <Footer>
         <div className="icon-container">
           {dealData.isLikeDeal === 1 ? (
-            <HeartFill color={colors.yellow} size="24px" />
+            <span
+              className="icon"
+              onClick={() => {
+                setDealData({ ...dealData, isLikeDeal: 0 });
+                dispatch(deleteLikeDeal(dealData.dealId));
+              }}
+            >
+              <HeartFill color={colors.yellow} size="24px" />
+            </span>
           ) : (
-            <Heart color={colors.yellow} size="24px" />
+            <span
+              className="icon"
+              onClick={() => {
+                setDealData({ ...dealData, isLikeDeal: 1 });
+                dispatch(addLikeDeal(dealData.dealId));
+              }}
+            >
+              <Heart color={colors.yellow} size="24px" />
+            </span>
           )}
         </div>
         <div className="button-container">
           {dealData.userId === getLoginUser().id ? (
-            <RoundButton value="수정하기" width="40%" fontSize={fonts.xl} />
+            <RoundButton
+              value="수정하기"
+              width="40%"
+              fontSize={fonts.xl}
+              onClick={handleModifyButtonClick}
+            />
           ) : (
             <RoundButton value="거래하기" width="40%" fontSize={fonts.xl} />
           )}
@@ -197,6 +256,9 @@ export default function DealDetail() {
               width="40%"
               fontSize={fonts.xl}
               backgroundColor={colors.red}
+              onClick={() => {
+                setConfirmShow(true);
+              }}
             />
           ) : (
             <RoundButton

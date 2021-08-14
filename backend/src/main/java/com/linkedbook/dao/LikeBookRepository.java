@@ -6,5 +6,5 @@ import com.linkedbook.entity.UserDB;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LikeBookRepository extends JpaRepository<LikeBookDB, Integer> {
-    boolean existsByUserAndBook(UserDB user, BookDB book);
+    LikeBookDB findByUserAndBook(UserDB userDB, BookDB bookDB);
 }

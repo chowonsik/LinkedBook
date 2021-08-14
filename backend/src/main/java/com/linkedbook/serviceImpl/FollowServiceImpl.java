@@ -33,7 +33,7 @@ public class FollowServiceImpl implements FollowService {
     private final JwtService jwtService;
 
     @Override
-    public PageResponse<FollowOutput> getFollowList(String info, FollowSearchInput followSearchInput) {
+    public PageResponse<FollowSearchOutput> getFollowList(String info, FollowSearchInput followSearchInput) {
         // 1. 값 형식 체크
         if(followSearchInput == null)  return new PageResponse<>(NO_VALUES);
         if (info == null || !ValidationCheck.isValidFollowInfo(info))
@@ -41,7 +41,7 @@ public class FollowServiceImpl implements FollowService {
         if(!ValidationCheck.isValidPage(followSearchInput.getPage())
                 || !ValidationCheck.isValidId(followSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
         // 2. follow 유저 정보 가져오기
-        Page<FollowOutput> followOutput;
+        Page<FollowSearchOutput> followOutput;
         try {
             int loginUserId = jwtService.getUserId();
             if(loginUserId < 0) {
@@ -64,7 +64,7 @@ public class FollowServiceImpl implements FollowService {
                 UserDB targetUser = info.equals("follower") ? followDB.getFromUser() : followDB.getToUser();
                 FollowDB loginAndTargetDB = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
 
-                return FollowOutput.builder()
+                return FollowSearchOutput.builder()
                         .id(followDB.getId())
                         .user(CommonUserOutput.builder()
                                 .id(targetUser.getId())

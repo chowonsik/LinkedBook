@@ -16,7 +16,7 @@ const useInput = (initialValue, validator) => {
       setErrorMessage(result.errorMessage);
     }
   };
-  return { value, onChange, isValid, errorMessage };
+  return { value, onChange, isValid, errorMessage, setValue };
 };
 
 export default useInput;
