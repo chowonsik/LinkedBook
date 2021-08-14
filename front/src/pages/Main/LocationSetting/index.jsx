@@ -1,58 +1,75 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plus, X } from "react-bootstrap-icons";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { deleteArea, setSelect } from "../../../actions/Users";
+import { request } from "../../../api";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
 import Header from "../../../components/Layout/Header";
 import { Wrapper } from "./style";
 
 export default function LocationSetting() {
-  const [locations, setLocations] = useState([
-    { name: "덕명동", isSelected: true },
-    { name: "변동", isSelected: false },
-  ]);
+  const areas = useSelector((state) => state.userReducer.areas);
+  const selectedAreaIndex = useSelector(
+    (state) => state.userReducer.selectedAreaIndex
+  );
+  const [selectedIndex, setSelectedIndex] = useState(selectedAreaIndex);
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
-  function handleSelectLocation(selectedIdx) {
-    setLocations(
-      locations.map((location, i) =>
-        i === selectedIdx
-          ? { ...location, isSelected: true }
-          : { ...location, isSelected: false }
-      )
-    );
-  }
+  useEffect(() => {
+    requestUpdate();
+  }, [areas]);
 
-  function handleDeleteLocation(selectedIdx) {
-    setLocations(locations.filter((location, i) => i !== selectedIdx));
+  function handleDeleteLocation(deleteIndex) {
+    if (deleteIndex < selectedIndex) {
+      setSelectedIndex(deleteIndex);
+    }
+    dispatch(deleteArea(deleteIndex));
   }
 
   function handleAddLocation() {
-    setLocations([...locations, { name: "샘플", isSelected: false }]);
+    history.push({ pathname: "/search/location", state: { isAreaAdd: true } });
+  }
+
+  function handleAreaClick(i) {
+    setSelectedIndex(i);
   }
 
   function handleComplete() {
+    dispatch(setSelect(selectedIndex));
     history.push({ pathname: "/" });
+  }
+
+  function requestUpdate() {
+    const data = areas.map((area, i) => {
+      return { areaId: area.areaId, orders: i + 1 };
+    });
+    const requestData = {
+      area: data,
+    };
+    request("POST", "/user-areas", requestData);
   }
 
   function renderLocation(location, i) {
     return (
       <div
         className={`container location ${
-          location.isSelected ? "selected" : ""
+          selectedIndex === i ? "selected" : ""
         }`}
       >
         <span
           className="name-container"
           onClick={() => {
-            handleSelectLocation(i);
+            handleAreaClick(i);
           }}
         >
-          <span className="name">{location.name}</span>
+          <span className="name">{location.areaDongmyeonri}</span>
         </span>
         {
           <span
-            className={`icon ${i === 0 || location.isSelected ? "hide" : ""}`}
+            className={`icon ${i === 0 || selectedIndex === i ? "hide" : ""}`}
             onClick={() => handleDeleteLocation(i)}
           >
             <X />
@@ -71,20 +88,21 @@ export default function LocationSetting() {
     );
   }
 
-  function renderLocations() {
+  function renderAreas() {
     const components = [];
-    for (let i = 0; i < locations.length; i++) {
-      components.push(renderLocation(locations[i], i));
+    for (let i = 0; i < areas.length; i++) {
+      components.push(renderLocation(areas[i], i));
     }
-    if (locations.length < 3) {
+    if (areas.length < 3) {
       components.push(renderAddButton());
     }
     return components;
   }
+
   return (
     <>
-      <Header title="동네 설정" isBack />
-      <Wrapper>{renderLocations()}</Wrapper>
+      <Header title="동네 설정" />
+      <Wrapper>{renderAreas()}</Wrapper>
       <FooterButton value="선택 완료" onClick={handleComplete} />
     </>
   );

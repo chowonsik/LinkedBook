@@ -24,6 +24,16 @@ export function requestGet(url, params) {
     .catch((error) => error);
 }
 
+export function requestDelete(url) {
+  return axios({
+    method: "delete",
+    url: baseURL + url,
+    headers: getHeader(),
+  })
+    .then((result) => result)
+    .catch((error) => error);
+}
+
 function getHeader() {
   const loginUser = JSON.parse(localStorage.getItem("loginUser"));
   if (!loginUser) return {};
@@ -45,3 +55,14 @@ function getGetURL(url, params) {
   }
   return requestURL;
 }
+
+const Kakao = axios.create({
+  baseURL: "https://dapi.kakao.com",
+  headers: {
+    Authorization: "KakaoAK 30a622c4a81a7598f9de414dfabc31c9", // 공통으로 요청 할 헤더
+  },
+});
+
+export const KakaoBook = (params) => {
+  return Kakao.get("/v3/search/book", { params });
+};

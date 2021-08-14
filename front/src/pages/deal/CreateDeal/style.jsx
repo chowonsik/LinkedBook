@@ -92,14 +92,6 @@ export const ImageContainer = styled.div`
     }
   }
   .image {
-    &:first-child::before {
-      content: "대표 이미지";
-      position: absolute;
-      font-size: ${fonts.md};
-      color: white;
-      background-color: ${colors.yellow};
-      padding: 2px 2px;
-    }
     img {
       width: 100%;
       height: 100%;
@@ -131,27 +123,66 @@ export const ImageContainer = styled.div`
   }
 `;
 
-export const QualityContainer = styled.div`
-  display: flex;
-  margin-top: 32px;
-  flex-direction: column;
+export const CheckBoxContainer = styled.div`
+  margin-top: 30px;
   .title {
     font-size: ${fonts.md};
+    margin-bottom: 10px;
+  }
+  .content {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    .container {
+      display: flex;
+      width: 40%;
+      justify-content: space-between;
+      margin: 5px 0;
+      .text {
+        font-size: ${fonts.sm};
+      }
+      .icon {
+        font-size: ${fonts.lg};
+        position: relative;
+        color: ${colors.gray};
+        .check {
+          color: ${colors.yellow};
+          font-size: 24px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: translate(-15%, -15%);
+        }
+      }
+    }
+  }
+`;
+
+export const QualityContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 32px;
+  justify-content: space-between;
+  .title {
+    font-size: ${fonts.md};
+    flex: 4;
   }
   .quality-container {
-    margin-top: 15px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    flex: 6;
     .round-box {
       cursor: pointer;
-      height: 26px;
-      width: 24%;
+      height: 22px;
+      width: 26%;
       display: flex;
       justify-content: center;
       align-items: center;
       border-radius: 100px;
       border: 1px solid ${colors.gray};
       color: ${colors.gray};
+      transition: all 0.2s;
       &.selected {
         background-color: ${colors.yellow};
         border: none;
@@ -171,15 +202,10 @@ export const TextContainer = styled.div`
     border: none;
     background-color: ${colors.lightGray};
     border-radius: 6px;
+    margin-bottom: 20px;
   }
-  .low-high {
-    color: ${colors.gray};
-    font-size: ${fonts.md};
-    margin-top: 16px;
-    margin-bottom: 4px;
-  }
+
   textarea {
-    margin-top: 40px;
     width: 100%;
     height: 150px;
     padding: 16px;

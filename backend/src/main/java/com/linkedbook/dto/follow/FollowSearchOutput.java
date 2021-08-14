@@ -1,5 +1,7 @@
 package com.linkedbook.dto.follow;
 
+import com.linkedbook.dto.common.CommonFollowOutput;
+import com.linkedbook.dto.common.CommonUserOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,12 +13,10 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Builder
-public class FollowUser {
-    private int userId;
-    private String email;
-    private String nickname;
-    private String image;
-    private String status;
+public class FollowSearchOutput {
+    private int id;
+    private CommonUserOutput user;
+    private CommonFollowOutput follow;
     private Date created_at;
     private Date updated_at;
 }

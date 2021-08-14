@@ -1,6 +1,5 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.follow.FollowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,10 +32,6 @@ public class FollowDB {
     @ManyToOne
     @JoinColumn(name = "from_user_id", nullable = false)
     private UserDB fromUser;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 45, nullable = false)
-    private FollowStatus status;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
