@@ -46,7 +46,7 @@ function FollowerList({
     const type = e.target.innerText;
     if (type === "팔로우") {
       const data = {
-        toUserId: Number(e.target.id),
+        toUserId: parseInt(e.target.id),
         fromUserId: loginUser.id,
       };
       createFollow(data);
@@ -76,7 +76,10 @@ function FollowerList({
   }
 
   function handleScroll(e) {
-    if (e.target.scrollTop + e.target.offsetHeight >= e.target.scrollHeight) {
+    if (
+      parseInt(e.target.scrollTop) + parseInt(e.target.clientHeight) ===
+      parseInt(e.target.scrollHeight)
+    ) {
       if (currentPage < totalPages && followerList.length < totalElements) {
         const params = {
           page: currentPage + 1,
@@ -96,7 +99,7 @@ function FollowerList({
       <Header isBack={true} isAlarm={true} title={"팔로워"} />
       <Container onScroll={handleScroll} height={height}>
         {followerList &&
-          followerList.map((follower, idx) => (
+          [...new Set(followerList)].map((follower, idx) => (
             <FollowItem
               profileImage={follower.user.image}
               nickName={follower.user.nickname}

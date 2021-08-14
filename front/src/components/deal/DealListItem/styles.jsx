@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   & {
     display: flex;
     align-items: center;
-    width: 100%;
+    width: 90%;
     height: 90px;
     margin: 20px 0;
     .image-container {
@@ -72,17 +72,17 @@ export const Wrapper = styled.div`
         .created {
           font-size: ${fonts.xs};
         }
+        .icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 14px;
+        }
         .heart {
-          display: block;
           color: ${colors.gray};
-          width: 14px;
-          height: 14px;
         }
         .heart-filled {
-          display: block;
           color: ${colors.yellow};
-          width: 14px;
-          height: 14px;
         }
       }
     }

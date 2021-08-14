@@ -1,7 +1,13 @@
 import { Wrapper } from "./styles";
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 
-function DealListItem({ dealObj, onClick }) {
+function DealListItem({
+  dealObj,
+  onClick,
+  addLikeDeal,
+  deleteLikeDeal,
+  width,
+}) {
   function dateToString(date) {
     const today = new Date();
     const timeValue = new Date(date);
@@ -41,8 +47,9 @@ function DealListItem({ dealObj, onClick }) {
     }
     return text;
   }
+
   return (
-    <Wrapper onClick={onClick}>
+    <Wrapper onClick={onClick} width={width}>
       <div className="image-container">
         <img
           className="book-image"
@@ -79,9 +86,23 @@ function DealListItem({ dealObj, onClick }) {
               {priceToString(dealObj.dealPrice)}원
             </strong>
             {dealObj.isLikeDeal === 1 ? (
-              <SuitHeartFill className="heart-filled" />
+              <span
+                className="icon heart-filled"
+                onClick={(e) => {
+                  deleteLikeDeal(dealObj.dealId, e);
+                }}
+              >
+                <SuitHeartFill />
+              </span>
             ) : (
-              <SuitHeart className="heart" />
+              <span
+                className="icon heart"
+                onClick={(e) => {
+                  addLikeDeal(dealObj.dealId, e);
+                }}
+              >
+                <SuitHeart />
+              </span>
             )}
           </div>
         </div>

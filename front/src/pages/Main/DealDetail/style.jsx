@@ -61,6 +61,7 @@ export const ImageContainer = styled.div`
 
   img {
     width: 100%;
+    min-width: 100%;
     object-fit: cover;
   }
 `;
@@ -190,6 +191,11 @@ export const Footer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    .icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
   .button-container {
     flex: 10;
