@@ -5,4 +5,5 @@ import com.linkedbook.response.Response;
 
 public interface LikeBookService {
     Response<Object> createLikeBook(LikeBookInput likeBookInput);
+    Response<Object> deleteLikeBook(int id);
 }

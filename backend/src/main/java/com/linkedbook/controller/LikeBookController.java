@@ -24,7 +24,20 @@ public class LikeBookController {
     @ResponseBody
     @PostMapping
     public Response<Object> createLikeBook(@RequestBody LikeBookInput likeBookInput) {
-        log.info("[POST] /like-comments");
+        log.info("[POST] /like-books");
         return likeBookService.createLikeBook(likeBookInput);
+    }
+
+    /**
+     * 관심 책 삭제 API
+     * [DELETE] /like-books/{isbn}
+     * @return Response<Object>
+     */
+    // Path-Variable
+    @ResponseBody
+    @DeleteMapping("/{id}")
+    public Response<Object> deleteLikeBook(@PathVariable("id") int id) {
+        log.info("[POST] /like-books/" + id);
+        return likeBookService.deleteLikeBook(id);
     }
 }

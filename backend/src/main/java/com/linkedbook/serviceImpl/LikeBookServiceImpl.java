@@ -63,4 +63,31 @@ public class LikeBookServiceImpl implements LikeBookService {
         return new Response<>(null, CREATED_LIKE_BOOK);
     }
 
+    @Override
+    @Transactional
+    public Response<Object> deleteLikeBook(int id) {
+        // 1. 값 형식 체크
+        if (!ValidationCheck.isValidId(id)) return new Response<>(BAD_REQUEST);
+        // 2. 관심등록된 책 정보 삭제
+        try {
+            int loginUserId = jwtService.getUserId();
+            if(loginUserId < 0) {
+                log.error("[like-books/delete] NOT FOUND LOGIN USER error");
+                return new Response<>(NOT_FOUND_USER);
+            }
+            LikeBookDB likeBookDB = likeBookRepository.findById(id).orElse(null);
+            if(likeBookDB == null || likeBookDB.getUser().getId() != loginUserId) {
+                log.error("[like-books/delete] NOT FOUND LIKE-BOOK error");
+                return new Response<>(NOT_FOUND_BOOK);
+            }
+
+            likeBookRepository.deleteById(id);
+        } catch (Exception e) {
+            log.error("[like-books/delete] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(null, SUCCESS_DELETE_LIKE_BOOK);
+    }
+
 }
