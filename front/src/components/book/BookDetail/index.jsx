@@ -40,8 +40,10 @@ const BookDetail = ({ bookInfo }) => {
           <h2 className="price">{bookInfo.price} 원</h2>
           <span className="categories">
             {bookInfo.popular &&
-              bookInfo.popular.categories.map((category) => (
-                <span className="category">#{category.title}</span>
+              bookInfo.popular.categories.map((category, idx) => (
+                <span key={idx} className="category">
+                  #{category.title}
+                </span>
               ))}
           </span>
         </div>

@@ -1,7 +1,8 @@
 // import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { BookmarkFill, PencilFill } from "react-bootstrap-icons";
+import { useDispatch } from "react-redux";
+import { BookmarkFill, Bookmark, PencilFill } from "react-bootstrap-icons";
 import { Wrapper, BookComments, Footer } from "./styles";
 import { request, requestGet, requestDelete } from "../../../api";
 import BookDetail from "../../../components/book/BookDetail";
@@ -9,8 +10,11 @@ import BookCommentItem from "../../../components/book/BookCommentItem";
 import BookCommentModal from "../../../components/book/BookCommentModal";
 import Header from "../../../components/Layout/Header";
 import RoundButton from "../../../components/common/Buttons/RoundButton";
+import ToastMessage from "../../../components/common/ToastMessage";
+import { showToast } from "../../../actions/Notification";
 
-const BookInfo = ({ match }) => {
+const BookInfo = ({ match, history }) => {
+  const dispatch = useDispatch();
   const LOGIN_USER = JSON.parse(localStorage.getItem("loginUser")).id;
   const {
     params: { isbn },
@@ -20,6 +24,7 @@ const BookInfo = ({ match }) => {
   const [modalActive, setModalActive] = useState(false);
   const [newComment, setNewComment] = useState({});
   const [editing, setEditing] = useState(false);
+  const [isBookLike, setIsBookLike] = useState(false);
   const [starRatingState, setStarRatingState] = useState([
     false,
     false,
@@ -107,6 +112,7 @@ const BookInfo = ({ match }) => {
       )}월 ${result.dateTime.substr(8, 2)}일 출간`,
     };
     setBookInfo(bookData);
+    setIsBookLike(bookData.like);
   };
 
   const infiniteScroll = () => {
@@ -325,6 +331,20 @@ const BookInfo = ({ match }) => {
     );
   };
 
+  const likeBook = async () => {
+    setIsBookLike({ ...isBookLike, userLike: !isBookLike.userLike });
+    await request("post", `/like-books`, { id: isbn });
+    dispatch(showToast("관심책으로 등록되었습니다."));
+    getBookInfo();
+  };
+
+  const unlikeBook = async () => {
+    setIsBookLike({ ...isBookLike, userLike: !isBookLike.userLike });
+    await requestDelete(`/like-books/${isBookLike.id}`);
+    dispatch(showToast("관심책에서 삭제되었습니다."));
+    getBookInfo();
+  };
+
   return (
     <>
       <Header isBack isSearch isAlarm title={bookInfo.title} />
@@ -367,7 +387,11 @@ const BookInfo = ({ match }) => {
         />
       </Wrapper>
       <Footer>
-        <BookmarkFill className="bookmark-icon" />
+        {isBookLike.userLike && isBookLike.userLike ? (
+          <BookmarkFill onClick={unlikeBook} className="bookmark-icon" />
+        ) : (
+          <Bookmark onClick={likeBook} className="bookmark-icon" />
+        )}
         <RoundButton value="거래보기" width="70%" />
       </Footer>
     </>
