@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
 import DealItem from "../../components/deal/DealListItem";
@@ -11,30 +11,30 @@ import {
   Wrapper,
   SortButton,
   DealList,
+  Spinner,
+  SpinnerContainer,
 } from "./style";
 import Input from "../../components/common/Input";
 import { ChevronDown } from "react-bootstrap-icons";
 import { fonts } from "../../styles";
 import RoundButton from "../../components/common/Buttons/RoundButton";
 import {
-  setFilter,
   searchDeals,
   setSearch,
   resetDeals,
+  setSelectDeals,
+  addLikeDeal,
+  deleteLikeDeal,
 } from "../../actions/Deal/index.js";
-import { requestGet } from "../../api";
-import { setAreas } from "../../actions/Users";
+import { fetchAreas } from "../../actions/Users";
 
 export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
   const filter = useSelector((state) => state.dealReducer.filter);
-  const searchDealList = useSelector(
-    (state) => state.dealReducer.searchDealList[filter]
-  );
+  const selectedDeals = useSelector((state) => state.dealReducer.selectedDeals);
   const [prevSearch, setPrevSearch] = useState("");
-  const area = useSelector(
-    (state) => state.userReducer.areas?.[state.userReducer.selectedAreaIndex]
-  );
+  const area = useSelector((state) => state.userReducer.selectedArea);
+  const isLoading = useSelector((state) => state.dealReducer.isLoading);
 
   const history = useHistory();
   const location = useLocation();
@@ -44,37 +44,43 @@ export default function Main() {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser) {
       history.push({ pathname: "/signin" });
-    }
-    setUserArea();
-    if (location.state && location.state.reset) {
-      dispatch(resetDeals());
-    }
-    if (searchDealList.length === 0) {
-      handleSearchButtonClick();
+    } else {
+      setUserArea();
+      // 거래 등록 후
+      // if (location.state && location.state.reset) {
+      //   dispatch(resetDeals());
+      // }
+      // if (selectedDeals) {
+      //   if (selectedDeals.length === 0) {
+      //     handleSearchButtonClick();
+      //   }
+      // }
     }
   }, []);
+
+  function handleSearchButtonClick() {
+    if (area) {
+      dispatch(resetDeals());
+      setPrevSearch(search);
+      dispatch(searchDeals(search, 0, area.areaId));
+    }
+  }
 
   function handleSearchChange(e) {
     dispatch(setSearch(e.target.value));
   }
 
   function handleSortButtonClick(filter) {
-    dispatch(setFilter(filter));
-  }
-
-  function handleSearchButtonClick() {
-    if (area) {
-      setPrevSearch(search);
-      dispatch(searchDeals(search, 0, area.areaId));
-    }
+    dispatch(setSelectDeals(filter));
   }
 
   function getListHeight() {
     return window.innerHeight - 120 - 140;
   }
+
   function getNextBook() {
-    if (searchDealList.length % 10 != 0) return;
-    const page = parseInt(searchDealList.length / 10);
+    if (selectedDeals && selectedDeals.length % 10 != 0) return;
+    const page = parseInt(selectedDeals.length / 10);
     if (prevSearch === search) {
       dispatch(searchDeals(search, page, area.areaId));
     } else {
@@ -83,21 +89,32 @@ export default function Main() {
   }
   function handleScroll(e) {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
-    if (scrollTop + clientHeight < scrollHeight) return;
+    if (isLoading) return;
+    if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
+      return;
     getNextBook();
   }
 
-  async function setUserArea() {
-    const response = await requestGet("/user-areas");
-    dispatch(setAreas(response.result));
+  function setUserArea() {
+    dispatch(fetchAreas());
+  }
+
+  function addLike(dealId, e) {
+    dispatch(addLikeDeal(dealId));
+    e.stopPropagation();
+  }
+  function deleteLike(dealId, e) {
+    dispatch(deleteLikeDeal(dealId));
+    e.stopPropagation();
+  }
+
+  function getDealItemWidth() {
+    const width = `${window.innerWidth - 40}px`;
+    return width;
   }
 
   useEffect(() => {
-    if (searchDealList.length === 0 && location.state && location.state.reset) {
-      handleSearchButtonClick();
-    }
-  }, [searchDealList]);
-  useEffect(() => {
+    dispatch(resetDeals());
     handleSearchButtonClick();
   }, [area]);
 
@@ -158,15 +175,27 @@ export default function Main() {
           </SortButton>
         </SortByList>
         <DealList height={getListHeight()} onScroll={handleScroll}>
-          {searchDealList.map((deal, i) => (
-            <DealItem
-              onClick={() => {
-                history.push({ pathname: `/deal/${deal.dealId}` });
-              }}
-              key={i}
-              dealObj={deal}
-            />
-          ))}
+          {selectedDeals
+            ? selectedDeals.map((deal, i) => (
+                <DealItem
+                  onClick={() => {
+                    history.push({ pathname: `/deal/${deal.dealId}` });
+                  }}
+                  key={i}
+                  dealObj={deal}
+                  addLikeDeal={addLike}
+                  deleteLikeDeal={deleteLike}
+                  width={getDealItemWidth()}
+                />
+              ))
+            : ""}
+          {isLoading ? (
+            <SpinnerContainer>
+              <Spinner />
+            </SpinnerContainer>
+          ) : (
+            ""
+          )}
         </DealList>
       </Wrapper>
 

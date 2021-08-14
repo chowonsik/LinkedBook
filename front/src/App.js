@@ -17,15 +17,17 @@ import DealCreate from "./pages/deal/CreateDeal";
 import Report from "./pages/Report";
 import SearchUser from "./pages/SearchUser";
 import ToastMessage from "./components/common/ToastMessage";
-
+import ChatRoom from "./pages/Chat/ChatRoom";
+import TestChat from "./pages/Chat/TestChat";
 function App() {
   return (
     <div className="App">
       <Router>
         <Route path="/" exact={true} component={Main} />
         <Route path="/location" exact={true} component={LocationSetting} />
-        <Route path="/deal" exact={true} component={DealCreate} />
+        <Route path="/create/deal" exact={true} component={DealCreate} />
         <Route path="/deal/:dealId" exact={true} component={DealDetail} />
+        <Route path="/update/deal" exact={true} component={DealCreate} />
         <Route path="/signin" exact={true} component={SignIn} />
         <Route path="/signup" exact={true} component={SignUp} />
         <Route
@@ -40,6 +42,8 @@ function App() {
         <Route path="/follower/list" exact={true} component={FollowerList} />
         <Route path="/redbell/:dealId" exact={true} component={Report} />
         <Route path="/search/user" exact={true} component={SearchUser} />
+        <Route path="/chat/room/:id" exact={true} component={ChatRoom} />
+        <Route path="/test" exact={true} component={TestChat} />
       </Router>
       <ToastMessage />
     </div>
