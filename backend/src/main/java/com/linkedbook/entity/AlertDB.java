@@ -1,6 +1,8 @@
 package com.linkedbook.entity;
 
+import com.linkedbook.dto.alert.AlertStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,9 +13,10 @@ import java.util.Date;
 import static javax.persistence.GenerationType.*;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "alert")
 public class AlertDB {
@@ -22,8 +25,9 @@ public class AlertDB {
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 45)
-    private String type;
+    private AlertStatus type;
 
     @ManyToOne
     @JoinColumn(name = "comment_id")
@@ -32,6 +36,10 @@ public class AlertDB {
     @ManyToOne
     @JoinColumn(name = "deal_id")
     private DealDB deal;
+
+    @ManyToOne
+    @JoinColumn(name = "eval_id")
+    private UserDealDB eval;
 
     @ManyToOne
     @JoinColumn(name = "to_user_id", nullable = false)

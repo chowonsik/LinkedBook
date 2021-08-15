@@ -1,22 +1,22 @@
-package com.linkedbook.dto.follow;
+package com.linkedbook.dto.common;
 
-import com.linkedbook.dto.common.CommonFollowOutput;
-import com.linkedbook.dto.common.CommonUserOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Builder
-public class FollowOutput {
+@Getter
+public class CommonCommentOutput {
     private int id;
-    private CommonUserOutput user;
-    private CommonFollowOutput follow;
+    private double score;
+    private String content;
+    private List<CommonCategoryOutput> categories;
     private Date created_at;
     private Date updated_at;
 }

@@ -1,13 +1,78 @@
-import { requestGet } from "../../api.js";
+import { request, requestGet } from "../../api.js";
 
 export const SET_SEARCH = "SET_SEARCH";
 export const SET_FILTER = "SET_FILTER";
-export const SET_SELECT_DEALS = "SET_SELECT_DEALS";
 export const SET_SELECTED_DEALS = "SET_SELECTED_DEALS";
-export const SEARCH_DEALS = "SEARCH_DEALS";
 export const RESET_DEALS = "RESET_DEALS";
 export const SET_DEALS = "SET_DEALS";
 export const SET_IS_LOADING = "SET_IS_LOADING";
+export const DO_NOT_REFRESH = "DO_NOT_REFRESH";
+export const DO_REFRESH = "DO_REFRESH";
+export const SET_SCROLL = "SET_SCROLL";
+
+export const doNotRefresh = () => {
+  return {
+    type: DO_NOT_REFRESH,
+  };
+};
+export const doRefresh = () => {
+  return {
+    type: DO_REFRESH,
+  };
+};
+
+export const setScroll = (scroll) => {
+  return {
+    type: SET_SCROLL,
+    scroll: scroll,
+  };
+};
+
+export const addLikeDeal = (dealId) => async (dispatch, getState) => {
+  console.log(dealId);
+  const newNEW = getState().dealReducer.deals.NEW.map((deal) =>
+    deal.dealId === dealId ? { ...deal, isLikeDeal: 1 } : deal
+  );
+  const newPRICE = getState().dealReducer.deals.PRICE.map((deal) =>
+    deal.dealId === dealId ? { ...deal, isLikeDeal: 1 } : deal
+  );
+  const newQUALITY = getState().dealReducer.deals.QUALITY.map((deal) =>
+    deal.dealId === dealId ? { ...deal, isLikeDeal: 1 } : deal
+  );
+  dispatch(
+    setDeals({
+      NEW: newNEW,
+      PRICE: newPRICE,
+      QUALITY: newQUALITY,
+    })
+  );
+  dispatch(setSelectDeals(getState().dealReducer.filter));
+  const response = await request("POST", "/like-deals", { dealId: dealId });
+  console.log(response);
+};
+export const deleteLikeDeal = (dealId) => async (dispatch, getState) => {
+  const newNEW = getState().dealReducer.deals.NEW.map((deal) =>
+    deal.dealId === dealId ? { ...deal, isLikeDeal: 0 } : deal
+  );
+  const newPRICE = getState().dealReducer.deals.PRICE.map((deal) =>
+    deal.dealId === dealId ? { ...deal, isLikeDeal: 0 } : deal
+  );
+  const newQUALITY = getState().dealReducer.deals.QUALITY.map((deal) =>
+    deal.dealId === dealId ? { ...deal, isLikeDeal: 0 } : deal
+  );
+  dispatch(
+    setDeals({
+      NEW: newNEW,
+      PRICE: newPRICE,
+      QUALITY: newQUALITY,
+    })
+  );
+  dispatch(setSelectDeals(getState().dealReducer.filter));
+  const response = await request("DELETE", `/like-deals?dealId=${dealId}`, {
+    dealId: dealId,
+  });
+  console.log(response);
+};
 
 export const setIsLoading = (loading) => {
   return {

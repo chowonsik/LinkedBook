@@ -1,6 +1,6 @@
 package com.linkedbook.controller;
 
-import com.linkedbook.dto.book.search.BookInfoInput;
+import com.linkedbook.dto.book.search.BookInput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
@@ -21,11 +21,11 @@ public class BookController {
      * @param isbn 검색하고 싶은 책의 isbn
      * @return Response<BookSearchOutput>
      */
-    // Body
+    // Params
     @ResponseBody
     @GetMapping("/{isbn}")
     public Response<BookSearchOutput> getBookInfo(@PathVariable("isbn") String isbn) {
-        log.info("[GET] /books/{isbn}");
+        log.info("[GET] /books/" + isbn);
         return bookService.getBookInfo(isbn);
     }
 
@@ -37,8 +37,8 @@ public class BookController {
     // Body
     @ResponseBody
     @PostMapping
-    public Response<Object> createBookInfo(@RequestBody BookInfoInput bookInfoInput) {
+    public Response<Object> createBookInfo(@RequestBody BookInput bookInput) {
         log.info("[POST] /books");
-        return bookService.createBookInfo(bookInfoInput);
+        return bookService.createBookInfo(bookInput);
     }
 }
