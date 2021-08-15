@@ -53,7 +53,7 @@ export default function SignUp() {
       !passwordConfirm.isValid ||
       !area.areaId
     ) {
-      alert("모든 항목을 입력하세요");
+      dispatch(showToast("모든 항목을 입력하세요."));
       return;
     }
     const data = {
@@ -69,7 +69,12 @@ export default function SignUp() {
       dispatch(showToast("회원가입이 완료되었습니다."));
       history.push({ pathname: "/signin" });
     } else {
-      alert("회원가입 실패");
+      if (response.code === 404) {
+        dispatch(showToast("이미 사용중인 이메일입니다."));
+      }
+      if (response.code === 405) {
+        dispatch(showToast("이미 사용중인 닉네임입니다."));
+      }
       return;
     }
   }

@@ -1,14 +1,12 @@
 package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
-import com.linkedbook.dao.BookRepository;
-import com.linkedbook.dao.LikeBookRepository;
-import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dao.*;
 import com.linkedbook.dto.book.search.BookInfoInput;
+import com.linkedbook.dto.book.search.BookPopularOutput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
-import com.linkedbook.entity.BookDB;
-import com.linkedbook.entity.CommentDB;
-import com.linkedbook.entity.UserDB;
+import com.linkedbook.dto.common.CommonLikeOutput;
+import com.linkedbook.entity.*;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
 import com.linkedbook.service.JwtService;
@@ -26,6 +24,8 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final LikeBookRepository likeBookRepository;
+    private final PopularCategoryRepository popularCategoryRepository;
+    private final PopularCommentRepository popularCommentRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
@@ -40,7 +40,6 @@ public class BookServiceImpl implements BookService {
                 || !ValidationCheck.isValid(bookInfoInput.getAuthor())
                 || !ValidationCheck.isValidDate(bookInfoInput.getDateTime())
                 || !ValidationCheck.isValid(bookInfoInput.getThumbnail())
-                || !ValidationCheck.isValid(bookInfoInput.getStatus())
         )
             return new Response<>(BAD_REQUEST);
 
@@ -101,18 +100,18 @@ public class BookServiceImpl implements BookService {
                 return new Response<>(NOT_FOUND_BOOK);
             }
             // 서버에서 클라이언트로 null값을 보내지 않도록 가공
-            if(bookDB.getPublisher() == null) bookDB.setPublisher("");
-            if(bookDB.getContents() == null) bookDB.setContents("");
+            if (bookDB.getPublisher() == null) bookDB.setPublisher("");
+            if (bookDB.getContents() == null) bookDB.setContents("");
+            if (bookDB.getStatus() == null) bookDB.setStatus("");
 
             // 책 한줄평 평균 점수 구하기
             double commentAvgScore = bookDB.getComments().stream()
                     .mapToDouble(CommentDB::getScore).average().orElse(Double.NaN);
+            commentAvgScore = Math.round(commentAvgScore * 10) / 10.0; // 소수점 1자리까지 보내도록 가공
 
             // 로그인된 유저의 관심 책 등록 여부 확인하기
-            boolean isUserLikeBook = false;
-            if(likeBookRepository.existsByUserAndBook(loginUserDB, bookDB)) {
-                isUserLikeBook = true;
-            }
+            LikeBookDB likeBookDB = likeBookRepository.findByUserAndBook(loginUserDB, bookDB);
+
             // 최종 출력값 정리
             bookSearchOutput = BookSearchOutput.builder()
                     .id(bookDB.getId())
@@ -124,9 +123,20 @@ public class BookServiceImpl implements BookService {
                     .dateTime(bookDB.getDateTime())
                     .image(bookDB.getImage())
                     .status(bookDB.getStatus())
-                    .likeBookCnt(bookDB.getLikeBooks().size())
-                    .commentAvgScore(commentAvgScore)
-                    .userLikeBook(isUserLikeBook)
+                    .popular(
+                            BookPopularOutput.builder()
+                                    .avgScore(commentAvgScore)
+                                    .categories(popularCategoryRepository.findTop3ByBookId(bookDB.getId())) // 가장 많이 언급된 카테고리 3개 구하기
+                                    .comments(popularCommentRepository.findTop2ByBookId(bookDB.getId())) // 좋아요 많은 한줄평 2개 구하기
+                                    .build()
+                    )
+                    .like(
+                            CommonLikeOutput.builder()
+                                    .totalLikeCnt(bookDB.getLikeBooks().size())
+                                    .userLike(likeBookDB != null)
+                                    .id(likeBookDB == null ? 0 : likeBookDB.getId())
+                                    .build()
+                    )
                     .build();
         } catch (Exception e) {
             log.error("[books/get] database error", e);

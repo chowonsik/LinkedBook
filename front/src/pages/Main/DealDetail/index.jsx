@@ -25,7 +25,11 @@ import {
 import { useHistory, useParams } from "react-router-dom";
 import { request, requestGet } from "../../../api";
 import { useDispatch } from "react-redux";
-import { addLikeDeal, deleteLikeDeal } from "../../../actions/Deal";
+import {
+  addLikeDeal,
+  deleteLikeDeal,
+  doNotRefresh,
+} from "../../../actions/Deal";
 import { showToast } from "../../../actions/Notification";
 import DeleteConfirm from "../../../components/deal/DeleteConfirm";
 import { createRoom } from "../../../actions/Chat";
@@ -100,6 +104,7 @@ export default function DealDetail() {
   useEffect(() => {
     fetchData();
     getLoginUser();
+    dispatch(doNotRefresh());
   }, []);
 
   return (
