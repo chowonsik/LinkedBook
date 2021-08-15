@@ -26,10 +26,12 @@ export const Wrapper = styled.div`
           .user-title {
             display: flex;
             align-items: center;
+            vertical-align: middle;
             .username {
               display: flex;
               margin-right: 4px;
               font-size: ${fonts.xl};
+              padding-bottom: 2px;
             }
             .user-setting {
               width: 16px;

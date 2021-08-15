@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   myProfile: {},
   activeTab: 0,
   myTabInfo: {},
+  myLikeDealList: {},
 };
 
 export const myProfileReducer = (state = INITIAL_STATE, action) => {

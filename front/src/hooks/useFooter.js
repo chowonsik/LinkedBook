@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 const useFooter = () => {
   const history = useHistory();
+  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
+
   const onClick = (e) => {
     const beforeActive = document.querySelector("#active");
     const curActive = e.target;
@@ -14,7 +16,7 @@ const useFooter = () => {
       history.push("/create/deal");
     } else if (curActive.classList.contains("chat")) {
     } else if (curActive.classList.contains("profile")) {
-      history.push("/test");
+      history.push(`/profile/${LOGIN_USER_ID}`);
     }
   };
   return { onClick };

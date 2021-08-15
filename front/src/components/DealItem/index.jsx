@@ -56,19 +56,17 @@ function DealItem({ dealObj }) {
         </h2>
         <div className="detail">
           <div>
-            <div>
-              <span className="author">{dealObj.bookAuthor}</span>
-              <span className="publisher">{dealObj.bookPublisher}</span>
-            </div>
-            <span className="created">{dealCreatedTime}</span>
+            <span className="author">{dealObj.bookAuthor}</span>
+            <span className="publisher">{dealObj.bookPublisher}</span>
           </div>
-          <div>
+          <div className="footer">
             <strong className="price">{dealObj.dealPrice}원</strong>
-            {dealObj.isLikeDeal ? (
+            <span className="created">{dealCreatedTime}</span>
+            {/* {dealObj.isLikeDeal ? (
               <SuitHeartFill className="heart-filled" />
             ) : (
               <SuitHeart className="heart" />
-            )}
+            )} */}
           </div>
         </div>
       </div>

@@ -31,10 +31,15 @@ export const getMyTabInfo = (activeTabId) => {
         page: 0,
       };
       const { result } = await requestGet(`/deals`, params);
-      console.log(result);
-      dispatch(setMyTabInfo(result));
+      await dispatch(setMyTabInfo(result));
     } else {
-      // 관심책 info 가져옴
+      const params = {
+        userId: LOGIN_USER_ID,
+        size: 10,
+        page: 0,
+      };
+      const { result } = await requestGet(`/like-deals`, params);
+      await dispatch(setMyTabInfo(result));
     }
   };
 };

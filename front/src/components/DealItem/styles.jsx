@@ -27,7 +27,6 @@ export const Wrapper = styled.div`
       .book-title {
         font-size: ${fonts.md};
         font-weight: 400;
-        margin-bottom: 8px;
         .quality {
           display: inline-block;
           text-align: center;
@@ -41,10 +40,7 @@ export const Wrapper = styled.div`
           background-color: ${colors.yellow};
         }
       }
-      .detail div {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      .detail {
         .author {
           color: ${colors.gray};
           font-size: ${fonts.xs};
@@ -57,17 +53,19 @@ export const Wrapper = styled.div`
           color: ${colors.gray};
           font-size: ${fonts.xs};
         }
-        .created {
-          color: ${colors.gray};
+        .footer {
+          display: flex;
+          justify-content: space-between;
+          .created {
+            color: ${colors.gray};
+            font-size: ${fonts.xs};
+          }
+          .price {
+            font-size: ${fonts.lg};
+            font-weight: 600;
+          }
         }
-        .price {
-          font-size: ${fonts.lg};
-          font-weight: 600;
-        }
-        .created {
-          font-size: ${fonts.xs};
-        }
-        .heart {
+        /* .heart {
           display: block;
           color: ${colors.gray};
           width: 14px;
@@ -78,7 +76,7 @@ export const Wrapper = styled.div`
           color: ${colors.yellow};
           width: 14px;
           height: 14px;
-        }
+        } */
       }
     }
   }

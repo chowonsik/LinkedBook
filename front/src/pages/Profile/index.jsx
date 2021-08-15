@@ -9,13 +9,15 @@ import DealItem from "../../components/DealItem";
 import ProfileTab from "../../components/Profile/ProfileTab";
 import { Wrapper } from "./styles";
 import { request, requestGet } from "../../api";
+import Footer from "../../components/Layout/Footer";
+import Header from "../../components/Layout/Header";
 
 const Profile = ({ match }) => {
   const dispatch = useDispatch();
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
   const myUserObj = useSelector((state) => state.myProfileReducer.myProfile);
   const myTabInfo = useSelector((state) => state.myProfileReducer.myTabInfo);
-  const myActiveTab = useSelector((state) => state.myProfileReducer.activeTab);
+  // const ActiveTab = useSelector((state) => state.myProfileReducer.activeTab);
 
   const [userObj, setUserObj] = useState({});
   const [activeTab, setActiveTab] = useState(0);
@@ -25,14 +27,16 @@ const Profile = ({ match }) => {
   useEffect(() => {
     if (USER_ID === LOGIN_USER_ID) {
       dispatch(getMyProfile(LOGIN_USER_ID));
-      dispatch(getMyTabInfo(myActiveTab));
+      dispatch(getMyTabInfo(activeTab));
       setUserObj(myUserObj);
-      setTabInfo(myTabInfo);
     } else {
       getUserObj(USER_ID);
-      getTabInfo(activeTab);
     }
   }, [USER_ID]);
+
+  useEffect(() => {
+    setTabInfo(myTabInfo);
+  }, [myTabInfo]);
 
   const getUserObj = async (userId) => {
     const response = await request("get", `/users/${userId}/profile`);
@@ -40,25 +44,13 @@ const Profile = ({ match }) => {
   };
 
   const handleTabClick = async (activeTabId) => {
-    setActiveTab(activeTabId);
     if (USER_ID === LOGIN_USER_ID) {
-      dispatch(getMyTabInfo(activeTabId));
+      await dispatch(getMyTabInfo(activeTabId));
       setTabInfo(myTabInfo);
     } else {
-      if (activeTabId === 0) {
-        const params = {
-          filter: "NEW",
-          userId: USER_ID,
-          size: 10,
-          page: 0,
-        };
-        const { result } = await requestGet(`/deals`, params);
-        setTabInfo(result);
-      } else {
-        setTabInfo([]);
-        // 관심책 info 가져옴
-      }
+      getTabInfo(activeTabId);
     }
+    setActiveTab(activeTabId);
   };
 
   const getTabInfo = async (activeTabId) => {
@@ -78,27 +70,32 @@ const Profile = ({ match }) => {
         page: 0,
       };
       const { result } = await requestGet(`/like-deals`, params);
-      // setTabInfo(result);
+      setTabInfo(result);
     }
   };
+
   return (
-    <Wrapper>
-      {userObj && (
-        <>
-          <UserInfo userObj={userObj} />
-          <UserActivity
-            dealCnt={userObj.dealCnt}
-            followingCnt={userObj.followerCnt}
-            followerCnt={userObj.followerCnt}
-          />
-          <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
-          {tabInfo &&
-            tabInfo.map((deal) => (
-              <DealItem key={deal.dealId} dealObj={deal} />
-            ))}
-        </>
-      )}
-    </Wrapper>
+    <>
+      <Header isLogo isSearch isAlarm />
+      <Wrapper>
+        {userObj && (
+          <>
+            <UserInfo userObj={userObj} />
+            <UserActivity
+              dealCnt={userObj.dealCnt}
+              followingCnt={userObj.followerCnt}
+              followerCnt={userObj.followerCnt}
+            />
+            <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
+            {tabInfo &&
+              tabInfo.map((deal) => (
+                <DealItem key={deal.dealId} dealObj={deal} />
+              ))}
+          </>
+        )}
+      </Wrapper>
+      <Footer />
+    </>
   );
 };
 

@@ -16,6 +16,7 @@ import { Wrapper, IconBox } from "./styles";
 function Footer() {
   const history = useHistory();
   const footer = useFooter();
+  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
   return (
     <>
       <Wrapper onClick={footer.onClick}>
@@ -41,7 +42,7 @@ function Footer() {
           <p>채팅</p>
         </IconBox>
         <IconBox>
-          {history.location.pathname === "/test" ? (
+          {history.location.pathname === `/profile/${LOGIN_USER_ID}` ? (
             <PersonFill />
           ) : (
             <Person className="profile" />
