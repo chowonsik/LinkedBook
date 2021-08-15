@@ -1,5 +1,6 @@
 package com.linkedbook.dao;
 
+import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.entity.UserDB;
 import org.springframework.data.domain.Page;
@@ -31,8 +32,18 @@ public interface UserRepository extends JpaRepository<UserDB, Integer> {
             + "where u.id = ?1", nativeQuery = true)
     SelectProfileOutput findUserProfile(int id, int myId);
 
-    @Query("select u " + "from UserDB u " + "inner join UserAreaDB ua on u.id = ua.user.id "
-            + "and u.status = 'ACTIVATE' and ua.orders = 1 " + "where u.id <> ?1 and ua.area.id = ?2")
+    @Query(value = "select u.id as id, u.email as email, u.password as password, u.nickname as nickname, u.info as info, u.image as image," +
+            " u.oauth as oauth, u.oauth_id as oauth_id, u.status as status, u.created_at as created_at, u.updated_at as updated_at" +
+            " from user u" +
+            " left outer join(select user_id, count(1) as deal_cnt from deal where deal.status <> 'DELETED' group by user_id) as d on d.user_id = u.id" +
+            " inner join user_area ua on u.id = ua.user_id and u.status = 'ACTIVATE' and ua.orders = 1" +
+            " where u.id <> ?1 and ua.area_id = ?2" +
+            " order by d.deal_cnt DESC",
+            countQuery = "select count(1) from user u" +
+                    " left outer join(select user_id, count(1) as deal_cnt from deal where deal.status <> 'DELETED' group by user_id) as d on d.user_id = u.id" +
+                    " inner join user_area ua on u.id = ua.user_id and u.status = 'ACTIVATE' and ua.orders = 1" +
+                    " where u.id <> ?1 and ua.area_id = ?2",
+            nativeQuery = true)
     Page<UserDB> findAreaStar(int userId, int areaId, Pageable paging);
 
     Optional<UserDB> findByEmail(String email);

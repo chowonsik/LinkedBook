@@ -65,8 +65,4 @@ public class UserDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-
-    // @OneToMany(mappedBy = "user") // 거래량
-    // @Where(clause = "status in ('ACTIVATE' , 'COMPLETE')")
-    // private List<DealDB> deals;
 }

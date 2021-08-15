@@ -1,8 +1,9 @@
 package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
-import com.linkedbook.dto.user.selectUser.SelectUserInput;
+import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
+import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signup.SignUpInput;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserAreaRepository userAreaRepository;
     private final AreaRepository areaRepository;
+    private final DealRepository dealRepository;
     private final JwtService jwtService;
 
     @Override
@@ -194,15 +196,18 @@ public class UserServiceImpl implements UserService {
                     log.error("[users/get] NOT FOUND LOGIN USER error");
                     return new PageResponse<>(BAD_ID_VALUE);
                 }
-                paging = PageRequest.of(selectUserInput.getPage(), selectUserInput.getSize(), Sort.Direction.DESC,
-                        "deals.size", "id");
+                paging = PageRequest.of(selectUserInput.getPage(), selectUserInput.getSize());
                 userDBList = userRepository.findAreaStar(userId, selectAreaId, paging);
             }
             // 최종 출력값 정리
-            responseList = userDBList.map(userDB -> SelectUserOutput.builder().userId(userDB.getId())
-                    .nickname(userDB.getNickname()).image(userDB.getImage())
-                    // .dealCnt(userDB.getDeals().size())
-                    .build());
+            responseList = userDBList.map(
+                    userDB -> SelectUserOutput.builder()
+                            .userId(userDB.getId())
+                            .nickname(userDB.getNickname())
+                            .image(userDB.getImage())
+                            .dealCnt(dealRepository.countByUserAndStatusNot(userDB, "DELETED"))
+                            .build()
+            );
         } catch (Exception e) {
             log.error("[users/get] database error", e);
             return new PageResponse<>(DATABASE_ERROR);
