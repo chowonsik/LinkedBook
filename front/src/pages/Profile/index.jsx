@@ -1,13 +1,17 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getMyProfile, getMyTabInfo } from "../../actions/MyProfile";
+import {
+  getMyProfile,
+  getMyTabInfo,
+  setActiveTab,
+} from "../../actions/MyProfile";
 
 import UserInfo from "../../components/Profile/UserInfo";
 import UserActivity from "../../components/Profile/UserActivity";
 import DealItem from "../../components/DealItem";
 import ProfileTab from "../../components/Profile/ProfileTab";
-import { Wrapper } from "./styles";
+import { Wrapper, DealList } from "./styles";
 import { request, requestGet } from "../../api";
 import Footer from "../../components/Layout/Footer";
 import Header from "../../components/Layout/Header";
@@ -15,14 +19,14 @@ import Header from "../../components/Layout/Header";
 const Profile = ({ match }) => {
   const dispatch = useDispatch();
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
+  const USER_ID = parseInt(match.params.id);
   const myUserObj = useSelector((state) => state.myProfileReducer.myProfile);
   const myTabInfo = useSelector((state) => state.myProfileReducer.myTabInfo);
-  // const ActiveTab = useSelector((state) => state.myProfileReducer.activeTab);
+  const activeTab = useSelector((state) => state.myProfileReducer.activeTab);
 
   const [userObj, setUserObj] = useState({});
-  const [activeTab, setActiveTab] = useState(0);
   const [tabInfo, setTabInfo] = useState([]);
-  const USER_ID = parseInt(match.params.id);
+  const [listHeight, setListHeight] = useState(window.innerHeight);
 
   useEffect(() => {
     if (USER_ID === LOGIN_USER_ID) {
@@ -50,29 +54,56 @@ const Profile = ({ match }) => {
     } else {
       getTabInfo(activeTabId);
     }
-    setActiveTab(activeTabId);
+    dispatch(setActiveTab(activeTabId));
   };
 
-  const getTabInfo = async (activeTabId) => {
+  const getTabInfo = async (activeTabId, page = 0, label = "new") => {
     if (activeTabId === 0) {
       const params = {
         filter: "NEW",
         userId: USER_ID,
         size: 10,
-        page: 0,
+        page: page,
       };
       const { result } = await requestGet(`/deals`, params);
-      setTabInfo(result);
+      if (label === "new") {
+        setTabInfo(result);
+      } else {
+        const newTabInfo = tabInfo.concat(result);
+        setTabInfo(newTabInfo);
+      }
     } else {
       const params = {
         userId: USER_ID,
         size: 10,
-        page: 0,
+        page: page,
       };
       const { result } = await requestGet(`/like-deals`, params);
-      setTabInfo(result);
+      if (label === "new") {
+        setTabInfo(result);
+      } else {
+        const newTabInfo = tabInfo.concat(result);
+        setTabInfo(newTabInfo);
+      }
     }
   };
+
+  function handleScroll(e) {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
+      return;
+    getNextBook();
+  }
+
+  function getNextBook() {
+    if (tabInfo && tabInfo.length % 10 !== 0) return;
+    const page = parseInt(tabInfo.length / 10);
+    if (USER_ID === LOGIN_USER_ID) {
+      dispatch(getMyTabInfo(activeTab, page, "next"));
+    } else {
+      getTabInfo(activeTab, page, "next");
+    }
+  }
 
   return (
     <>
@@ -87,10 +118,12 @@ const Profile = ({ match }) => {
               followerCnt={userObj.followerCnt}
             />
             <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
-            {tabInfo &&
-              tabInfo.map((deal) => (
-                <DealItem key={deal.dealId} dealObj={deal} />
-              ))}
+            <DealList height={listHeight} onScroll={handleScroll}>
+              {tabInfo &&
+                tabInfo.map((deal) => (
+                  <DealItem key={deal.dealId} dealObj={deal} />
+                ))}
+            </DealList>
           </>
         )}
       </Wrapper>

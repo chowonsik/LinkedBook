@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 const useFooter = () => {
   const history = useHistory();
-  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
 
   const onClick = (e) => {
+    const LOGIN_USER_ID = JSON.parse(
+      window.localStorage.getItem("loginUser")
+    ).id;
     const beforeActive = document.querySelector("#active");
     const curActive = e.target;
     if (beforeActive) beforeActive.id = "";

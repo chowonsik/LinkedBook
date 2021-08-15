@@ -20,26 +20,36 @@ export const updateMyProfile = (data) => {
   };
 };
 
-export const getMyTabInfo = (activeTabId) => {
+export const getMyTabInfo = (activeTabId, page = 0, label = "new") => {
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     if (activeTabId === 0) {
       const params = {
         filter: "NEW",
         userId: LOGIN_USER_ID,
         size: 10,
-        page: 0,
+        page: page,
       };
       const { result } = await requestGet(`/deals`, params);
-      await dispatch(setMyTabInfo(result));
+      if (label === "new") {
+        await dispatch(setMyTabInfo(result));
+      } else {
+        const newTabInfo = getState().myProfileReducer.myTabInfo.concat(result);
+        await dispatch(setMyTabInfo(newTabInfo));
+      }
     } else {
       const params = {
         userId: LOGIN_USER_ID,
         size: 10,
-        page: 0,
+        page: page,
       };
       const { result } = await requestGet(`/like-deals`, params);
-      await dispatch(setMyTabInfo(result));
+      if (label === "new") {
+        await dispatch(setMyTabInfo(result));
+      } else {
+        const newTabInfo = getState().myProfileReducer.myTabInfo.concat(result);
+        await dispatch(setMyTabInfo(newTabInfo));
+      }
     }
   };
 };
