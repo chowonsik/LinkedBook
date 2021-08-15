@@ -54,5 +54,5 @@ public class AlertDB {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Date created_at;
+    private Date createdAt;
 }
