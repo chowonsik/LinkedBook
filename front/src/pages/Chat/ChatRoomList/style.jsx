@@ -14,11 +14,11 @@ export const ChatRoom = styled.div`
   display: flex;
   align-items: center;
   height: 80px;
-  gap: 20px;
+  gap: 15px;
   .user-img-container {
     img {
-      height: 60px;
-      width: 60px;
+      height: 50px;
+      width: 50px;
       object-fit: cover;
       border-radius: 60px;
     }
@@ -29,12 +29,15 @@ export const ChatRoom = styled.div`
     flex: 1;
     overflow: hidden;
     .nickname {
-      font-size: ${fonts.xl};
+      font-size: ${fonts.lg};
       font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .message {
       width: 100%;
-      font-size: ${fonts.lg};
+      font-size: ${fonts.md};
       color: ${colors.gray};
       overflow: hidden;
       text-overflow: ellipsis;
@@ -51,8 +54,8 @@ export const ChatRoom = styled.div`
     height: 100%;
     align-items: center;
     img {
-      width: 75px;
-      height: 75px;
+      width: 60px;
+      height: 70px;
       object-fit: cover;
       border-radius: 6px;
     }

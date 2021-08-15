@@ -9,14 +9,17 @@ export const Wrapper = styled.div`
   background-color: #e5eaef;
 
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
+  gap: 5%;
   .send-icon {
     font-size: 24px;
   }
 `;
 
-export const Input = styled.input`
+export const Input = styled.input.attrs((props) => ({
+  maxLength: 150,
+}))`
   border: none;
   border-radius: 12px;
   background-color: ${colors.lightGray};
