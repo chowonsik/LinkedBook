@@ -43,8 +43,6 @@ public class ChatController {
      */
     @MessageMapping("/chat/message")
     public void message(@RequestBody ChatMessage chatMessage) {
-        System.out.println(chatMessage);
-        System.out.println(channelTopic.getTopic());
         chatService.sendChatMessage(chatMessage); // 메서드 일원화
     }
 }
