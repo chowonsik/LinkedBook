@@ -49,6 +49,7 @@ public enum ResponseStatus {
     SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."), SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
     SUCCESS_DELETE_LIKE_COMMENT(204, 207, "관심 한줄평 삭제에 성공하였습니다."),
     SUCCESS_CHANGE_ALERT(204, 222, "알림 메세지를 읽음 상태로 변경하는데 성공하였습니다."),
+    SUCCESS_NEW_ALERT(204, 223, "새로운 알림 메세지가 있습니다."), SUCCESS_NO_NEW_ALERT(204, 224, "새로운 알림 메세지가 없습니다."),
 
     /*
      * 4XX Client errors

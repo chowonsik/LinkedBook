@@ -36,7 +36,7 @@ public class AlertController {
      * [PATCH] /alerts/{id}
      * @return Response<Object>
      */
-    // Body
+    // Path-Variable
     @ResponseBody
     @PatchMapping("/{id}")
     public Response<Object> updateAlertStatus(@PathVariable("id") int id) {
@@ -55,5 +55,18 @@ public class AlertController {
     public PageResponse<AlertSearchOutput> getAlertList(AlertSearchInput alertSearchInput) {
         log.info("[GET] /alerts");
         return alertService.getAlertList(alertSearchInput);
+    }
+
+    /**
+     * 새로운 알람 여부 조회 API
+     * [GET] /alerts/check
+     * @return Response<Object>
+     */
+    // Params
+    @ResponseBody
+    @GetMapping("/check")
+    public Response<Object> checkNewAlert() {
+        log.info("[GET] /alerts/check");
+        return alertService.checkNewAlert();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface AlertRepository extends JpaRepository<AlertDB, Integer> {
     boolean existsByTypeAndCommentAndDealAndEvalAndFromUserAndToUserAndStatus
             (AlertStatus type, CommentDB commentDB, DealDB dealDB, UserDealDB userDealDB, UserDB fromUserDB, UserDB toUserDB, String status);
+    boolean existsByToUserAndStatus(UserDB userDB, String status);
     Page<AlertDB> findByToUserAndType(UserDB userDB, AlertStatus status, Pageable paging);
     Page<AlertDB> findByToUserAndTypeNot(UserDB userDB, AlertStatus status, Pageable paging);
 }

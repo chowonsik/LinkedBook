@@ -244,6 +244,29 @@ public class AlertServiceImpl implements AlertService {
         return new PageResponse<>(responseList, SUCCESS_GET_ALERT_LIST);
     }
 
+    @Override
+    public Response<Object> checkNewAlert() {
+        // 1. UNCHECKED 알림 메시지 찾기
+        boolean isExistNewAlert;
+        try {
+            UserDB loginUserDB = jwtService.getUserDB();
+            if (loginUserDB == null) {
+                log.error("[alerts/check/get] NOT FOUND LOGIN USER error");
+                return new Response<>(NOT_FOUND_USER);
+            }
+            isExistNewAlert = alertRepository.existsByToUserAndStatus(loginUserDB, "UNCHECKED");
+        } catch (Exception e) {
+            log.error("[alerts/check/get] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 2. 결과 return
+        if(isExistNewAlert) {
+            return new Response<>(null, SUCCESS_NEW_ALERT);
+        } else {
+            return new Response<>(null, SUCCESS_NO_NEW_ALERT);
+        }
+    }
+
     private Response<Object> validateInputValue(AlertInput alertInput) {
         try {
             if (alertInput == null) return new Response<>(NO_VALUES);
