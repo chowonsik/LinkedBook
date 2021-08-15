@@ -14,7 +14,15 @@ const UserInfo = ({ userObj }) => {
   return (
     <Wrapper>
       <div className="profile-content">
-        <img className="profile-img" src={userObj.image} alt="profile" />
+        <img
+          className="profile-img"
+          src={userObj.image}
+          onError={(e) => {
+            e.target.src =
+              "https://www.voakorea.com/themes/custom/voa/images/Author__Placeholder.png";
+          }}
+          alt="profile"
+        />
         <div className="profile-info">
           <div className="user-info">
             <div className="user-title">

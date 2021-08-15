@@ -5,7 +5,7 @@ import { persistReducer } from "redux-persist";
 
 import { bookReducer } from "../reducers/Books";
 import { userReducer } from "../reducers/Users";
-import { userProfileReducer } from "../reducers/Users";
+import { myProfileReducer } from "../reducers/MyProfile";
 import { followReducer } from "../reducers/Follow";
 import { dealReducer } from "../reducers/Deal";
 import { reportReducer } from "../reducers/Report";
@@ -14,7 +14,7 @@ import { notificationReducer } from "../reducers/Notification";
 const rootReducer = combineReducers({
   bookReducer,
   userReducer,
-  userProfileReducer,
+  myProfileReducer,
   followReducer,
   dealReducer,
   reportReducer,

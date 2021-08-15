@@ -6,11 +6,12 @@ export const Wrapper = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
-    height: 90px;
-    margin: 20px 0;
+    height: 80px;
+    margin: 25px 0;
+    padding: 0 4px;
     .book-image {
-      width: 90px;
-      height: 90px;
+      width: 80px;
+      height: 80px;
       object-fit: cover;
       margin-right: 20px;
       border-radius: 6px;
@@ -20,7 +21,7 @@ export const Wrapper = styled.div`
       flex-grow: 1;
 
       .deal-title {
-        font-size: ${fonts.lg};
+        font-size: ${fonts.md};
         font-weight: 600;
       }
       .book-title {
@@ -60,7 +61,7 @@ export const Wrapper = styled.div`
           color: ${colors.gray};
         }
         .price {
-          font-size: ${fonts.xl};
+          font-size: ${fonts.lg};
           font-weight: 600;
         }
         .created {

@@ -6,7 +6,7 @@ import useInput from "../../../hooks/useInput";
 import { passwordValidator } from "../../../validators.js";
 import Input from "../../../components/common/Input";
 import Header from "../../../components/Layout/Header";
-import { updateUserProfile } from "../../../actions/Users";
+import { updateMyProfile } from "../../../actions/MyProfile";
 
 const ChangePassword = () => {
   let history = useHistory();
@@ -24,7 +24,7 @@ const ChangePassword = () => {
   }
 
   function updatePassword() {
-    dispatch(updateUserProfile({ password: password.value }));
+    dispatch(updateMyProfile({ password: password.value }));
     // 비밀번호 변경 메세지 띄우기
     history.go(-1);
   }

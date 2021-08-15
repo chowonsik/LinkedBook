@@ -7,16 +7,17 @@ import Input from "../../../components/common/Input";
 import Textarea from "../../../components/common/Input/Textarea";
 import Header from "../../../components/Layout/Header";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
-import { getUserProfile, updateUserProfile } from "../../../actions/Users";
+import { getMyProfile, updateMyProfile } from "../../../actions/MyProfile";
+import { showToast } from "../../../actions/Notification";
 
 const ProfileUpdate = () => {
   let history = useHistory();
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
-  const userObj = useSelector((state) => state.userProfileReducer.userProfile);
+  const userObjStore = useSelector((state) => state.myProfileReducer.myProfile);
   const dispatch = useDispatch();
-  const nickname = useInput(userObj.nickname, nicknameValidator);
-  const description = useInput(userObj.info, descValidator);
-  const [userImg, setUserImg] = useState(userObj.image);
+  const nickname = useInput(userObjStore.nickname, nicknameValidator);
+  const description = useInput(userObjStore.info, descValidator);
+  const [userImg, setUserImg] = useState(userObjStore.image);
   const [changedData, setChangedData] = useState({});
 
   useEffect(() => {
@@ -71,9 +72,10 @@ const ProfileUpdate = () => {
   function handleLocationClick() {
     history.push("/search/location");
   }
-  function submitUserData() {
-    dispatch(updateUserProfile(changedData));
-    dispatch(getUserProfile(LOGIN_USER_ID));
+  async function submitUserData() {
+    await dispatch(updateMyProfile(changedData));
+    dispatch(showToast("프로필이 수정되었습니다."));
+    await dispatch(getMyProfile(LOGIN_USER_ID));
     history.push(`/profile/${LOGIN_USER_ID}`);
   }
 
@@ -119,7 +121,7 @@ const ProfileUpdate = () => {
           className="location"
           type="text"
           id="location"
-          value={userObj.dong}
+          value={userObjStore.dong}
           errorMessage
           readOnly
         />

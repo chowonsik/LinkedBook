@@ -65,30 +65,3 @@ export const deleteArea = (index) => (dispatch, getState) => {
   }
   dispatch(setAreas(newAreas));
 };
-// 유저프로필
-export const SET_USER_PROFILE = "SET_USER_PROFILE";
-
-export const getUserProfile = (userId) => {
-  return async (dispatch) => {
-    const response = await requestGet(`/users/${userId}/profile`);
-    dispatch(setUserProfile(response.result));
-  };
-};
-
-export const updateUserProfile = (data) => {
-  return async (dispatch) => {
-    const LOGIN_USER_ID = JSON.parse(
-      window.localStorage.getItem("loginUser")
-    ).id;
-    const response = await request("patch", `/users`, data);
-    dispatch(getUserProfile(LOGIN_USER_ID));
-  };
-};
-
-// 액션생성 함수 만들기
-export const setUserProfile = (userObj) => {
-  return {
-    type: SET_USER_PROFILE,
-    userObj,
-  };
-};

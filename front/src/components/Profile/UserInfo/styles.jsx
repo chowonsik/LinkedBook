@@ -10,9 +10,9 @@ export const Wrapper = styled.div`
       display: flex;
       align-items: center;
       margin-bottom: 8px;
-
+      margin-left: 10px;
       .profile-img {
-        margin-right: 38px;
+        margin-right: 30px;
         width: 70px;
         height: 70px;
         border-radius: 50%;
