@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Header from "../../components/Layout/Header";
 import Footer from "../../components/Layout/Footer";
 import DealItem from "../../components/deal/DealListItem";
@@ -19,23 +19,28 @@ import { ChevronDown } from "react-bootstrap-icons";
 import { fonts } from "../../styles";
 import RoundButton from "../../components/common/Buttons/RoundButton";
 import {
-  setFilter,
   searchDeals,
   setSearch,
   resetDeals,
-  setSelect,
+  setSelectDeals,
+  addLikeDeal,
+  deleteLikeDeal,
+  setScroll,
+  doRefresh,
 } from "../../actions/Deal/index.js";
-import { requestGet } from "../../api";
-import { fetchAreas, setAreas } from "../../actions/Users";
+import { fetchAreas } from "../../actions/Users";
 
 export default function Main() {
   const search = useSelector((state) => state.dealReducer.search);
   const filter = useSelector((state) => state.dealReducer.filter);
   const selectedDeals = useSelector((state) => state.dealReducer.selectedDeals);
-  const [prevSearch, setPrevSearch] = useState("");
   const area = useSelector((state) => state.userReducer.selectedArea);
   const isLoading = useSelector((state) => state.dealReducer.isLoading);
+  const needRefresh = useSelector((state) => state.dealReducer.needRefresh);
+  const scroll = useSelector((state) => state.dealReducer.scroll);
+  const [listHeight, setListHeight] = useState(window.innerHeight - 260);
 
+  const dealListRef = useRef(null);
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -44,23 +49,45 @@ export default function Main() {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
     if (!loginUser) {
       history.push({ pathname: "/signin" });
+    } else {
+      setUserArea();
     }
-    setUserArea();
+    window.addEventListener("resize", getListHeight);
 
-    // 거래 등록 후
-    if (location.state && location.state.reset) {
-      dispatch(resetDeals());
-    }
-    //
-    if (selectedDeals.length === 0) {
-      handleSearchButtonClick();
-    }
+    return () => {
+      window.removeEventListener("resize", getListHeight);
+    };
   }, []);
+
+  useEffect(() => {
+    if (needRefresh) {
+      handleSearchButtonClick();
+    } else {
+      setDealListScroll();
+      dispatch(doRefresh());
+    }
+  }, [area]);
+
+  useEffect(() => {
+    if (isLoading) {
+      dealListRef.current.scrollTo({
+        top: dealListRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [isLoading]);
+
+  function getListHeight() {
+    setListHeight(window.innerHeight - 260);
+  }
+
+  function setDealListScroll() {
+    dealListRef.current.scrollTo(0, scroll);
+  }
 
   function handleSearchButtonClick() {
     if (area) {
       dispatch(resetDeals());
-      setPrevSearch(search);
       dispatch(searchDeals(search, 0, area.areaId));
     }
   }
@@ -70,25 +97,19 @@ export default function Main() {
   }
 
   function handleSortButtonClick(filter) {
-    dispatch(setSelect(filter));
-  }
-
-  function getListHeight() {
-    return window.innerHeight - 120 - 140;
+    dispatch(setSelectDeals(filter));
   }
 
   function getNextBook() {
-    if (selectedDeals.length % 10 != 0) return;
+    if (selectedDeals && selectedDeals.length % 10 != 0) return;
     const page = parseInt(selectedDeals.length / 10);
-    if (prevSearch === search) {
-      dispatch(searchDeals(search, page, area.areaId));
-    } else {
-      dispatch(searchDeals(prevSearch, page, area.areaId));
-    }
+    dispatch(searchDeals(search, page, area.areaId));
   }
+
   function handleScroll(e) {
     const { scrollTop, clientHeight, scrollHeight } = e.target;
     if (isLoading) return;
+    dispatch(setScroll(scrollTop));
     if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
       return;
     getNextBook();
@@ -98,16 +119,14 @@ export default function Main() {
     dispatch(fetchAreas());
   }
 
-  useEffect(() => {
-    if (selectedDeals.length === 0 && location.state && location.state.reset) {
-      handleSearchButtonClick();
-    }
-  }, [selectedDeals]);
-
-  useEffect(() => {
-    dispatch(resetDeals());
-    handleSearchButtonClick();
-  }, [area]);
+  function addLike(dealId, e) {
+    dispatch(addLikeDeal(dealId));
+    e.stopPropagation();
+  }
+  function deleteLike(dealId, e) {
+    dispatch(deleteLikeDeal(dealId));
+    e.stopPropagation();
+  }
 
   return (
     <>
@@ -165,16 +184,20 @@ export default function Main() {
             상태
           </SortButton>
         </SortByList>
-        <DealList height={getListHeight()} onScroll={handleScroll}>
-          {selectedDeals.map((deal, i) => (
-            <DealItem
-              onClick={() => {
-                history.push({ pathname: `/deal/${deal.dealId}` });
-              }}
-              key={i}
-              dealObj={deal}
-            />
-          ))}
+        <DealList height={listHeight} onScroll={handleScroll} ref={dealListRef}>
+          {selectedDeals
+            ? selectedDeals.map((deal, i) => (
+                <DealItem
+                  onClick={() => {
+                    history.push({ pathname: `/deal/${deal.dealId}` });
+                  }}
+                  key={i}
+                  dealObj={deal}
+                  addLikeDeal={addLike}
+                  deleteLikeDeal={deleteLike}
+                />
+              ))
+            : ""}
           {isLoading ? (
             <SpinnerContainer>
               <Spinner />

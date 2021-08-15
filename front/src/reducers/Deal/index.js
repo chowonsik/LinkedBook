@@ -1,8 +1,11 @@
 import {
+  DO_NOT_REFRESH,
+  DO_REFRESH,
   RESET_DEALS,
   SET_DEALS,
   SET_FILTER,
   SET_IS_LOADING,
+  SET_SCROLL,
   SET_SEARCH,
   SET_SELECTED_DEALS,
 } from "../../actions/Deal";
@@ -10,13 +13,15 @@ import {
 const INIT_STATE = {
   search: "",
   filter: "NEW",
+  selectedDeals: [],
+  isLoading: false,
   deals: {
     NEW: [],
     PRICE: [],
     QUALITY: [],
   },
-  selectedDeals: [],
-  isLoading: false,
+  needRefresh: true,
+  scroll: 0,
 };
 
 export const dealReducer = (state = INIT_STATE, action) => {
@@ -57,6 +62,24 @@ export const dealReducer = (state = INIT_STATE, action) => {
         },
         selectedDeals: [],
         isLoading: false,
+        needRefresh: true,
+        scroll: 0,
+      };
+    case DO_NOT_REFRESH:
+      return {
+        ...state,
+        needRefresh: false,
+      };
+    case DO_REFRESH:
+      return {
+        ...state,
+        needRefresh: true,
+        scroll: 0,
+      };
+    case SET_SCROLL:
+      return {
+        ...state,
+        scroll: action.scroll,
       };
     default:
       return state;

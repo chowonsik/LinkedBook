@@ -11,7 +11,7 @@ const useFooter = () => {
     } else if (curActive.classList.contains("search-book")) {
       history.push("/books");
     } else if (curActive.classList.contains("new-post")) {
-      history.push("/deal");
+      history.push("/create/deal");
     } else if (curActive.classList.contains("chat")) {
     } else if (curActive.classList.contains("profile")) {
       history.push("/test");

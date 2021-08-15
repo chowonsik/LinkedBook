@@ -5,7 +5,7 @@ export const SET_FOLLOWER_LIST = "SET_FOLLOWER_LIST";
 export const SET_FOLLOW_PAGE_INFO = "SET_FOLLOW_PAGE_INFO";
 export const SET_FOLLOW_RESET = "SET_FOLLOW_RESET";
 export const SET_LOGIN_USER_INFO = "SET_LOGIN_USER_INFO";
-
+export const UPDATE_FOLLOWING_LIST = "UPDATE_FOLLOWING_LIST";
 // 팔로잉 리스트 불러오기
 export const getFollowingList = (params) => {
   return (dispatch) => {
@@ -32,9 +32,18 @@ export const setFollowingList = (followings, currentPage) => {
 export const deleteFollowing = (followingId) => {
   return (dispatch) => {
     const response = requestDelete(`/follow/${followingId}`);
+    response.then((res) => {
+      dispatch(updateFollowingList(followingId));
+    });
   };
 };
 
+export const updateFollowingList = (followId) => {
+  return {
+    type: UPDATE_FOLLOWING_LIST,
+    followId,
+  };
+};
 export const createFollow = (data) => {
   return () => {
     const response = request("post", "/follow", data);
