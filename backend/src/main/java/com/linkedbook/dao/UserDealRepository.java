@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserDealRepository extends JpaRepository<UserDealDB, Integer> {
     UserDealDB findByIdAndUserAndType(int id, UserDB userDB, String type);
-    boolean existsByUserAndDeal(UserDB userDB, DealDB dealDB);
+    UserDealDB findByDealAndType(DealDB dealDB, String type);
 }

@@ -1,5 +1,6 @@
 package com.linkedbook.entity;
 
+import com.linkedbook.dto.alert.AlertStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,8 +25,9 @@ public class AlertDB {
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 45)
-    private String type;
+    private AlertStatus type;
 
     @ManyToOne
     @JoinColumn(name = "comment_id")
