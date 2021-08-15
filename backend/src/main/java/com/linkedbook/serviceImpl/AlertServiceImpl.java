@@ -151,6 +151,28 @@ public class AlertServiceImpl implements AlertService {
     }
 
     @Override
+    @Transactional
+    public Response<Object> updateAlertStatus(int id) {
+        // 1. 값 형식 체크
+        if(!ValidationCheck.isValidId(id)) return new Response<>(BAD_REQUEST);
+        // 2. 알림 메시지 상태 CHECKED 로 변경
+        try {
+            AlertDB alertDB = alertRepository.findById(id).orElse(null);
+            if(alertDB == null) {
+                log.error("[alerts/patch] NOT FOUND ALERT error");
+                return new Response<>(NOT_FOUND_ALERT);
+            }
+            alertDB.setStatus("CHECKED");
+            alertRepository.save(alertDB);
+        } catch (Exception e) {
+            log.error("[alerts/patch] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 결과 return
+        return new Response<>(null, SUCCESS_CHANGE_ALERT);
+    }
+
+    @Override
     public PageResponse<AlertSearchOutput> getAlertList(AlertSearchInput alertSearchInput) {
         // 1. 값 형식 체크
         if(alertSearchInput == null)  return new PageResponse<>(NO_VALUES);

@@ -8,5 +8,6 @@ import com.linkedbook.response.Response;
 
 public interface AlertService {
     Response<Object> createAlertInfo(AlertInput alertInput);
+    Response<Object> updateAlertStatus(int id);
     PageResponse<AlertSearchOutput> getAlertList(AlertSearchInput alertSearchInput);
 }

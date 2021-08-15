@@ -32,6 +32,19 @@ public class AlertController {
     }
 
     /**
+     * 알람 상태 수정 API
+     * [PATCH] /alerts/{id}
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @PatchMapping("/{id}")
+    public Response<Object> updateAlertStatus(@PathVariable("id") int id) {
+        log.info("[POST] /alerts");
+        return alertService.updateAlertStatus(id);
+    }
+
+    /**
      * 알람 정보 조회 API
      * [GET] /alerts?type={type}
      * @return PageResponse<AlertSearchOutput>
