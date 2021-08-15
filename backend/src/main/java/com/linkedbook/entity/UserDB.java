@@ -9,6 +9,9 @@ import org.hibernate.annotations.*;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +31,7 @@ public class UserDB {
     private int id;
 
     @OneToMany(mappedBy = "user") // 양방향 매핑
+    @JsonManagedReference
     private List<UserAreaDB> userAreaDBs;
 
     @Column(name = "email", nullable = false, length = 45)
@@ -61,8 +65,4 @@ public class UserDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-
-    @OneToMany(mappedBy = "user") // 거래량
-    @Where(clause = "status in ('ACTIVATE' , 'COMPLETE')")
-    private List<DealDB> deals;
 }

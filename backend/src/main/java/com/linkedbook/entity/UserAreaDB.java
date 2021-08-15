@@ -7,6 +7,8 @@ import lombok.Builder;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import static javax.persistence.GenerationType.*;
 
 @Data
@@ -24,6 +26,7 @@ public class UserAreaDB {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private UserDB user;
 
     @ManyToOne

@@ -88,6 +88,27 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    public UserDB getChatUserDB(String accessToken) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(ACCESS_TOKEN_SECRET_KEY).parseClaimsJws(accessToken);
+            if (accessToken == null)
+                return null;
+
+            int userId = claims.getBody().get("userId", Integer.class);
+            if (!ValidationCheck.isValidId(userId))
+                return null;
+
+            UserDB userDB = userRepository.findById(userId).orElse(null);
+            if (userDB == null || userDB.getStatus().equals("DELETED"))
+                return null;
+
+            return userDB;
+        } catch (Exception exception) {
+            return null;
+        }
+    }
+
+    @Override
     // 인증 성공시 SecurityContextHolder에 저장할 Authentication 객체 생성
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserDB().getEmail());
@@ -97,11 +118,30 @@ public class JwtServiceImpl implements JwtService {
     @Override
     // Jwt Token의 유효성 및 만료 기간 검사
     public boolean validateToken(String jwtToken) {
+        return this.getClaims(jwtToken) != null;
+    }
+
+    @Override
+    public Jws<Claims> getClaims(String jwtToken) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(ACCESS_TOKEN_SECRET_KEY).parseClaimsJws(jwtToken);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
+            return Jwts.parser().setSigningKey(ACCESS_TOKEN_SECRET_KEY).parseClaimsJws(jwtToken);
+        } catch (SignatureException ex) {
+            log.error("Invalid JWT signature");
+            throw ex;
+        } catch (MalformedJwtException ex) {
+            log.error("Invalid JWT token");
+            throw ex;
+        }
+        // catch (ExpiredJwtException ex) {
+        // log.error("Expired JWT token");
+        // throw ex;
+        // }
+        catch (UnsupportedJwtException ex) {
+            log.error("Unsupported JWT token");
+            throw ex;
+        } catch (IllegalArgumentException ex) {
+            log.error("JWT claims string is empty.");
+            throw ex;
         }
     }
 
