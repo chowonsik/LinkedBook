@@ -10,5 +10,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CommentRepository extends JpaRepository<CommentDB, Integer> {
     Page<CommentDB> findByBook(BookDB bookDB, Pageable paging);
     Page<CommentDB> findByUser(UserDB userDB, Pageable paging);
-    CommentDB findByIdAndUser(int id, UserDB userDB);
 }

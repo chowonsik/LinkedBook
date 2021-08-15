@@ -10,5 +10,5 @@ public class AlertInput {
     private int commentId;
     private int dealId;
     private int evalId;
-    private int toUserId;
+    private int followId;
 }
