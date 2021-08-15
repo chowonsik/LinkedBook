@@ -57,22 +57,6 @@ public class StompHandler implements ChannelInterceptor {
                     .orElse("UnknownUser");
             log.info("SUBSCRIBED {}, {}", name, roomId);
         }
-        // else if (StompCommand.DISCONNECT == accessor.getCommand()) { // Websocket 연결
-        // 종료
-        // System.out.println("연결 종료 단계");
-        // // 연결이 종료된 클라이언트 sesssionId로 채팅방 id를 얻는다.
-        // String sessionId = (String) message.getHeaders().get("simpSessionId");
-        // String roomId = chatRoomRepository.getUserEnterRoomId(sessionId);
-        // // 클라이언트 퇴장 메시지를 채팅방에 발송한다.(redis publish)
-        // String name = Optional.ofNullable((Principal)
-        // message.getHeaders().get("simpUser")).map(Principal::getName)
-        // .orElse("UnknownUser");
-        // chatService.sendChatMessage(
-        // ChatMessage.builder().type(ChatMessage.MessageType.QUIT).roomId(roomId).sender(name).build());
-        // // 퇴장한 클라이언트의 roomId 맵핑 정보를 삭제한다.
-        // chatRoomRepository.removeUserEnterInfo(sessionId);
-        // log.info("DISCONNECTED {}, {}", sessionId, roomId);
-        // }
         return message;
     }
 }
