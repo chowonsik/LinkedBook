@@ -32,7 +32,7 @@ function FollowItem({
           <h3>{nickName}</h3>
         </NickName>
         {isF4F || isFollow ? (
-          <FollowingButton onClick={() => onClick(followId)} id={followId}>
+          <FollowingButton onClick={onClick} id={followId}>
             팔로잉
           </FollowingButton>
         ) : (
