@@ -32,24 +32,18 @@ public class StompHandler implements ChannelInterceptor {
     // websocket을 통해 들어온 요청이 처리 되기전 실행된다.
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        System.out.println("웹소켓에 신호 들어옴a");
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         System.out.println(message);
         if (StompCommand.CONNECT == accessor.getCommand()) { // websocket 연결요청
-            System.out.println("웹소켓 연결 요청b");
             String jwtToken = accessor.getFirstNativeHeader("token");
-            System.out.println("토큰 확인 토큰 값c:" + jwtToken);
-            System.out.println("연결 요청d");
             log.info("CONNECT {}", jwtToken);
             // Header의 jwt token 검증 -> 유효하지 않다면 websocket 연결을 하지 않음
             jwtService.validateToken(jwtToken);
         } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) { // 채팅룸 구독요청
             // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
-            System.out.println("구독 요청e");
             String roomId = chatService.getRoomId(
                     Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
             // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
-            System.out.println("f해당 룸 ID:" + roomId);
             String sessionId = (String) message.getHeaders().get("simpSessionId");
             chatRoomService.setUserEnterInfo(sessionId, roomId);
             // 클라이언트 입장 메시지를 채팅방에 발송한다.(redis publish)
