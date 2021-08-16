@@ -5,6 +5,7 @@ import {
   getMyProfile,
   getMyTabInfo,
   setActiveTab,
+  setMyTabInfo,
 } from "../../actions/MyProfile";
 
 import UserInfo from "../../components/Profile/UserInfo";
@@ -26,7 +27,7 @@ const Profile = ({ match }) => {
 
   const [userObj, setUserObj] = useState({});
   const [tabInfo, setTabInfo] = useState([]);
-  const [listHeight, setListHeight] = useState(window.innerHeight);
+  const [listHeight, setListHeight] = useState(window.innerHeight - 260);
   const [isFollow, setIsFollow] = useState(false);
 
   useEffect(() => {
@@ -34,8 +35,10 @@ const Profile = ({ match }) => {
       dispatch(getMyProfile(LOGIN_USER_ID));
       dispatch(getMyTabInfo(activeTab));
       setUserObj(myUserObj);
+      setTabInfo(myTabInfo);
     } else {
       getUserObj(USER_ID);
+      getTabInfo(activeTab);
     }
   }, [USER_ID]);
 

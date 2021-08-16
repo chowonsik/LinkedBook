@@ -6,7 +6,6 @@ import MannerScore from "../../common/MannerScore";
 
 const UserInfo = ({ userObj, isFollow, toggleFollowBtn }) => {
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
-
   return (
     <Wrapper>
       <div className="profile-content">
@@ -43,7 +42,13 @@ const UserInfo = ({ userObj, isFollow, toggleFollowBtn }) => {
               ""
             )}
           </div>
-          <Link to="/profile/history">
+
+          <Link
+            to={{
+              pathname: `/profile/${userObj.userId}/history`,
+              state: { userId: userObj.userId },
+            }}
+          >
             <BookmarkCheckFill className="user-history" />
           </Link>
         </div>

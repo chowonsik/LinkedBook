@@ -49,7 +49,11 @@ function App() {
           />
           <Route path="/profile/:id" exact={true} component={Profile} />
         </Switch>
-        <Route path="/profile/history" exact={true} component={UserHistory} />
+        <Route
+          path="/profile/:id/history"
+          exact={true}
+          component={UserHistory}
+        />
         <Route
           path="/profile/update/password"
           exact={true}
