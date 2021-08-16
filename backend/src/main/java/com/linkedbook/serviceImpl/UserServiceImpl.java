@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
         // 2. 유저 생성
         UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword())
                 .nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage())
-                .status("ACTIVATE").build();
+                .oauth(signUpInput.getOauth()).oauthId(signUpInput.getOauthId()).status("ACTIVATE").build();
         UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
