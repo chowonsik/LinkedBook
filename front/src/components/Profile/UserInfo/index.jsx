@@ -4,13 +4,8 @@ import { BookmarkCheckFill, GearFill } from "react-bootstrap-icons";
 import { Wrapper } from "./styles";
 import MannerScore from "../../common/MannerScore";
 
-const UserInfo = ({ userObj }) => {
+const UserInfo = ({ userObj, isFollow, toggleFollowBtn }) => {
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
-  const [isFollow, setIsFollow] = useState(userObj.isFollow);
-  function toggleFollowBtn() {
-    // API 요청
-    setIsFollow(!isFollow);
-  }
 
   return (
     <Wrapper>

@@ -12,7 +12,7 @@ import UserActivity from "../../components/Profile/UserActivity";
 import DealItem from "../../components/DealItem";
 import ProfileTab from "../../components/Profile/ProfileTab";
 import { Wrapper, DealList } from "./styles";
-import { request, requestGet } from "../../api";
+import { request, requestDelete, requestGet } from "../../api";
 import Footer from "../../components/Layout/Footer";
 import Header from "../../components/Layout/Header";
 
@@ -27,6 +27,7 @@ const Profile = ({ match }) => {
   const [userObj, setUserObj] = useState({});
   const [tabInfo, setTabInfo] = useState([]);
   const [listHeight, setListHeight] = useState(window.innerHeight);
+  const [isFollow, setIsFollow] = useState("");
 
   useEffect(() => {
     if (USER_ID === LOGIN_USER_ID) {
@@ -35,6 +36,7 @@ const Profile = ({ match }) => {
       setUserObj(myUserObj);
     } else {
       getUserObj(USER_ID);
+      setIsFollow(userObj.isFollow);
     }
   }, [USER_ID]);
 
@@ -105,13 +107,41 @@ const Profile = ({ match }) => {
     }
   }
 
+  async function follow() {
+    const data = {
+      toUserId: USER_ID,
+      fromUserId: LOGIN_USER_ID,
+    };
+    console.log(data);
+    const res = await request("post", "/follow", data);
+    console.log(res);
+  }
+
+  async function unFollow() {
+    // 유저정보 던져줄때 받는 정보
+    const res = await requestDelete(`/follow`);
+    console.log(res);
+  }
+  function toggleFollowBtn() {
+    if (isFollow) {
+      unFollow();
+    } else {
+      follow();
+    }
+    setIsFollow(!isFollow);
+  }
+
   return (
     <>
       <Header isLogo isSearch isAlarm />
       <Wrapper>
         {userObj && (
           <>
-            <UserInfo userObj={userObj} />
+            <UserInfo
+              userObj={userObj}
+              isFollow={isFollow}
+              toggleFollowBtn={toggleFollowBtn}
+            />
             <UserActivity
               dealCnt={userObj.dealCnt}
               followingCnt={userObj.followerCnt}
