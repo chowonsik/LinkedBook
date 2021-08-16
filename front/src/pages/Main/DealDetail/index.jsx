@@ -33,6 +33,8 @@ import {
 import { showToast } from "../../../actions/Notification";
 import DeleteConfirm from "../../../components/deal/DeleteConfirm";
 import { createRoom } from "../../../actions/Chat";
+import BookPopularInfo from "../../../components/deal/BookPopularInfo";
+import DealComplete from "../../../components/deal/DealComplete";
 export default function DealDetail() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { dealId } = useParams();
@@ -40,9 +42,18 @@ export default function DealDetail() {
     dealImages: [],
   });
   const [confirmShow, setConfirmShow] = useState(false);
+  const [bookInfo, setBookInfo] = useState({});
+  const [contentHeight, setContentHeight] = useState(
+    window.innerHeight - 55 - 70 - 150
+  );
+  const [completePageShow, setCompletePageShow] = useState(false);
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  function handleDealCompleteButtonClick() {
+    setCompletePageShow(true);
+  }
 
   async function handleChatCreate() {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
@@ -69,7 +80,11 @@ export default function DealDetail() {
   async function fetchData() {
     const response = await requestGet(`/deals/${dealId}`);
     setDealData(response.result);
+    const bookId = response.result.bookId;
     console.log(response.result);
+    const bookResponse = await requestGet(`/books/${bookId}`);
+    console.log(bookResponse.result);
+    setBookInfo(bookResponse.result);
   }
 
   function getLoginUser() {
@@ -95,16 +110,26 @@ export default function DealDetail() {
   }
   function handleCancleButtonClick() {
     setConfirmShow(false);
+    setCompletePageShow(false);
   }
 
   function handleModifyButtonClick() {
     history.push({ pathname: "/update/deal", state: { dealData: dealData } });
   }
 
+  function getContentHeight(height = window.innerHeight - 125 - 150) {
+    setContentHeight(height);
+  }
+
   useEffect(() => {
     fetchData();
     getLoginUser();
     dispatch(doNotRefresh());
+    window.addEventListener("resize", getContentHeight);
+
+    return () => {
+      window.removeEventListener("resize", getContentHeight);
+    };
   }, []);
 
   return (
@@ -114,8 +139,13 @@ export default function DealDetail() {
         onCancleButtonClick={handleCancleButtonClick}
         onDeleteButtonClick={handleDeleteButtonClick}
       />
+      <DealComplete
+        show={completePageShow}
+        onCancleButtonClick={handleCancleButtonClick}
+        dealId={dealData.dealId}
+      ></DealComplete>
       <Header title="거래 정보" isBack />
-      <Wrapper>
+      <Wrapper height={contentHeight}>
         <ImageWrapper>
           <ImageContainer index={selectedIndex}>
             {dealData.dealImages.length === 0 ? (
@@ -159,9 +189,7 @@ export default function DealDetail() {
           >
             <ChevronRight />
           </div>
-          <div className="info-icon">
-            <InfoCircle />
-          </div>
+
           <div className="circles">
             {dealData.dealImages.map((image, i) =>
               i === selectedIndex ? (
@@ -220,7 +248,12 @@ export default function DealDetail() {
           </BookInfo>
           <DealState>
             {dealData.userId === getLoginUser().id ? (
-              <div className="complete-button">거래 완료</div>
+              <div
+                className="complete-button"
+                onClick={handleDealCompleteButtonClick}
+              >
+                거래 완료
+              </div>
             ) : (
               ""
             )}
@@ -229,6 +262,7 @@ export default function DealDetail() {
           </DealState>
         </Section>
       </Wrapper>
+      <BookPopularInfo bookInfo={bookInfo} />
       <Footer>
         <div className="icon-container">
           {dealData.isLikeDeal === 1 ? (
