@@ -40,7 +40,7 @@ export const FollowButton = styled.button`
   min-height: 30px;
   border: none;
   border-radius: 12px;
-  background-color: ${colors.yellow};
+  background-color: ${(props) => (props.isEqualUser ? colors.yellow : "#fff")};
   color: #fff;
   font-size: ${fonts.md};
   &:hover {

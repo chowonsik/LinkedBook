@@ -40,19 +40,35 @@ export const Wrapper = styled.div`
           font-size: ${fonts.md};
           font-weight: 400;
         }
-        .bookmark-cnt {
-          font-size: ${fonts.md};
-          font-weight: 400;
+        .bookmark {
+          .bookmark-cnt {
+            margin-right: 2px;
+            font-size: ${fonts.md};
+            font-weight: 400;
+          }
         }
         .icon {
+          vertical-align: middle;
+          font-size: ${fonts.md};
           color: ${colors.yellow};
           margin-right: 4px;
+          margin-bottom: 4px;
         }
       }
-      .price {
-        font-size: ${fonts.lg};
-        margin-bottom: 4px;
+      .sub-header {
+        display: flex;
+        .price {
+          margin-bottom: 4px;
+          margin-right: 15px;
+          font-size: ${fonts.lg};
+        }
+        .category {
+          margin-right: 5px;
+          font-size: ${fonts.md};
+          color: ${colors.black};
+        }
       }
+
       .publishing-info {
         font-size: ${fonts.md};
         color: ${colors.gray};
