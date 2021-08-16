@@ -1,6 +1,7 @@
 package com.linkedbook.controller;
 
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
+import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealOutput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
 import com.linkedbook.dto.userDeal.updateUserDeal.UpdateUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
@@ -36,7 +37,7 @@ public class UserDealController {
     // Body
     @ResponseBody
     @PostMapping
-    public Response<Object> createUserDeal(@RequestBody CreateUserDealInput createUserDealInput) {
+    public Response<CreateUserDealOutput> createUserDeal(@RequestBody CreateUserDealInput createUserDealInput) {
         log.info("[POST] /user-deals");
         return userDealService.createUserDeal(createUserDealInput);
     }
