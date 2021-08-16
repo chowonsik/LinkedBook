@@ -13,6 +13,12 @@ public enum ResponseStatus {
      * 2XX Success
      */
     // 200 OK - 클라이언트의 요청을 서버가 정상적으로 처리했다.
+    SUCCESS_SELECT_USERDEAL_LIST(200, 205, "유저 거래 내역 조회에 성공하였습니다."),
+    SUCCESS_UPDATE_USERDEAL(200, 206, "유저 거래 내역 수정에 성공하였습니다."),
+
+    // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
+     CREATED_USERDEAL(201, 203, "유저 거래 내력 등록에 성공하였습니다."),
+
     SUCCESS_CHANGE_FOLLOW(200, 203, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
     SUCCESS_SELECT_LIKEDEAL(200, 204, "관심 거래 조회에 성공하였습니다."), 
     SUCCESS_DELETE_LIKEDEAL(200, 205, "관심 거래 삭제에 성공하였습니다."),
