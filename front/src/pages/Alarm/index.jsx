@@ -1,16 +1,26 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import Header from "../../components/Layout/Header";
+
 import AlarmAct from "../../components/Alarm/AlarmAct";
 import AlarmFollow from "../../components/Alarm/AlarmFollow";
+import { setNewAlarm } from "../../actions/Alarm";
 import { Wrapper, AlarmType, AlarmTypeItem, ContentContainer } from "./styles";
 function Alarm() {
   const [type, setType] = useState(true);
-
+  const [height, setHeight] = useState(0);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    handleSetHeight();
+    dispatch(setNewAlarm(false));
+  }, []);
   function handleClickType() {
     setType(!type);
   }
-
+  function handleSetHeight() {
+    const innerHeight = window.innerHeight;
+    setHeight(innerHeight - 55);
+  }
   return (
     <Wrapper>
       <Header isBack={true} title={"새소식"}></Header>
@@ -18,9 +28,7 @@ function Alarm() {
         <AlarmTypeItem isType={type}>팔로우</AlarmTypeItem>
         <AlarmTypeItem isType={!type}>활동</AlarmTypeItem>
       </AlarmType>
-      <ContentContainer>
-        {type ? <AlarmFollow /> : <AlarmAct />}
-      </ContentContainer>
+      {type ? <AlarmFollow height={height} /> : <AlarmAct height={height} />}
     </Wrapper>
   );
 }

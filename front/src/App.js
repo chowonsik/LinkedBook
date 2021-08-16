@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { HashRouter as Router, Route } from "react-router-dom";
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
@@ -18,8 +19,12 @@ import Report from "./pages/Report";
 import SearchUser from "./pages/SearchUser";
 import ToastMessage from "./components/common/ToastMessage";
 import BookInfo from "./pages/book/BookInfo";
-
+import { checkNewAlarm } from "./actions/Alarm";
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkNewAlarm());
+  }, []);
   return (
     <div className="App">
       <Router>
