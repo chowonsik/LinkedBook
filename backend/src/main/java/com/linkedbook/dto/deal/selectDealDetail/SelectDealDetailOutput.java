@@ -20,6 +20,7 @@ public class SelectDealDetailOutput {
     private String dealQuality;
     private Date dealCreatedAt;
     private Integer isLikeDeal;
+    private String bookId;
     private String bookTitle;
     private String bookAuthor;
     private String bookPublisher;
@@ -32,9 +33,9 @@ public class SelectDealDetailOutput {
 
     @QueryProjection
     public SelectDealDetailOutput(Integer dealId, String dealTitle, String dealContent, Integer dealPrice,
-            String dealQuality, Date dealCreatedAt, Integer isLikeDeal, String bookTitle, String bookAuthor,
-            String bookPublisher, Integer bookPrice, Integer userId, String userNickname, String userImage,
-            String userDong, double userMannerScore) {
+            String dealQuality, Date dealCreatedAt, Integer isLikeDeal, String bookId, String bookTitle,
+            String bookAuthor, String bookPublisher, Integer bookPrice, Integer userId, String userNickname,
+            String userImage, String userDong, double userMannerScore) {
         this.dealId = dealId;
         this.dealTitle = dealTitle;
         this.dealContent = dealContent;
@@ -42,6 +43,7 @@ public class SelectDealDetailOutput {
         this.dealQuality = dealQuality;
         this.dealCreatedAt = dealCreatedAt;
         this.isLikeDeal = isLikeDeal;
+        this.bookId = bookId;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookPublisher = bookPublisher;

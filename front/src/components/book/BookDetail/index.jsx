@@ -16,21 +16,37 @@ const BookDetail = ({ bookInfo }) => {
       <div className="book-detail">
         <div className="book-header">
           <h1 className="title">{bookInfo.title}</h1>
-          <div>
-            <strong className="score">
-              <StarFill className="icon" />
-              {bookInfo.commentAvgScore === "NaN"
-                ? 0
-                : bookInfo.commentAvgScore}
-              / 5
-            </strong>
-            <strong className="bookmark-cnt">
+          <div className="test">
+            {bookInfo.popular && (
+              <strong className="score">
+                <StarFill className="icon" />
+                <span>
+                  {bookInfo.popular.avgScore === "NaN"
+                    ? 0
+                    : bookInfo.popular.avgScore}
+                  / 5
+                </span>
+              </strong>
+            )}
+            <strong className="bookmark">
+              <span className="bookmark-cnt">
+                {bookInfo.like && bookInfo.like.totalLikeCnt}
+              </span>
               <BookmarkFill className="icon" />
-              {bookInfo.likeBookCnt}
             </strong>
           </div>
         </div>
-        <h2 className="price">{bookInfo.price} 원</h2>
+        <div className="sub-header">
+          <h2 className="price">{bookInfo.price} 원</h2>
+          <span className="categories">
+            {bookInfo.popular &&
+              bookInfo.popular.categories.map((category, idx) => (
+                <span key={idx} className="category">
+                  #{category.title}
+                </span>
+              ))}
+          </span>
+        </div>
         <div className="publishing-info">
           <span>{bookInfo.author}</span>
           <span>{bookInfo.publisher}</span>

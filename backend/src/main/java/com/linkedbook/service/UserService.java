@@ -1,5 +1,7 @@
 package com.linkedbook.service;
 
+import com.linkedbook.dto.user.email.EmailInput;
+import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.kakaoSignin.KakaoSignInInput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
@@ -19,6 +21,8 @@ public interface UserService {
     Response<SelectProfileOutput> selectProfile(int id);
 
     PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput);
+
+    Response<EmailOutput> sendMail(EmailInput emailInput);
 
     Response<SignInOutput> signInKakao(KakaoSignInInput kakaoSignInInput);
 }

@@ -3,6 +3,9 @@ import { colors, fonts } from "../../../styles";
 
 export const Wrapper = styled.div`
   margin: 0 0 60px 0;
+  height: ${(props) => (props.height ? `${props.height}px` : "auto")};
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 export const ImageWrapper = styled.div`
@@ -31,12 +34,7 @@ export const ImageWrapper = styled.div`
     top: 50%;
     transform: translateY(-50%);
   }
-  .info-icon {
-    position: absolute;
-    bottom: 7px;
-    right: 10px;
-    color: white;
-  }
+
   .circles {
     position: absolute;
     display: flex;
@@ -106,10 +104,12 @@ export const UserInfo = styled.div`
   }
 `;
 export const Section = styled.section`
-  display: flex;
-  justify-content: space-between;
+  position: relative;
 `;
 export const DealState = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 0;
   padding: 28px 15px;
   .complete-button {
     border-radius: 100px;
@@ -135,6 +135,7 @@ export const BookInfo = styled.div`
   .deal-title {
     font-size: 22px;
     font-weight: 600;
+    width: 60%;
   }
   .deal-price {
     font-size: ${fonts.xxl};
@@ -174,7 +175,7 @@ export const BookInfo = styled.div`
   .deal-content {
     margin-top: 10px;
     word-wrap: break-word;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
 `;
 

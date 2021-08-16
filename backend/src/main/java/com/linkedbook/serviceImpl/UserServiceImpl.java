@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
+import com.linkedbook.dto.user.email.EmailInput;
+import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.kakaoSignin.KakaoSignInInput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
@@ -26,6 +28,8 @@ import com.linkedbook.dto.user.signup.SignUpOutput;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -33,13 +37,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.data.domain.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
-
-import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("UserService")
@@ -52,6 +56,8 @@ public class UserServiceImpl implements UserService {
     private final AreaRepository areaRepository;
     private final DealRepository dealRepository;
     private final JwtService jwtService;
+
+    private final JavaMailSender mailSender;
 
     private final String userRequestURL = "https://kapi.kakao.com/v2/user/me";
 
@@ -86,7 +92,7 @@ public class UserServiceImpl implements UserService {
         // 3. access token 생성
         String accessToken;
         try {
-            accessToken = jwtService.createAccessToken(EMPLOYEE, userDB.getId());
+            accessToken = jwtService.createAccessToken(userDB.getId());
             if (accessToken.isEmpty()) {
                 return new Response<>(FAILED_TO_CREATE_TOKEN);
             }
@@ -147,7 +153,7 @@ public class UserServiceImpl implements UserService {
         // 3. 토큰 생성
         String accessToken;
         try {
-            accessToken = jwtService.createAccessToken(EMPLOYEE, userDB.getId());
+            accessToken = jwtService.createAccessToken(userDB.getId());
             if (accessToken.isEmpty()) {
                 return new Response<>(FAILED_TO_CREATE_TOKEN);
             }
@@ -225,6 +231,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Response<EmailOutput> sendMail(EmailInput emailInput) {
+        String generatedString = RandomStringUtils.random(10, true, true);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(emailInput.getEmail());
+        message.setSubject("linkedbook 이메일 인증번호");
+        message.setText(generatedString);
+        EmailOutput emailOutput = EmailOutput.builder().auth(generatedString).build();
+
+        mailSender.send(message);
+
+        // 결과 return
+        return new Response<>(emailOutput, SUCCESS_SENDMAIL);
+    }
+
+    @Override
     @Transactional
     public Response<SignInOutput> signInKakao(KakaoSignInInput kakaoSignInInput) {
         // 1. 카카오 서버에 요청
@@ -246,8 +267,6 @@ public class UserServiceImpl implements UserService {
             } else {
                 return new Response<>(UNAUTHORIZED_TOKEN);
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -290,7 +309,7 @@ public class UserServiceImpl implements UserService {
         // 3. access token 생성
         String accessToken;
         try {
-            accessToken = jwtService.createAccessToken(EMPLOYEE, userDB.getId());
+            accessToken = jwtService.createAccessToken(userDB.getId());
             if (accessToken.isEmpty()) {
                 return new Response<>(FAILED_TO_CREATE_TOKEN);
             }

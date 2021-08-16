@@ -1,5 +1,7 @@
 package com.linkedbook.controller;
 
+import com.linkedbook.dto.user.email.EmailInput;
+import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.jwt.JwtOutput;
 import com.linkedbook.dto.user.kakaoSignin.KakaoSignInInput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
@@ -93,6 +95,19 @@ public class UserController {
             return new Response<>(FORBIDDEN_USER_ID);
         JwtOutput jwtOutput = new JwtOutput(userId);
         return new Response<>(jwtOutput, SUCCESS_SIGN_IN);
+    }
+
+    /**
+     * 이메일 인증 API [POST] /users/email
+     * 
+     * @return Response<EmailOutput>
+     */
+    // Body
+    @ResponseBody
+    @PostMapping("/email")
+    public Response<EmailOutput> mailSend(@RequestBody EmailInput emailInput) {
+        log.info("[POST] /users/email");
+        return userService.sendMail(emailInput);
     }
 
     /**
