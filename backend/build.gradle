@@ -72,6 +72,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //embedded-redis
     implementation 'it.ozimov:embedded-redis:0.7.2'
+
+    // Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 test {

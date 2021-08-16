@@ -22,6 +22,8 @@ import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
 import { checkNewAlarm } from "./actions/Alarm";
+import LikeBooks from "./pages/book/LikeBooks";
+import LikeComments from "./pages/book/LikeComments";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -52,6 +54,12 @@ function App() {
         <Route path="/search/user" exact={true} component={SearchUser} />
         <Route path="/chat" exact={true} component={ChatRoomList} />
         <Route path="/chat/room/:id" exact={true} component={ChatRoom} />
+        <Route path="/book/likes/:isbn" exact={true} component={LikeBooks} />
+        <Route
+          path="/comment/:id/likes"
+          exact={true}
+          component={LikeComments}
+        />
       </Router>
       <ToastMessage />
     </div>

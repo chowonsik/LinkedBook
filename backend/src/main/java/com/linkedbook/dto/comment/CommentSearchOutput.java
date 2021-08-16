@@ -2,6 +2,7 @@ package com.linkedbook.dto.comment;
 
 import com.linkedbook.dto.common.CommonCommentOutput;
 import com.linkedbook.dto.common.CommonLikeOutput;
+import com.linkedbook.dto.common.CommonProfileBookOutput;
 import com.linkedbook.dto.common.CommonUserOutput;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,5 @@ public class CommentSearchOutput {
     // 유저 정보
     private CommonUserOutput user;
     // 책 정보
-    private CommentBookOutput book;
+    private CommonProfileBookOutput book;
 }

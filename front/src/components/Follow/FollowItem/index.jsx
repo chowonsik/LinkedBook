@@ -16,6 +16,7 @@ function FollowItem({
   onClick,
   followId,
   userId,
+  loginUserId,
 }) {
   return (
     <>
@@ -32,11 +33,19 @@ function FollowItem({
           <h3>{nickName}</h3>
         </NickName>
         {isF4F || isFollow ? (
-          <FollowingButton onClick={onClick} id={followId}>
+          <FollowingButton
+            onClick={onClick}
+            id={followId}
+            isEqualUser={userId !== loginUserId}
+          >
             팔로잉
           </FollowingButton>
         ) : (
-          <FollowButton onClick={onClick} id={userId}>
+          <FollowButton
+            onClick={onClick}
+            id={userId}
+            isEqualUser={userId !== loginUserId}
+          >
             팔로우
           </FollowButton>
         )}
