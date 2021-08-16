@@ -36,7 +36,6 @@ const Profile = ({ match }) => {
       setUserObj(myUserObj);
     } else {
       getUserObj(USER_ID);
-      setIsFollow(userObj.isFollow);
     }
   }, [USER_ID]);
 
@@ -46,7 +45,8 @@ const Profile = ({ match }) => {
 
   const getUserObj = async (userId) => {
     const response = await request("get", `/users/${userId}/profile`);
-    setUserObj(response.result);
+    await setUserObj(response.result);
+    setIsFollow(response.result.isFollow ? true : false);
   };
 
   const handleTabClick = async (activeTabId) => {
@@ -112,23 +112,23 @@ const Profile = ({ match }) => {
       toUserId: USER_ID,
       fromUserId: LOGIN_USER_ID,
     };
-    console.log(data);
-    const res = await request("post", "/follow", data);
-    console.log(res);
+    await request("post", "/follow", data);
+    getUserObj(USER_ID);
   }
 
   async function unFollow() {
-    // 유저정보 던져줄때 받는 정보
-    const res = await requestDelete(`/follow`);
-    console.log(res);
+    await requestDelete(`/follow/${userObj.isFollow}`);
+    getUserObj(USER_ID);
   }
+
   function toggleFollowBtn() {
     if (isFollow) {
+      setIsFollow(false);
       unFollow();
     } else {
-      follow();
+      setIsFollow(true);
+      follow(userObj.isFollow);
     }
-    setIsFollow(!isFollow);
   }
 
   return (
@@ -144,7 +144,7 @@ const Profile = ({ match }) => {
             />
             <UserActivity
               dealCnt={userObj.dealCnt}
-              followingCnt={userObj.followerCnt}
+              followingCnt={userObj.followingCnt}
               followerCnt={userObj.followerCnt}
             />
             <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
