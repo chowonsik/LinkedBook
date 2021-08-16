@@ -3,7 +3,7 @@ package com.linkedbook.controller;
 import com.linkedbook.dto.user.email.EmailInput;
 import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.jwt.JwtOutput;
-import com.linkedbook.dto.user.kakaoSignin.KakaoSignInInput;
+import com.linkedbook.dto.user.signin.KakaoSignInInput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;

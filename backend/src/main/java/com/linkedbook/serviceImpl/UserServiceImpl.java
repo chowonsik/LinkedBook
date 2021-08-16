@@ -7,7 +7,7 @@ import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.email.EmailInput;
 import com.linkedbook.dto.user.email.EmailOutput;
-import com.linkedbook.dto.user.kakaoSignin.KakaoSignInInput;
+import com.linkedbook.dto.user.signin.KakaoSignInInput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
@@ -32,7 +32,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -101,7 +100,10 @@ public class UserServiceImpl implements UserService {
         }
 
         // 4. 결과 return
-        SignInOutput signInOutput = new SignInOutput(userDB.getId(), accessToken);
+        SignInOutput signInOutput = SignInOutput.builder()
+                .userId(userDB.getId())
+                .accessToken(accessToken)
+                .build();
         return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 
@@ -261,7 +263,6 @@ public class UserServiceImpl implements UserService {
         try {
             response = client.execute(post);
             ObjectMapper mapper = new ObjectMapper();
-            System.out.println();
             if (response.getStatusLine().getStatusCode() == 200) {
                 json = mapper.readTree(response.getEntity().getContent());
             } else {
@@ -318,7 +319,10 @@ public class UserServiceImpl implements UserService {
         }
 
         // 4. 결과 return
-        SignInOutput signInOutput = new SignInOutput(userDB.getId(), accessToken);
+        SignInOutput signInOutput = SignInOutput.builder()
+                .userId(userDB.getId())
+                .accessToken(accessToken)
+                .build();
         return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 }
