@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { showToast } from "../../../actions/Notification";
 
 function ChatRoom() {
-  const sock = new SockJS(`${process.env.REACT_APP_API_URL}/api/ws-stomp`);
+  const sock = new SockJS(`http://172.17.0.1/api/ws-stomp`);
   const ws = Stomp.over(sock);
   const [content, setContent] = useState("");
   const [value, setValue] = useState("");
