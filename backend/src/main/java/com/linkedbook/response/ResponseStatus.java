@@ -13,6 +13,12 @@ public enum ResponseStatus {
      * 2XX Success
      */
     // 200 OK - 클라이언트의 요청을 서버가 정상적으로 처리했다.
+    SUCCESS_SELECT_USERDEAL_LIST(200, 205, "유저 거래 내역 조회에 성공하였습니다."),
+    SUCCESS_UPDATE_USERDEAL(200, 206, "유저 거래 내역 수정에 성공하였습니다."),
+
+    // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
+     CREATED_USERDEAL(201, 203, "유저 거래 내력 등록에 성공하였습니다."),
+
     SUCCESS_CHANGE_FOLLOW(200, 203, "팔로우 활성화 상태를 변경하는데 성공하였습니다."),
     SUCCESS_SELECT_LIKEDEAL(200, 204, "관심 거래 조회에 성공하였습니다."), 
     SUCCESS_DELETE_LIKEDEAL(200, 205, "관심 거래 삭제에 성공하였습니다."),
@@ -29,7 +35,7 @@ public enum ResponseStatus {
     SUCCESS_GET_COMMENT_LIST(200, 215, "한줄평 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_GET_LIKE_COMMENT_LIST(200, 215, "관심 한줄평 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."), SUCCESS_SELECT_CHATLIST(200, 205, "채팅 조회에 성공하였습니다."),
-    SUCCESS_SELECT_CHATROOM(200, 205, "채팅방 조회에 성공하였습니다."),
+    SUCCESS_SELECT_CHATROOM(200, 205, "채팅방 조회에 성공하였습니다."), SUCCESS_SENDMAIL(200, 210, "메일 발송에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."), CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
