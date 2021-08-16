@@ -49,7 +49,7 @@ function LikeBooks() {
       page: 0,
       size: likeBooks.length,
     };
-    dispatch(getLikeComments(params));
+    dispatch(getLikeBooks(params));
   }
 
   function handleScroll(e) {
