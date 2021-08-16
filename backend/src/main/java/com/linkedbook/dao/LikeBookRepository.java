@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface LikeBookRepository extends JpaRepository<LikeBookDB, Integer> {
     LikeBookDB findByUserAndBook(UserDB userDB, BookDB bookDB);
-    List<LikeBookDB> findByBookAndUserIdNot(BookDB book, int userId);
+    List<LikeBookDB> findByBookAndUserStatusAndUserIdNot(BookDB book, String status, int loginUserId);
 }

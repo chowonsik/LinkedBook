@@ -70,7 +70,11 @@ public class AlertServiceImpl implements AlertService {
                     log.error("[alerts/post] NOT FOUND DEAL error");
                     return new Response<>(NOT_FOUND_DEAL);
                 }
-                toUserDBList.add(targetDealDB.getUser());
+                if(targetDealDB.getUser().getStatus().equals("ACTIVATE")) {
+                    toUserDBList.add(targetDealDB.getUser());
+                } else {
+                    log.warn("[alerts/post] DEACTIVATE TO-USER error");
+                }
 
             } else if (inputType == AlertStatus.NEW_DEAL_FOLLOW) { // 팔로우한 책방의 신규 입고 알림(deal_id, to_user_id)
                 targetDealDB = dealRepository.findByIdAndUser(alertInput.getDealId(), fromUserDB);
@@ -87,7 +91,7 @@ public class AlertServiceImpl implements AlertService {
                     log.error("[alerts/post] NOT FOUND FROM-USER's DEAL error");
                     return new Response<>(NOT_FOUND_DEAL);
                 }
-                toUserDBList = likeBookRepository.findByBookAndUserIdNot(targetDealDB.getBook(), fromUserDB.getId()) // 자신의 거래글 알람은 제외
+                toUserDBList = likeBookRepository.findByBookAndUserStatusAndUserIdNot(targetDealDB.getBook(), "ACTIVATE", fromUserDB.getId()) // 자신의 거래글 알람은 제외
                         .stream().map(LikeBookDB::getUser).collect(Collectors.toList());
 
             } else if (inputType == AlertStatus.LIKE_COMMENT) { // 자신의 한줄평 좋아요 알림(comment_id, to_user_id)
@@ -96,7 +100,11 @@ public class AlertServiceImpl implements AlertService {
                     log.error("[alerts/post] NOT FOUND COMMENT error");
                     return new Response<>(NOT_FOUND_COMMENT);
                 }
-                toUserDBList.add(targetCommentDB.getUser());
+                if(targetCommentDB.getUser().getStatus().equals("ACTIVATE")) {
+                    toUserDBList.add(targetCommentDB.getUser());
+                } else {
+                    log.warn("[alerts/post] DEACTIVATE TO-USER error");
+                }
 
             } else if (inputType == AlertStatus.EVAL) { // 거래 구매완료 알림(eval_id, deal_id, to_user_id)
                 targetEvalDB = userDealRepository.findByIdAndUserAndType(alertInput.getEvalId(), fromUserDB, "SALE");
