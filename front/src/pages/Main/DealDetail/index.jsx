@@ -32,6 +32,7 @@ import {
 } from "../../../actions/Deal";
 import { showToast } from "../../../actions/Notification";
 import DeleteConfirm from "../../../components/deal/DeleteConfirm";
+import { createRoom } from "../../../actions/Chat";
 export default function DealDetail() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { dealId } = useParams();
@@ -42,6 +43,19 @@ export default function DealDetail() {
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  async function handleChatCreate() {
+    const loginUser = JSON.parse(localStorage.getItem("loginUser"));
+    const response = await requestGet("/chat/rooms", { userId: loginUser.id });
+    const room = response.result.find(
+      (room) => room.deal_id === dealData.dealId
+    );
+    if (room) {
+      history.push(`/chat/room/${room.room_id}`);
+    } else {
+      dispatch(createRoom(dealId, dealData.userId, history));
+    }
+  }
 
   function goLeft() {
     if (selectedIndex === 0) return;
@@ -248,7 +262,12 @@ export default function DealDetail() {
               onClick={handleModifyButtonClick}
             />
           ) : (
-            <RoundButton value="거래하기" width="40%" fontSize={fonts.xl} />
+            <RoundButton
+              value="거래하기"
+              width="40%"
+              fontSize={fonts.xl}
+              onClick={handleChatCreate}
+            />
           )}
           {dealData.userId === getLoginUser().id ? (
             <RoundButton

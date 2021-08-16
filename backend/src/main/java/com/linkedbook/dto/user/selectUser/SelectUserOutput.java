@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class SelectUserOutput {
-    int userId;
-    String nickname;
-    String image;
-    int dealCnt;
+    private int userId;
+    private String nickname;
+    private String image;
+    private int dealCnt;
 }
