@@ -9,6 +9,10 @@ export const Wrapper = styled.div`
   height: 60px;
   padding: 12px;
   margin-top: 0.5rem;
+  .profile-icon {
+    font-size: 46px;
+    color: ${colors.gray};
+  }
 `;
 
 export const Image = styled.div`
@@ -29,12 +33,14 @@ export const NickName = styled.div`
 `;
 
 export const FollowButton = styled.button`
-  display: ${(props) => (!props.isFollow ? "block" : "none")};
+  display: block;
   width: 55px;
+  min-width: 55px;
   height: 30px;
+  min-height: 30px;
   border: none;
   border-radius: 12px;
-  background-color: ${colors.yellow};
+  background-color: ${(props) => (props.isEqualUser ? colors.yellow : "#fff")};
   color: #fff;
   font-size: ${fonts.md};
   &:hover {
@@ -43,9 +49,11 @@ export const FollowButton = styled.button`
 `;
 
 export const FollowingButton = styled.button`
-  display: ${(props) => (props.isFollow ? "block" : "none")};
+  display: block;
   width: 55px;
+  min-width: 55px;
   height: 30px;
+  min-height: 30px;
   border: 1px solid ${colors.yellow};
   border-radius: 12px;
   background-color: #fff;

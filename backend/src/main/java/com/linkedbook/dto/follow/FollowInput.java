@@ -8,5 +8,4 @@ import lombok.NoArgsConstructor;
 public class FollowInput {
     private int toUserId;
     private int fromUserId;
-    private String status;
 }

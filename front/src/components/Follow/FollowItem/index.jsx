@@ -1,3 +1,5 @@
+import { PersonCircle } from "react-bootstrap-icons";
+
 import {
   Wrapper,
   Image,
@@ -6,22 +8,47 @@ import {
   FollowingButton,
 } from "./styles";
 
-function FollowItem({ profileImage, nickName, isFollow, onClick, userId }) {
+function FollowItem({
+  profileImage,
+  nickName,
+  isFollow,
+  isF4F,
+  onClick,
+  followId,
+  userId,
+  loginUserId,
+}) {
   return (
     <>
       <Wrapper>
-        <Image>
-          <img src={profileImage} alt={nickName} />
-        </Image>
+        {profileImage ? (
+          <Image>
+            <img src={profileImage} alt={nickName} />
+          </Image>
+        ) : (
+          <PersonCircle className="profile-icon" />
+        )}
+
         <NickName>
           <h3>{nickName}</h3>
         </NickName>
-        <FollowButton isFollow={isFollow} onClick={onClick} id={userId}>
-          팔로우
-        </FollowButton>
-        <FollowingButton isFollow={isFollow} onClick={onClick} id={userId}>
-          팔로잉
-        </FollowingButton>
+        {isF4F || isFollow ? (
+          <FollowingButton
+            onClick={onClick}
+            id={followId}
+            isEqualUser={userId !== loginUserId}
+          >
+            팔로잉
+          </FollowingButton>
+        ) : (
+          <FollowButton
+            onClick={onClick}
+            id={userId}
+            isEqualUser={userId !== loginUserId}
+          >
+            팔로우
+          </FollowButton>
+        )}
       </Wrapper>
     </>
   );

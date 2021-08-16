@@ -9,6 +9,8 @@ version = '1.0'
 
 compileJava.options.encoding = 'UTF-8'
 
+def querydslVersion = '4.3.1'
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -42,7 +44,7 @@ dependencies {
     compile group: 'com.zaxxer', name: 'HikariCP', version: '3.4.5'
 
     // Authentication
-    compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.3.2.RELEASE'
+    compile "org.springframework.boot:spring-boot-starter-security"
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
 
     // Firebase (FCM)
@@ -50,8 +52,35 @@ dependencies {
 
     compile group : 'com.squareup.okhttp3', name : 'mockwebserver', version: '4.7.2'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.14'
+
+    // Querydsl
+    implementation group: 'com.querydsl', name: 'querydsl-jpa', version: querydslVersion
+    implementation group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+    implementation group: 'com.querydsl', name: 'querydsl-core', version: querydslVersion
+
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+    annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion, classifier: 'jpa'
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+
+    // Websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation group: 'org.webjars', name: 'sockjs-client', version: '1.1.2'
+    implementation group: 'org.webjars', name: 'stomp-websocket', version: '2.3.3-1'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    //embedded-redis
+    implementation 'it.ozimov:embedded-redis:0.7.2'
+
+    // Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 test {
     useJUnitPlatform()
+}
+
+clean {
+    delete file('src/main/generated') // 인텔리제이 Annotation processor 생성물 생성위치
 }

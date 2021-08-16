@@ -1,57 +1,93 @@
+import { request, requestGet, requestDelete } from "../../api";
 import axios from "axios";
 export const SET_FOLLOWING_LIST = "SET_FOLLOWING_LIST";
 export const SET_FOLLOWER_LIST = "SET_FOLLOWER_LIST";
-const token =
-  "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYyNzM5Mzg1NH0.D07COiIiT_BVqFvyfr7wjAhZLcQ-svD3vpx0-HUgkZ4";
-
+export const SET_FOLLOW_PAGE_INFO = "SET_FOLLOW_PAGE_INFO";
+export const SET_FOLLOW_RESET = "SET_FOLLOW_RESET";
+export const SET_LOGIN_USER_INFO = "SET_LOGIN_USER_INFO";
+export const UPDATE_FOLLOWING_LIST = "UPDATE_FOLLOWING_LIST";
 // 팔로잉 리스트 불러오기
-export const getFollowingList = (info) => {
+export const getFollowingList = (params) => {
   return (dispatch) => {
-    return axios
-      .get(`/follow/follower`, {
-        "X-ACCESS-TOKEN": token,
-      })
-      .then((res) => {
-        dispatch(setFollowingList(res.data.result));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const response = requestGet("/follow/following", params);
+    response.then((res) => {
+      const currentPage = res.page.currentPage;
+      const totalPages = res.page.totalPages;
+      const totalElements = res.page.totalElements;
+      dispatch(setFollowPageInfo(currentPage, totalPages, totalElements));
+      dispatch(setFollowingList(res.result, currentPage));
+    });
   };
 };
 
-export const setFollowingList = (followings) => {
+export const setFollowingList = (followings, currentPage) => {
   return {
     type: SET_FOLLOWING_LIST,
     followings,
+    currentPage,
   };
 };
 
-// 팔로우 상태 변경하기
-export const setFollowState = (data) => {
+// 팔로잉 -> 팔로우
+export const deleteFollowing = (followingId) => {
   return (dispatch) => {
-    return axios
-      .post("/follow", data, { "X-ACCESS-TOKEN": token })
-      .then((res) => {
-        console.log(res.data);
-      });
+    const response = requestDelete(`/follow/${followingId}`);
+    response.then((res) => {
+      dispatch(updateFollowingList(followingId));
+    });
   };
 };
 
+export const updateFollowingList = (followId) => {
+  return {
+    type: UPDATE_FOLLOWING_LIST,
+    followId,
+  };
+};
+export const createFollow = (data) => {
+  return () => {
+    const response = request("post", "/follow", data);
+  };
+};
 // 팔로워 리스트 불러오기
-export const getFollowerList = (info) => {
+export const getFollowerList = (params) => {
   return (dispatch) => {
-    return axios
-      .get(`/follow/${info}`, { "X-ACCESS-TOKEN": token })
-      .then((res) => {
-        dispatch(setFollowerList(res.data.result));
-      });
+    const response = requestGet(`/follow/follower`, params);
+    response.then((res) => {
+      const currentPage = res.page.currentPage;
+      const totalPages = res.page.totalPages;
+      const totalElements = res.page.totalElements;
+      dispatch(setFollowPageInfo(currentPage, totalPages, totalElements));
+      dispatch(setFollowerList(res.result, currentPage));
+    });
   };
 };
 
-export const setFollowerList = (followers) => {
+export const setFollowerList = (followers, currentPage) => {
   return {
     type: SET_FOLLOWER_LIST,
     followers,
+    currentPage,
+  };
+};
+
+export const setFollowPageInfo = (currentPage, totalPages, totalElements) => {
+  return {
+    type: SET_FOLLOW_PAGE_INFO,
+    currentPage,
+    totalPages,
+    totalElements,
+  };
+};
+
+export const setFollowReset = () => {
+  return {
+    type: SET_FOLLOW_RESET,
+  };
+};
+
+export const setLoginUserInfo = () => {
+  return {
+    type: SET_LOGIN_USER_INFO,
   };
 };

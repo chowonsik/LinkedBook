@@ -1,15 +1,17 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.user.signup.SignUpInput;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
-import java.awt.geom.Area;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class UserDB {
     private int id;
 
     @OneToMany(mappedBy = "user") // 양방향 매핑
+    @JsonManagedReference
     private List<UserAreaDB> userAreaDBs;
 
     @Column(name = "email", nullable = false, length = 45)
@@ -49,6 +52,9 @@ public class UserDB {
     @Column(name = "oauth", length = 45)
     private String oauth;
 
+    @Column(name = "oauth_id", length = 255)
+    private String oauthId;
+
     @Column(name = "status", nullable = false, length = 45)
     private String status;
 
@@ -59,8 +65,4 @@ public class UserDB {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updated_at;
-    
-    public UserDB(int id) {
-        this.id = id;
-    }
 }

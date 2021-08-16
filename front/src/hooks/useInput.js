@@ -2,7 +2,9 @@ import { useState } from "react";
 
 const useInput = (initialValue, validator) => {
   const [value, setValue] = useState(initialValue);
-  const [isValid, setIsValid] = useState(false);
+  const [isValid, setIsValid] = useState(
+    validator ? validator(initialValue).isValid : false
+  );
   const [errorMessage, setErrorMessage] = useState("");
 
   const onChange = (e) => {
@@ -14,7 +16,7 @@ const useInput = (initialValue, validator) => {
       setErrorMessage(result.errorMessage);
     }
   };
-  return { value, onChange, isValid, errorMessage };
+  return { value, onChange, isValid, errorMessage, setValue };
 };
 
 export default useInput;

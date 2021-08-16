@@ -14,6 +14,10 @@ public class ValidationCheck {
         return (id > 0);
     }
 
+    public static boolean isValidScore(double score) {
+        return (score > 0 && score <= 5);
+    }
+
     public static boolean isValidNum(String num) {
         try {
             Double.parseDouble(num);
@@ -62,7 +66,6 @@ public class ValidationCheck {
     }
 
     /**
-     *
      * @param info URL에 파라미터로 들어온 값
      * @return info 값이 정상이면 true, 비정상이면 false
      */
@@ -74,8 +77,13 @@ public class ValidationCheck {
         return (list == null) || list.isEmpty();
     }
 
-    public static boolean isValidScore(double score) {
-        return (score > 0 && score <= 5);
+   
+
+    public static boolean isValidPrice(int price) {
+        return (price > 0);
     }
 
+    public static boolean isValidCategoryArray(int[] categories) {
+        return (categories != null && categories.length <= 3);
+    }
 }

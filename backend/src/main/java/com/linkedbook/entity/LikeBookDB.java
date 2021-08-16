@@ -1,6 +1,7 @@
 package com.linkedbook.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,9 +13,10 @@ import java.util.Date;
 import static javax.persistence.GenerationType.*;
 
 @Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "like_book")
 public class LikeBookDB {
@@ -30,9 +32,6 @@ public class LikeBookDB {
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private BookDB book;
-
-    @Column(name = "status", nullable = false, length = 45)
-    private String status;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import { colors, fonts } from "../../../styles";
+
 export const Wrapper = styled.div`
   position: fixed;
   bottom: 0;
@@ -9,13 +10,22 @@ export const Wrapper = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  font-size: ${fonts.xxl};
+
   border-top: 1px solid ${colors.lightGray};
+  background-color: #fff;
   .new-post {
     color: ${colors.yellow};
-    font-size: 26px;
+    font-size: 36px;
   }
-  .active {
-    color: ${colors.yellow};
+`;
+
+export const IconBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 22px;
+  p {
+    color: ${colors.black};
+    font-size: 12px;
   }
 `;
