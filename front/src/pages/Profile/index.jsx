@@ -27,7 +27,7 @@ const Profile = ({ match }) => {
   const [userObj, setUserObj] = useState({});
   const [tabInfo, setTabInfo] = useState([]);
   const [listHeight, setListHeight] = useState(window.innerHeight);
-  const [isFollow, setIsFollow] = useState("");
+  const [isFollow, setIsFollow] = useState(false);
 
   useEffect(() => {
     if (USER_ID === LOGIN_USER_ID) {
@@ -46,7 +46,6 @@ const Profile = ({ match }) => {
   const getUserObj = async (userId) => {
     const response = await request("get", `/users/${userId}/profile`);
     await setUserObj(response.result);
-    setIsFollow(response.result.isFollow ? true : false);
   };
 
   const handleTabClick = async (activeTabId) => {
