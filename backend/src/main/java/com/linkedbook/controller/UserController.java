@@ -79,6 +79,19 @@ public class UserController {
         return userService.selectUser(selectUserInput);
     }
 
+    /**
+     * 회원탈퇴 API
+     * [PATCH] /users/deactivate
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @PatchMapping("/deactivate")
+    public Response<Object> changeDeleteStatus() {
+        log.info("[PATCH] /users/deactivate");
+        return userService.changeDeleteStatus();
+    }
+
     @ResponseBody
     @PostMapping("/jwt")
     public Response<JwtOutput> jwt() {

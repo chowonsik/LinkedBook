@@ -40,6 +40,7 @@ public enum ResponseStatus {
     SUCCESS_DELETE_DEAL(204, 203, "거래 삭제에 성공하였습니다."), SUCCESS_DELETE_FOLLOW(204, 201, "팔로우 관계를 삭제하는데 성공하였습니다."),
     SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."), SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
     SUCCESS_DELETE_LIKE_COMMENT(204, 207, "관심 한줄평 삭제에 성공하였습니다."),
+    SUCCESS_DELETE_USER(204, 444, "회원탈퇴에 성공하였습니다"),
 
     /*
      * 4XX Client errors

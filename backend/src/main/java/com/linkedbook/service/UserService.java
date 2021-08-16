@@ -15,4 +15,5 @@ public interface UserService {
     Response<SignUpOutput> signUp(SignUpInput signUpInput);
     Response<SelectProfileOutput> selectProfile(int id);
     PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput);
+    Response<Object> changeDeleteStatus();
 }
