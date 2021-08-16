@@ -3,13 +3,34 @@ import { request, requestGet } from "../../../api";
 import { Wrapper, Modal } from "./style";
 import StarRatings from "react-star-ratings";
 import { colors } from "../../../styles";
+import { useDispatch } from "react-redux";
+import { showToast } from "../../../actions/Notification";
+import { useHistory } from "react-router-dom";
+import { doRefresh } from "../../../actions/Deal";
 export default function DealComplete({ show, onCancleButtonClick, dealId }) {
   const [chatList, setChatList] = useState([]);
   const [selectedUser, setSelectedUser] = useState({});
   const [rating, setRating] = useState(3);
   const [showRatingPage, setShowRatingPage] = useState(false);
 
-  function complete() {}
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  async function complete() {
+    const response = await request("POST", "/user-deals", {
+      dealId: dealId,
+      userId: selectedUser.id,
+      score: rating,
+    });
+    if (response.isSuccess) {
+      dispatch(showToast("거래가 완료되었습니다."));
+      dispatch(doRefresh());
+      history.push("/");
+    } else {
+      console.log(response);
+      dispatch(showToast("실패함!"));
+    }
+  }
 
   function handleUserClick(i) {
     setSelectedUser(chatList[i]);
@@ -120,7 +141,7 @@ export default function DealComplete({ show, onCancleButtonClick, dealId }) {
             취소
           </button>
           {showRatingPage ? (
-            <button className="complete" onClick={() => {}}>
+            <button className="complete" onClick={complete}>
               등록
             </button>
           ) : (
