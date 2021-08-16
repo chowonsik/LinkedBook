@@ -40,7 +40,8 @@ public class ValidationCheck {
     }
 
     public static boolean isValidDate(String date) {
-        if (!isValid(date)) return false;
+        if (!isValid(date))
+            return false;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             dateFormat.setLenient(false);
@@ -52,7 +53,8 @@ public class ValidationCheck {
     }
 
     public static boolean isValidTime(String time) {
-        if (!isValid(time)) return false;
+        if (!isValid(time))
+            return false;
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("HHmmss");
             dateFormat.setLenient(false);
@@ -74,6 +76,8 @@ public class ValidationCheck {
     public static boolean isEmpty(List<?> list) {
         return (list == null) || list.isEmpty();
     }
+
+   
 
     public static boolean isValidPrice(int price) {
         return (price > 0);

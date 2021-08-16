@@ -3,10 +3,7 @@ package com.linkedbook.serviceImpl;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.*;
 import com.linkedbook.dto.comment.*;
-import com.linkedbook.dto.common.CommonCategoryOutput;
-import com.linkedbook.dto.common.CommonCommentOutput;
-import com.linkedbook.dto.common.CommonLikeOutput;
-import com.linkedbook.dto.common.CommonUserOutput;
+import com.linkedbook.dto.common.*;
 import com.linkedbook.entity.*;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
@@ -225,8 +222,8 @@ public class CommentServiceImpl implements CommentService {
             // 최종 출력값 정리
             responseList = commentDBList.map(commentDB -> {
                 LikeCommentDB likeCommentDB = likeCommentRepository.findByUserAndComment(loginUserDB, commentDB);
-                UserDB commentUserDB = commentDB.getUser();
-                BookDB commentBookDB = commentDB.getBook();
+                UserDB targetUserDB = commentDB.getUser();
+                BookDB targetBookDB = commentDB.getBook();
 
                 return CommentSearchOutput.builder()
                         .comment(CommonCommentOutput.builder()
@@ -249,17 +246,17 @@ public class CommentServiceImpl implements CommentService {
                                 .id(likeCommentDB == null ? 0 : likeCommentDB.getId())
                                 .build())
                         .user(CommonUserOutput.builder()
-                                .id(commentUserDB.getId())
-                                .email(commentUserDB.getEmail())
-                                .nickname(commentUserDB.getNickname())
-                                .image(commentUserDB.getImage())
-                                .created_at(commentUserDB.getCreated_at())
-                                .updated_at(commentUserDB.getUpdated_at())
+                                .id(targetUserDB.getId())
+                                .email(targetUserDB.getEmail())
+                                .nickname(targetUserDB.getNickname())
+                                .image(targetUserDB.getImage())
+                                .created_at(targetUserDB.getCreated_at())
+                                .updated_at(targetUserDB.getUpdated_at())
                                 .build())
-                        .book(CommentBookOutput.builder()
-                                .id(commentBookDB.getId())
-                                .title(commentBookDB.getTitle())
-                                .image(commentBookDB.getImage())
+                        .book(CommonProfileBookOutput.builder()
+                                .id(targetBookDB.getId())
+                                .title(targetBookDB.getTitle())
+                                .image(targetBookDB.getImage())
                                 .build())
                         .build();
             });

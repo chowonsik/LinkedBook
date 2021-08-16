@@ -29,7 +29,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   }, []);
 
   // 팔로잉 버튼을 클릭했을 때 실행되는 함수
-  function handleClick(followId) {
+  function handleClick(e) {
     if (active) {
       return;
     }
@@ -37,7 +37,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
     setActive(true);
 
     // 팔로잉하는 유저의 id를 string 형태로 저장한다.
-    setFollowingUserId(parseInt(followId));
+    setFollowingUserId(parseInt(e.target.id));
   }
 
   // 알림창에서 취소 또는 확인 버튼을 클릭했을 때 실행되는 함수
