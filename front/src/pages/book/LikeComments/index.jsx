@@ -1,40 +1,37 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
 import Header from "../../../components/Layout/Header";
 import FollowItem from "../../../components/Follow/FollowItem";
-import { getLikeBooks } from "../../../actions/Books";
+import { getLikeComments } from "../../../actions/Report";
 import { createFollow, deleteFollowing } from "../../../actions/Follow";
 import { Wrapper, Container } from "./styles";
-import { getLikeComments } from "../../../actions/Report";
-function LikeBooks() {
-  const dispatch = useDispatch();
+function LikeComments() {
   const history = useHistory();
-  const likeBooks = useSelector((state) => state.bookReducer.likeBooks);
-  const currentPage = useSelector((state) => state.bookReducer.likeCurrentPage);
-  const totalPages = useSelector((state) => state.bookReducer.likeTotalPages);
+  const dispatch = useDispatch();
+  const [commentId, setCommentId] = useState("");
+  const [height, setHeight] = useState(0);
+  const likeComments = useSelector((state) => state.reportReducer.likeComments);
+  const currentPage = useSelector((state) => state.reportReducer.currentPage);
+  const totalPages = useSelector((state) => state.reportReducer.totalPages);
   const totalElements = useSelector(
-    (state) => state.bookReducer.likeTotalElements
+    (state) => state.reportReducer.totalElements
   );
   const loginUser = JSON.parse(localStorage.getItem("loginUser"));
-  const [bookId, setBookId] = useState(0);
-  const [height, setHeight] = useState(0);
-
   useEffect(() => {
     handleSetHeight();
     const historyList = history.location.pathname.split("/");
-    setBookId(historyList[historyList.length - 1]);
+    setCommentId(historyList[historyList.length - 2]);
     const params = {
-      bookId: historyList[historyList.length - 1],
+      id: historyList[historyList.length - 2],
       page: 0,
-      size: 15,
+      size: 3,
     };
-    dispatch(getLikeBooks(params));
+    dispatch(getLikeComments(params));
   }, []);
 
   function handleClick(e) {
     const type = e.target.innerText;
-    console.log(e.target.id);
     if (type === "팔로우") {
       const data = {
         toUserId: parseInt(e.target.id),
@@ -45,9 +42,9 @@ function LikeBooks() {
       dispatch(deleteFollowing(e.target.id));
     }
     const params = {
-      bookId,
+      id: commentId,
       page: 0,
-      size: likeBooks.length,
+      size: likeComments.length,
     };
     dispatch(getLikeComments(params));
   }
@@ -57,13 +54,13 @@ function LikeBooks() {
       parseInt(e.target.scrollTop) + parseInt(e.target.clientHeight) ===
       parseInt(e.target.scrollHeight)
     ) {
-      if (currentPage < totalPages && likeBooks.length < totalElements) {
+      if (currentPage < totalPages && likeComments.length < totalElements) {
         const params = {
-          bookId,
+          id: commentId,
           page: currentPage + 1,
-          size: 15,
+          size: 3,
         };
-        dispatch(getLikeBooks(params));
+        dispatch(getLikeComments(params));
       }
     }
   }
@@ -76,18 +73,17 @@ function LikeBooks() {
     <Wrapper>
       <Header isBack={true} title={"좋아요"} isAlarm={true} />
       <Container onScroll={handleScroll} height={height}>
-        {LikeBooks &&
-          [...new Set(likeBooks)].map((book, idx) => (
+        {likeComments &&
+          [...new Set(likeComments)].map((comment, id) => (
             <FollowItem
-              loginUserId={loginUser.id}
-              profileImage={book.user.image}
-              nickName={book.user.nickname}
+              profileImage={comment.user.image}
+              nickName={comment.user.nickname}
               isFollow={false}
-              isF4F={book.follow.f4f}
-              userId={book.user.id}
-              followId={book.follow.id}
+              isF4F={comment.follow.f4f}
               onClick={handleClick}
-              key={idx}
+              followId={comment.follow.id}
+              userId={comment.user.id}
+              loginUserId={loginUser.id}
             />
           ))}
       </Container>
@@ -95,4 +91,4 @@ function LikeBooks() {
   );
 }
 
-export default LikeBooks;
+export default LikeComments;

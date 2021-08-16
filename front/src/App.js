@@ -20,6 +20,7 @@ import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
 import LikeBooks from "./pages/book/LikeBooks";
+import LikeComments from "./pages/book/LikeComments";
 function App() {
   return (
     <div className="App">
@@ -46,6 +47,11 @@ function App() {
         <Route path="/chat" exact={true} component={ChatRoomList} />
         <Route path="/chat/room/:id" exact={true} component={ChatRoom} />
         <Route path="/book/likes/:isbn" exact={true} component={LikeBooks} />
+        <Route
+          path="/comment/:id/likes"
+          exact={true}
+          component={LikeComments}
+        />
       </Router>
       <ToastMessage />
     </div>
