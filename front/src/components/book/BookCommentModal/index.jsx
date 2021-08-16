@@ -1,4 +1,4 @@
-import { Wrapper } from "./styles";
+import { StyledTextarea, Wrapper } from "./styles";
 import { StarFill, Star } from "react-bootstrap-icons";
 
 const BookCommentModal = ({
@@ -46,7 +46,7 @@ const BookCommentModal = ({
         <div className="modal-overlay" onClick={handleModalOutsideClick}>
           <div className="modal-window">
             <header>
-              <h5>한줄평 작성</h5>
+              <h5 className="title">한줄평 작성</h5>
             </header>
             <ul className="category-list">
               {category.map((el, idx) => (
@@ -72,20 +72,29 @@ const BookCommentModal = ({
                 );
               })}
             </div>
-            <input
+
+            <StyledTextarea
               onChange={(e) => {
                 setNewComment({ ...newComment, content: e.target.value });
               }}
               value={newComment.content || ""}
+              placeholder="책에 대한 느낀점을 자유롭게 적어주세요."
               type="text"
             />
+
             <footer>
+              <button className="cancel" onClick={modalToggle}>
+                취소
+              </button>
               {editing ? (
-                <button onClick={() => updateComment()}>수정</button>
+                <button className="complete" onClick={() => updateComment()}>
+                  수정
+                </button>
               ) : (
-                <button onClick={createComment}>등록</button>
+                <button className="complete" onClick={createComment}>
+                  등록
+                </button>
               )}
-              <button onClick={modalToggle}>취소</button>
             </footer>
           </div>
         </div>
