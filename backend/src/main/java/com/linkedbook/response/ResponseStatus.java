@@ -34,12 +34,17 @@ public enum ResponseStatus {
     SUCCESS_GET_LIKE_BOOK_LIST(200, 211, "관심 책 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_GET_COMMENT_LIST(200, 215, "한줄평 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_GET_LIKE_COMMENT_LIST(200, 215, "관심 한줄평 리스트를 가져오는데 성공하였습니다."),
+
+    SUCCESS_GET_ALERT_LIST(200, 220, "알림 메세지 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."), SUCCESS_SELECT_CHATLIST(200, 205, "채팅 조회에 성공하였습니다."),
     SUCCESS_SELECT_CHATROOM(200, 205, "채팅방 조회에 성공하였습니다."), SUCCESS_SENDMAIL(200, 210, "메일 발송에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."), CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
     CREATED_BOOK(201, 220, "책 등록에 성공하였습니다."), CREATED_FOLLOW(201, 202, "새로운 팔로우 관계 등록에 성공하였습니다."),
+    CREATED_ALERT(201, 222, "알림 메세지 등록에 성공하였습니다."),
+    
+    
     CREATED_LIKEDEAL(201, 211, "관심 거래 등록에 성공하였습니다."),
     CREATED_REPORT(201, 210, "신고 등록에 성공하였습니다."), CREATED_USERAREA(201, 211, "유저 거래 지역 등록에 성공하였습니다."),
     CREATED_COMMENT(201, 209, "한줄평 등록에 성공하였습니다."), CREATED_LIKE_COMMENT(201, 208, "관심 한줄평 등록에 성공하였습니다."),
@@ -52,6 +57,8 @@ public enum ResponseStatus {
     NO_CONTENT(204, 200, "요청에 성공하였습니다."), SUCCESS_UPDATE_DEAL(204, 202, "거래 수정에 성공하였습니다."),
     SUCCESS_DELETE_DEAL(204, 203, "거래 삭제에 성공하였습니다."), SUCCESS_DELETE_FOLLOW(204, 201, "팔로우 관계를 삭제하는데 성공하였습니다."),
     SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."), SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
+    SUCCESS_CHANGE_ALERT(204, 222, "알림 메세지를 읽음 상태로 변경하는데 성공하였습니다."),
+    SUCCESS_NEW_ALERT(204, 223, "새로운 알림 메세지가 있습니다."), SUCCESS_NO_NEW_ALERT(204, 224, "새로운 알림 메세지가 없습니다."),
     SUCCESS_DELETE_LIKE_COMMENT(204, 207, "관심 한줄평 삭제에 성공하였습니다."), SUCCESS_DELETE_LIKE_BOOK(204, 208, "관심 책 삭제에 성공하였습니다."),
 
     /*
@@ -80,6 +87,8 @@ public enum ResponseStatus {
     NOT_FOUND_FOLLOW(404, 406, "팔로우 정보가 존재하지 않습니다."), NOT_FOUND_BOOK(404, 410, "책 정보가 존재하지 않습니다."),
     NOT_FOUND_DEAL(404, 415, "거래 정보가 존재하지 않습니다."), NOT_FOUND_COMMENT(404, 420, "한줄평 정보가 존재하지 않습니다."),
     NOT_FOUND_CATEGORY(404, 425, "카테고리 정보가 존재하지 않습니다."),
+    NOT_FOUND_USER_DEAL(404, 430, "유저 거래 내역 정보가 존재하지 않습니다."),
+    NOT_FOUND_ALERT(404, 404, "알림 메세지가 존재하지 않습니다."),
 
     // 405 Method Not Allowed - 클라이언트의 요청이 허용되지 않는 메소드인 경우
     METHOD_NOT_ALLOWED(405, 400, "허용되지 않는 HTTP Method 입니다."),
