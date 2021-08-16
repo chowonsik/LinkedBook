@@ -34,6 +34,7 @@ import { showToast } from "../../../actions/Notification";
 import DeleteConfirm from "../../../components/deal/DeleteConfirm";
 import { createRoom } from "../../../actions/Chat";
 import BookPopularInfo from "../../../components/deal/BookPopularInfo";
+import DealComplete from "../../../components/deal/DealComplete";
 export default function DealDetail() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { dealId } = useParams();
@@ -45,9 +46,14 @@ export default function DealDetail() {
   const [contentHeight, setContentHeight] = useState(
     window.innerHeight - 55 - 70 - 150
   );
+  const [completePageShow, setCompletePageShow] = useState(false);
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  function handleDealCompleteButtonClick() {
+    setCompletePageShow(true);
+  }
 
   async function handleChatCreate() {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
@@ -104,6 +110,7 @@ export default function DealDetail() {
   }
   function handleCancleButtonClick() {
     setConfirmShow(false);
+    setCompletePageShow(false);
   }
 
   function handleModifyButtonClick() {
@@ -132,6 +139,11 @@ export default function DealDetail() {
         onCancleButtonClick={handleCancleButtonClick}
         onDeleteButtonClick={handleDeleteButtonClick}
       />
+      <DealComplete
+        show={completePageShow}
+        onCancleButtonClick={handleCancleButtonClick}
+        dealId={dealData.dealId}
+      ></DealComplete>
       <Header title="거래 정보" isBack />
       <Wrapper height={contentHeight}>
         <ImageWrapper>
@@ -236,7 +248,12 @@ export default function DealDetail() {
           </BookInfo>
           <DealState>
             {dealData.userId === getLoginUser().id ? (
-              <div className="complete-button">거래 완료</div>
+              <div
+                className="complete-button"
+                onClick={handleDealCompleteButtonClick}
+              >
+                거래 완료
+              </div>
             ) : (
               ""
             )}
