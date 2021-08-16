@@ -79,3 +79,18 @@ export const DoneButton = styled.button`
   font-size: ${fonts.xl};
   border: none;
 `;
+
+export const AlarmBox = styled.div`
+  position: relative;
+`;
+export const NewAlarmIcon = styled.div`
+  display: ${(props) => (props.newAlarm && props.isAlarm ? "block" : "none")};
+  position: fixed;
+  top: 1rem;
+  right: 0.5rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background-color: ${colors.red};
+`;
