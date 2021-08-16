@@ -18,7 +18,8 @@ export const Content = styled.div`
 `;
 
 export const ButtonGroup = styled.div`
-  width: 30%;
+  width: 120px;
+  max-width: 120px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;

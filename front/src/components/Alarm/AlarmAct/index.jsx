@@ -62,6 +62,7 @@ function AlarmAct({ height }) {
       }
     }
   }
+
   return (
     <Wrapper onScroll={handleScroll} height={height}>
       {alarmActList &&
