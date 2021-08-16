@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.linkedbook.model.Role.EMPLOYEE;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("UserService")
@@ -81,7 +80,7 @@ public class UserServiceImpl implements UserService {
         // 3. access token 생성
         String accessToken;
         try {
-            accessToken = jwtService.createAccessToken(EMPLOYEE, userDB.getId());
+            accessToken = jwtService.createAccessToken(userDB.getId());
             if (accessToken.isEmpty()) {
                 return new Response<>(FAILED_TO_CREATE_TOKEN);
             }
@@ -142,7 +141,7 @@ public class UserServiceImpl implements UserService {
         // 3. 토큰 생성
         String accessToken;
         try {
-            accessToken = jwtService.createAccessToken(EMPLOYEE, userDB.getId());
+            accessToken = jwtService.createAccessToken(userDB.getId());
             if (accessToken.isEmpty()) {
                 return new Response<>(FAILED_TO_CREATE_TOKEN);
             }
