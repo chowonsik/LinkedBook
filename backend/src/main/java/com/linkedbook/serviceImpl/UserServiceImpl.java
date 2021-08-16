@@ -3,6 +3,8 @@ package com.linkedbook.serviceImpl;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
+import com.linkedbook.dto.user.email.EmailInput;
+import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
@@ -22,7 +24,11 @@ import com.linkedbook.dto.user.signup.SignUpOutput;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +47,8 @@ public class UserServiceImpl implements UserService {
     private final AreaRepository areaRepository;
     private final DealRepository dealRepository;
     private final JwtService jwtService;
+
+    private final JavaMailSender mailSender;
 
     @Override
     public Response<SignInOutput> signIn(SignInInput signInInput) {
@@ -200,19 +208,29 @@ public class UserServiceImpl implements UserService {
                 userDBList = userRepository.findAreaStar(userId, selectAreaId, paging);
             }
             // 최종 출력값 정리
-            responseList = userDBList.map(
-                    userDB -> SelectUserOutput.builder()
-                            .userId(userDB.getId())
-                            .nickname(userDB.getNickname())
-                            .image(userDB.getImage())
-                            .dealCnt(dealRepository.countByUserAndStatusNot(userDB, "DELETED"))
-                            .build()
-            );
+            responseList = userDBList.map(userDB -> SelectUserOutput.builder().userId(userDB.getId())
+                    .nickname(userDB.getNickname()).image(userDB.getImage())
+                    .dealCnt(dealRepository.countByUserAndStatusNot(userDB, "DELETED")).build());
         } catch (Exception e) {
             log.error("[users/get] database error", e);
             return new PageResponse<>(DATABASE_ERROR);
         }
         // 3. 결과 return
         return new PageResponse<>(responseList, SUCCESS_SELECT_USER);
+    }
+
+    @Override
+    public Response<EmailOutput> sendMail(EmailInput emailInput) {
+        String generatedString = RandomStringUtils.random(10, true, true);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(emailInput.getEmail());
+        message.setSubject("linkedbook 이메일 인증번호");
+        message.setText(generatedString);
+        EmailOutput emailOutput = EmailOutput.builder().auth(generatedString).build();
+
+        mailSender.send(message);
+
+        // 결과 return
+        return new Response<>(emailOutput, SUCCESS_SENDMAIL);
     }
 }

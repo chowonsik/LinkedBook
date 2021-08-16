@@ -22,7 +22,7 @@ public enum ResponseStatus {
     SUCCESS_SELECT_BOOK(200, 210, "책 정보 조회에 성공하였습니다."), SUCCESS_GET_COMMENT_LIST(200, 215, "한줄평 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_GET_LIKE_COMMENT_LIST(200, 215, "관심 한줄평 리스트를 가져오는데 성공하였습니다."),
     SUCCESS_SELECT_USER(200, 205, "유저 조회에 성공하였습니다."), SUCCESS_SELECT_CHATLIST(200, 205, "채팅 조회에 성공하였습니다."),
-    SUCCESS_SELECT_CHATROOM(200, 205, "채팅방 조회에 성공하였습니다."),
+    SUCCESS_SELECT_CHATROOM(200, 205, "채팅방 조회에 성공하였습니다."), SUCCESS_SENDMAIL(200, 210, "메일 발송에 성공하였습니다."),
 
     // 201 Created - 클라이언트의 요청을 서버가 정상적으로 처리했고 새로운 리소스가 생겼다.,
     CREATED(201, 200, "리소스 생성에 성공하였습니다."), CREATED_USER(201, 201, "회원가입에 성공하였습니다."),
