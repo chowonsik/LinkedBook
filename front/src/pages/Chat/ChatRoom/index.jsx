@@ -68,7 +68,7 @@ function ChatRoom() {
       roomId,
       message: value,
       userName: loginUser.email,
-      toUserId: stateToUser.id,
+      toUserId: toUserId ? toUserId : stateToUser.id,
       fromUserId: loginUser.id,
     };
     ws.send(
@@ -154,19 +154,21 @@ function ChatRoom() {
         token: token,
       },
       () => {
-        ws.send(
-          `/pub/chat/message`,
-          { token: token },
-          JSON.stringify({
-            type: "ENTER",
-            roomId,
-            message: content,
-            userName: loginUser.email,
-            toUserId: toUserId,
-            fromUserId: loginUser.id,
-            //userProfile: user_profile,
-          })
-        );
+        if (toUserId) {
+          ws.send(
+            `/pub/chat/message`,
+            { token: token },
+            JSON.stringify({
+              type: "ENTER",
+              roomId,
+              message: content,
+              userName: loginUser.email,
+              toUserId: toUserId ? toUserId : toUser.id,
+              fromUserId: loginUser.id,
+              //userProfile: user_profile,
+            })
+          );
+        }
         ws.subscribe(`/sub/chat/room/${roomId}`, (data) => {
           const newMsg = JSON.parse(data.body);
           if (newMsg.type === "TALK") {
