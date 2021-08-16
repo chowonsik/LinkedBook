@@ -15,6 +15,7 @@ export const StyledInput = styled.input.attrs((props) => ({
   onChange: props.onChange,
   id: props.id,
   autocapitalize: "off",
+  readOnly: props.readonly,
 }))`
   width: ${(props) => props.width || "100%"};
   height: ${(props) => props.height || "45px"};

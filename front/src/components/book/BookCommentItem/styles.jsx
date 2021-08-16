@@ -6,11 +6,11 @@ export const Wrapper = styled.div`
     display: flex;
     margin-bottom: 22px;
     .user-img {
-      width: 50px;
-      height: 50px;
+      margin: 5px 15px 0 5px;
+      width: 45px;
+      height: 45px;
       object-fit: cover;
       border-radius: 25px;
-      margin-right: 15px;
     }
     .content {
       font-size: ${fonts.md};

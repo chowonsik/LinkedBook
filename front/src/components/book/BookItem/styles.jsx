@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
     align-items: center;
     width: 100%;
     height: 90px;
-    margin: 40px 0;
+    margin: 0 0 40px;
     cursor: pointer;
     .book-image {
       width: auto;
@@ -25,7 +25,7 @@ export const Wrapper = styled.div`
       text-align: left;
       .book-info {
         .book-title {
-          font-size: ${fonts.lg};
+          font-size: ${fonts.md};
           font-weight: 600;
         }
         .author {

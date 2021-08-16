@@ -1,63 +1,87 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { KakaoBook } from "../../../api.js";
 import { useHistory } from "react-router-dom";
+import { Upc, Search } from "react-bootstrap-icons";
 import BookItem from "../../../components/book/BookItem";
-import { Wrapper } from "./styles";
+import { Wrapper, InputContainer, BookList } from "./styles";
 import { request } from "../../../api";
+import Footer from "../../../components/Layout/Footer";
+import Header from "../../../components/Layout/Header/index.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setQuery,
+  setBookList,
+  setScroll,
+  doNotRefresh,
+  doRefresh,
+} from "../../../actions/Books/index.js";
 
 const SearchBook = () => {
-  const TOKEN =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWR4IjoxOSwiaWF0IjoxNTk1NDAyMzU0LCJleHAiOjE2MjY5MzgzNTQsInN1YiI6InVzZXJJbmZvIn0.fzkgrs6wi4KPN2_TwFcvO2ab_dN2Ds46DEqQIvqBAD0";
-  const [query, setQuery] = useState("");
+  const booksData = useSelector((state) => state.bookReducer.bookList);
+  const queryData = useSelector((state) => state.bookReducer.query);
+  const scroll = useSelector((state) => state.bookReducer.scroll);
+  const needRefresh = useSelector((state) => state.bookReducer.needRefresh);
+
+  const [keyword, setKeyword] = useState("");
   const [books, setBooks] = useState([]);
+  const [listHeight, setListHeight] = useState(window.innerHeight - 260);
   let history = useHistory();
+  const dispatch = useDispatch();
+  const dealListRef = useRef(null);
 
   useEffect(() => {
-    if (query.length > 0) {
-      getBooksData(query, true);
-    }
-  }, [query]);
-  useEffect(() => {
-    window.addEventListener("scroll", infiniteScroll);
+    window.addEventListener("resize", getListHeight);
     return () => {
-      window.removeEventListener("scroll", infiniteScroll);
+      window.removeEventListener("resize", getListHeight);
     };
   });
+
+  useEffect(() => {
+    if (!needRefresh) {
+      dealListRef.current.scrollTo(0, scroll);
+      setBooks(booksData);
+      setKeyword(queryData);
+    }
+    dispatch(doRefresh());
+  }, []);
+
+  function getListHeight() {
+    setListHeight(window.innerHeight - 260);
+  }
+
   // text 검색어가 바뀔 때 호출되는 함수.
   const onTextUpdate = (e) => {
-    setQuery(e.target.value);
+    setKeyword(e.target.value);
+    getBooksData(e.target.value);
   };
 
-  // 카카오 서버로부터 책 데이터 받아 오는 함수
-  const getBooksData = async (query, reset) => {
+  const getBooksData = async (query = "", page = 1) => {
+    if (query.length === 0) return;
     const params = {
       query: query,
       sort: "accuracy",
-      page: parseInt(books.length / 10) + 1,
+      page: page,
       size: 10,
     };
     const { data } = await KakaoBook(params);
-    if (reset) {
+    if (page === 1) {
       setBooks(data.documents);
     } else {
-      setBooks(books.concat(data.documents));
+      const newBookList = books.concat(data.documents);
+      setBooks(newBookList);
     }
   };
 
-  const infiniteScroll = () => {
-    let scrollHeight = Math.max(
-      document.documentElement.scrollHeight,
-      document.body.scrollHeight
-    );
-    let scrollTop = Math.max(
-      document.documentElement.scrollTop,
-      document.body.scrollTop
-    );
-    let clientHeight = document.documentElement.clientHeight;
-    if (scrollTop + clientHeight === scrollHeight) {
-      getBooksData(query, false);
-    }
+  const infiniteScroll = (e) => {
+    const { scrollTop, clientHeight, scrollHeight } = e.target;
+    if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
+      return;
+    dispatch(setScroll(scrollTop));
+    if (books && books.length % 10 !== 0) return;
+    const page = parseInt(books.length / 10) + 1;
+    getBooksData(keyword, page);
   };
+
   const saveBookData = async ({
     isbn,
     title,
@@ -80,35 +104,59 @@ const SearchBook = () => {
       thumbnail,
       status,
     };
-
-    await request("post", `/books`, data, {
-      headers: {
-        "X-ACCESS-TOKEN": TOKEN,
-      },
-    });
+    await request("post", `/books`, data);
   };
 
-  const handleBookItemClick = (bookObj) => {
+  const handleBookItemClick = async (bookObj) => {
+    await dispatch(setBookList(books));
     saveBookData(bookObj);
+    dispatch(setQuery(keyword));
+    dispatch(doNotRefresh());
     history.push(`/books/${bookObj.isbn.split(" ")[1]}`);
   };
+
   return (
-    <Wrapper>
-      <input
-        type="search"
-        name="query"
-        value={query}
-        placeholder="책이름"
-        onChange={onTextUpdate}
-      />
-      <ul>
-        {books.map((book, index) => (
-          <li key={index} onClick={() => handleBookItemClick(book)}>
-            <BookItem bookObj={book} />
-          </li>
-        ))}
-      </ul>
-    </Wrapper>
+    <>
+      <Header isLogo isSearch isAlarm />
+      <Wrapper>
+        <InputContainer>
+          <div className="input-container">
+            <input
+              type="search"
+              name="keyword"
+              value={keyword || ""}
+              placeholder="책이름"
+              onChange={onTextUpdate}
+            />
+            <span className="search-icon">
+              <Search />
+            </span>
+          </div>
+          <span className="barcode-icon">
+            <Upc />
+          </span>
+        </InputContainer>
+
+        <BookList
+          height={listHeight}
+          onScroll={infiniteScroll}
+          ref={dealListRef}
+        >
+          <ul className="book-list">
+            {books ? (
+              books.map((book, index) => (
+                <li key={index} onClick={() => handleBookItemClick(book)}>
+                  <BookItem bookObj={book} />
+                </li>
+              ))
+            ) : (
+              <span className="book-list-blank">검색어를 입력해주세요</span>
+            )}
+          </ul>
+        </BookList>
+      </Wrapper>
+      <Footer />
+    </>
   );
 };
 
