@@ -43,8 +43,12 @@ const BookCommentItem = ({
   return (
     <Wrapper>
       <img
-        src="https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/service/a85d0594017900001.jpg"
+        src={commentInfo.user.image}
         alt="user"
+        onError={(e) => {
+          e.target.src =
+            "https://www.voakorea.com/themes/custom/voa/images/Author__Placeholder.png";
+        }}
         className="user-img"
       />
       <div className="content">

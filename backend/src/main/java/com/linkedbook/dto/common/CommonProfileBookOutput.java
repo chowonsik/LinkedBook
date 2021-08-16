@@ -1,4 +1,4 @@
-package com.linkedbook.dto.comment;
+package com.linkedbook.dto.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class CommentBookOutput {
+public class CommonProfileBookOutput {
     private String id;
     private String title;
     private String image;
