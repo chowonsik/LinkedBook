@@ -235,15 +235,15 @@ const BookInfo = ({ match, history }) => {
     const tagData = findSelectedTag();
     if (!valid) return;
     const commentData = { isbn, ...newComment, categories: tagData };
+    modalToggle();
     await request("post", "/comments", commentData);
     const { result } = await requestGet("/comments", {
       bookId: isbn,
       page: 0,
-      size: bookComments.length,
+      size: 5,
     });
     setBookComments(result);
     getBookInfo();
-    modalToggle();
   };
 
   const onUpdateClick = async ({ comment }) => {
