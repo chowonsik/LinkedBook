@@ -1,5 +1,7 @@
 package com.linkedbook.service;
 
+import com.linkedbook.dto.user.email.EmailInput;
+import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
@@ -12,7 +14,12 @@ import com.linkedbook.dto.user.signup.SignUpOutput;
 
 public interface UserService {
     Response<SignInOutput> signIn(SignInInput signInInput);
+
     Response<SignUpOutput> signUp(SignUpInput signUpInput);
+
     Response<SelectProfileOutput> selectProfile(int id);
+
     PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput);
+
+    Response<EmailOutput> sendMail(EmailInput emailInput);
 }
