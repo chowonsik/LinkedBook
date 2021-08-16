@@ -13,6 +13,7 @@ import {
 } from "../../../validators.js";
 import Header from "../../../components/Layout/Header";
 import { request } from "../../../api.js";
+import RoundButton from '../../../components/common/Buttons/RoundButton';
 
 export default function SignUp() {
   const signUpValues = JSON.parse(localStorage.getItem("signUpValues"));
@@ -24,6 +25,9 @@ export default function SignUp() {
     signUpValues ? signUpValues.email : "",
     emailValidator
   );
+  const emailCheck = useInput(
+    signUpValues ? signUpValues.emailCheck : ""
+  );
   const password = useInput(
     signUpValues ? signUpValues.password : "",
     passwordValidator
@@ -32,6 +36,7 @@ export default function SignUp() {
     signUpValues ? signUpValues.passwordConfirm : "",
     passwordConfirmValidator
   );
+  const [auth, setAuth] = useState(signUpValues ? signUpValues.auth : "");
   const [area, setArea] = useState({});
 
   const history = useHistory();
@@ -46,6 +51,8 @@ export default function SignUp() {
   }
 
   async function handleSignUp() {
+    console.log(auth);
+    console.log(emailCheck.value);
     if (
       !nickname.isValid ||
       !email.isValid ||
@@ -54,6 +61,10 @@ export default function SignUp() {
       !area.areaId
     ) {
       dispatch(showToast("모든 항목을 입력하세요."));
+      return;
+    }
+    if (emailCheck.value !== auth) {
+      dispatch(showToast("이메일 인증이 필요합니다."));
       return;
     }
     const data = {
@@ -79,12 +90,37 @@ export default function SignUp() {
     }
   }
 
+  async function handleEmailAuth() {
+    if (
+      !email.isValid
+    ) {
+      dispatch(showToast("이메일을 입력하세요."));
+      return;
+    }
+    const data = {
+      email: email.value,
+    };
+    const response = await request("POST", "/users/email", data);
+    if (response.isSuccess) {
+      console.log(response.result.auth);
+      setAuth(response.result.auth);
+      dispatch(showToast("이메일로 인증번호를 발송했습니다."));
+    } else {
+      if (response.code === 400) {
+        dispatch(showToast("이메일 인증번호 발송에 실패했습니다."));
+      }
+      return;
+    }
+  }
+
   function saveData() {
     const signUpValues = {
       nickname: nickname.value,
       email: email.value,
+      emailCheck: emailCheck.value,
       password: password.value,
       passwordConfirm: passwordConfirm.value,
+      auth: auth,
     };
     localStorage.setItem("signUpValues", JSON.stringify(signUpValues));
   }
@@ -106,6 +142,15 @@ export default function SignUp() {
           onChange={email.onChange}
           isValid={email.isValid}
           errorMessage={email.errorMessage}
+        />
+        <RoundButton value="이메일 인증" onClick={ handleEmailAuth }/>
+        <Input
+          type="text"
+          placeholder="인증번호"
+          value={emailCheck.value}
+          onChange={emailCheck.onChange}
+          isValid={emailCheck.isValid}
+          errorMessage={emailCheck.errorMessage}
         />
         <Input
           type="text"
