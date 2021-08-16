@@ -48,6 +48,8 @@ public enum ResponseStatus {
     SUCCESS_DELETE_DEAL(204, 203, "거래 삭제에 성공하였습니다."), SUCCESS_DELETE_FOLLOW(204, 201, "팔로우 관계를 삭제하는데 성공하였습니다."),
     SUCCESS_CHANGE_COMMENT(204, 205, "한줄평 정보를 변경하는데 성공하였습니다."), SUCCESS_DELETE_COMMENT(204, 206, "한줄평 삭제에 성공하였습니다."),
     SUCCESS_DELETE_LIKE_COMMENT(204, 207, "관심 한줄평 삭제에 성공하였습니다."),
+    SUCCESS_CHANGE_ALERT(204, 222, "알림 메세지를 읽음 상태로 변경하는데 성공하였습니다."),
+    SUCCESS_NEW_ALERT(204, 223, "새로운 알림 메세지가 있습니다."), SUCCESS_NO_NEW_ALERT(204, 224, "새로운 알림 메세지가 없습니다."),
 
     /*
      * 4XX Client errors
@@ -81,6 +83,7 @@ public enum ResponseStatus {
     NOT_FOUND_COMMENT(404, 420, "한줄평 정보가 존재하지 않습니다."),
     NOT_FOUND_CATEGORY(404, 425, "카테고리 정보가 존재하지 않습니다."),
     NOT_FOUND_USER_DEAL(404, 430, "유저 거래 내역 정보가 존재하지 않습니다."),
+    NOT_FOUND_ALERT(404, 404, "알림 메세지가 존재하지 않습니다."),
 
     // 405 Method Not Allowed - 클라이언트의 요청이 허용되지 않는 메소드인 경우
     METHOD_NOT_ALLOWED(405, 400, "허용되지 않는 HTTP Method 입니다."),
