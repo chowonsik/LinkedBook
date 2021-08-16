@@ -5,7 +5,8 @@ export const SET_BOOKLIST = "SET_BOOKLIST";
 export const DO_NOT_REFRESH = "DO_NOT_REFRESH";
 export const DO_REFRESH = "DO_REFRESH";
 export const SET_SCROLL = "SET_SCROLL";
-
+export const SET_LIKE_BOOKS = "SET_LIKE_BOOKS";
+export const SET_LIKE_PAGE = "SET_LIKE_PAGE";
 // export const getBooksData = (query = "", page = 1) => {
 //   if (query.length === 0) return;
 //   return (getState, dispatch) => {
@@ -55,5 +56,35 @@ export const setScroll = (scroll) => {
   return {
     type: SET_SCROLL,
     scroll: scroll,
+  };
+};
+
+export const getLikeBooks = (params) => {
+  return (dispatch) => {
+    const response = requestGet("/like-books", params);
+    response.then((res) => {
+      const currentPage = res.page.currentPage;
+      const totalPages = res.page.totalPages;
+      const totalElements = res.page.totalElements;
+      dispatch(setLikePage(currentPage, totalPages, totalElements));
+      dispatch(setLikeBooks(res.result, currentPage));
+    });
+  };
+};
+
+export const setLikeBooks = (books, currentPage) => {
+  return {
+    type: SET_LIKE_BOOKS,
+    books,
+    currentPage,
+  };
+};
+
+export const setLikePage = (currentPage, totalPages, totalElements) => {
+  return {
+    type: SET_LIKE_PAGE,
+    currentPage,
+    totalPages,
+    totalElements,
   };
 };
