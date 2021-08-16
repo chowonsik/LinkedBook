@@ -11,6 +11,7 @@ import { reportReducer } from "../reducers/Report";
 import { searchReducer } from "../reducers/Search";
 import { notificationReducer } from "../reducers/Notification";
 import { alarmReducer } from "../reducers/Alarm";
+import { chatReducer } from "../reducers/Chat";
 const rootReducer = combineReducers({
   bookReducer,
   userReducer,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   searchReducer,
   notificationReducer,
   alarmReducer,
+  chatReducer,
 });
 
 const persistConfig = {

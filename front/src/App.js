@@ -18,6 +18,8 @@ import DealCreate from "./pages/deal/CreateDeal";
 import Report from "./pages/Report";
 import SearchUser from "./pages/SearchUser";
 import ToastMessage from "./components/common/ToastMessage";
+import ChatRoom from "./pages/Chat/ChatRoom";
+import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
 import { checkNewAlarm } from "./actions/Alarm";
 function App() {
@@ -48,6 +50,8 @@ function App() {
         <Route path="/alarm" exact={true} component={Alarm} />
         <Route path="/redbell/:dealId" exact={true} component={Report} />
         <Route path="/search/user" exact={true} component={SearchUser} />
+        <Route path="/chat" exact={true} component={ChatRoomList} />
+        <Route path="/chat/room/:id" exact={true} component={ChatRoom} />
       </Router>
       <ToastMessage />
     </div>
