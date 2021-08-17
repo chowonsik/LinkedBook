@@ -17,8 +17,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomDB, Integer> {
             + " from chat_room cr" + " left outer join chat_message cm on cr.id = cm.room_id group by cr.id) c"
             + " join deal d on c.deal_id = d.id" + " join book b on d.book_id = b.id"
             + " join chat_message cm on c.m_id = cm.id" + " join user u1 on c.to_user_id = u1.id"
-            + " join user u2 on c.from_user_id = u2.id"
-            + " where c.to_user_id = ?1 or c.from_user_id = ?1", nativeQuery = true)
+            + " join user u2 on c.from_user_id = u2.id" + " where c.to_user_id = ?1 or c.from_user_id = ?1"
+            + " order by c.created_at desc", nativeQuery = true)
     List<SelectChatRoomOutput> findByUserId(int userId);
 
     @Query("select cr from ChatRoomDB cr where cr.room_id =?1")
