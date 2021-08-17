@@ -5,6 +5,7 @@ import { persistReducer } from "redux-persist";
 
 import { bookReducer } from "../reducers/Books";
 import { userReducer } from "../reducers/Users";
+import { userProfileReducer } from "../reducers/Profile";
 import { followReducer } from "../reducers/Follow";
 import { dealReducer } from "../reducers/Deal";
 import { reportReducer } from "../reducers/Report";
@@ -12,9 +13,13 @@ import { searchReducer } from "../reducers/Search";
 import { notificationReducer } from "../reducers/Notification";
 import { alarmReducer } from "../reducers/Alarm";
 import { chatReducer } from "../reducers/Chat";
+import { myHistoryReducer } from "../reducers/MyHistory";
+import { commentReducer } from "../reducers/Comments";
+
 const rootReducer = combineReducers({
   bookReducer,
   userReducer,
+  userProfileReducer,
   followReducer,
   dealReducer,
   reportReducer,
@@ -22,6 +27,8 @@ const rootReducer = combineReducers({
   notificationReducer,
   alarmReducer,
   chatReducer,
+  myHistoryReducer,
+  commentReducer,
 });
 
 const persistConfig = {

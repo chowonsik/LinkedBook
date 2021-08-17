@@ -21,10 +21,12 @@ import com.linkedbook.dao.AreaRepository;
 import com.linkedbook.dao.UserAreaRepository;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
+import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.*;
 import org.springframework.mail.SimpleMailMessage;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("UserService")
@@ -93,7 +96,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public Response<SignUpOutput> signUp(SignUpInput signUpInput) {
         // 1. 값 형식 체크
         if (signUpInput == null)
@@ -132,6 +134,7 @@ public class UserServiceImpl implements UserService {
 
             userAreaDB = UserAreaDB.builder().user(userDB).area(areaDB).orders(1).build();
             userAreaRepository.save(userAreaDB);
+
         } catch (Exception e) {
             log.error("[users/signup/post] database error", e);
             return new Response<>(DATABASE_ERROR);
@@ -166,6 +169,45 @@ public class UserServiceImpl implements UserService {
         }
 
         return new Response<>(selectProfileOutput, SUCCESS_SELECT_PROFILE);
+    }
+
+    @Override
+    @Transactional
+    public Response<Object> updateProfile(UpdateProfileInput updateProfileInput) {
+        UserDB userDB;
+        try {
+            // 유저 id 가져오기
+            int myId = jwtService.getUserId();
+            UserDB selectUser = userRepository.findByIdAndStatus(myId, "ACTIVATE");
+            userDB = selectUser;
+
+            // 입력 값 벨리데이션
+            if (StringUtils.isNotBlank(updateProfileInput.getPassword()))
+                userDB.setPassword(updateProfileInput.getPassword());
+            if (StringUtils.isNotBlank(updateProfileInput.getNickname()))
+                userDB.setNickname(updateProfileInput.getNickname());
+            if (StringUtils.isNotBlank(updateProfileInput.getInfo()))
+                userDB.setInfo(updateProfileInput.getInfo());
+            if (StringUtils.isNotBlank(updateProfileInput.getImage()))
+                userDB.setImage(updateProfileInput.getImage());
+            if (ValidationCheck.isValidId(updateProfileInput.getAreaId())) {
+                UserAreaDB userAreaDB;
+                Optional<UserAreaDB> getUserAreaDB = userAreaRepository.findByUserIdAndOrders(myId, 1);
+                AreaDB areaDB = areaRepository.findById(updateProfileInput.getAreaId()).orElse(null);
+                // 해당 지역 번호가 없을 때
+                if (areaDB == null || !getUserAreaDB.isPresent()) {
+                    return new Response<>(BAD_AREA_VALUE);
+                }
+                userAreaDB = getUserAreaDB.get();
+                userAreaDB.setArea(areaDB);
+                userAreaRepository.save(userAreaDB);
+            }
+            userRepository.save(userDB);
+        } catch (Exception e) {
+            return new Response<>(DATABASE_ERROR);
+        }
+
+        return new Response<>(null, SUCCESS_UPDATE_PROFILE);
     }
 
     @Override
