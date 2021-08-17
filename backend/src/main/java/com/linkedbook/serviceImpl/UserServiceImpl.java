@@ -26,6 +26,7 @@ import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.*;
 import org.springframework.mail.SimpleMailMessage;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("UserService")
