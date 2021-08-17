@@ -41,7 +41,7 @@ public class KakaoOauth implements SocialOauth {
     private final String KAKAO_OAUTH_BASE_URL = "https://kauth.kakao.com/oauth/authorize";
     private final String KAKAO_OAUTH_TOKEN_BASE_URL = "https://kauth.kakao.com/oauth/token";
     private final String KAKAO_OAUTH_RESOURCE_BASE_URL = "https://kapi.kakao.com/v2/user/me";
-    private final String KAKAO_OAUTH_CALLBACK_URL = "http://localhost:8080/api/auth/kakao/callback";
+    private final String KAKAO_OAUTH_CALLBACK_URL = "http://localhost:3000/auth/kakao/callback";
 
     @Value("${custom.oauth2.kakao.client.id}")
     private String KAKAO_OAUTH_CLIENT_ID;
@@ -75,15 +75,15 @@ public class KakaoOauth implements SocialOauth {
             return new Response<>(UNAUTHORIZED_TOKEN);
         }
         String kakaoId = userInfo.get("id").asText();
-        String name = userInfo.get("kakao_account").get("profile").get("nickname").toString();
-        name = name.substring(1, name.length() - 1);
-        String picture = null;
+        String nickname = userInfo.get("kakao_account").get("profile").get("nickname").toString();
+        nickname = nickname.substring(1, nickname.length() - 1);
+        String image = null;
         if (userInfo.get("kakao_account").get("profile").has("profile_image_url")) {
-            picture = userInfo.get("kakao_account").get("profile").get("profile_image_url").toString();
-            picture = picture.substring(1, picture.length() - 1);
-            String temp = picture.substring(0, 4);
-            String temp2 = picture.substring(4, picture.length());
-            picture = temp + "s" + temp2; // https 작업
+            image = userInfo.get("kakao_account").get("profile").get("profile_image_url").toString();
+            image = image.substring(1, image.length() - 1);
+            String temp = image.substring(0, 4);
+            String temp2 = image.substring(4, image.length());
+            image = temp + "s" + temp2; // https 작업
         }
         String email = null;
         if (userInfo.get("kakao_account").has("email")) {
@@ -99,10 +99,11 @@ public class KakaoOauth implements SocialOauth {
                         SignInOutput.builder()
                                 .oauth(
                                         OauthOutput.builder()
+                                                .type("KAKAO")
                                                 .id(kakaoId)
                                                 .email(email)
-                                                .nickname(name)
-                                                .image(picture)
+                                                .nickname(nickname)
+                                                .image(image)
                                                 .build()).build();
                 return new Response<>(oauthOutput, NEED_SIGNUP);
             }
@@ -131,7 +132,14 @@ public class KakaoOauth implements SocialOauth {
         SignInOutput signInOutput = SignInOutput.builder().
                 userId(userDB.getId())
                 .accessToken(accessToken)
-                .build();
+                .oauth(
+                        OauthOutput.builder()
+                                .type("KAKAO")
+                                .id(kakaoId)
+                                .email(email)
+                                .nickname(nickname)
+                                .image(image)
+                                .build()).build();
         return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 

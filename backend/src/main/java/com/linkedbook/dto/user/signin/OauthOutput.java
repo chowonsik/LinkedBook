@@ -7,6 +7,7 @@ import lombok.*;
 @Builder
 @Getter
 public class OauthOutput {
+    private String type;
     private String id;
     private String email;
     private String nickname;

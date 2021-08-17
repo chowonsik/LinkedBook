@@ -40,7 +40,7 @@ public class GoogleOauth implements SocialOauth {
     private final String GOOGLE_OAUTH_BASE_URL = "https://accounts.google.com/o/oauth2/v2/auth";
     private final String GOOGLE_OAUTH_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
     private final String GOOGLE_OAUTH_RESOURCE_BASE_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
-    private final String GOOGLE_OAUTH_CALLBACK_URL = "http://localhost:8080/api/auth/google/callback";
+    private final String GOOGLE_OAUTH_CALLBACK_URL = "http://localhost:3000/auth/google/callback";
 
     @Value("${custom.oauth2.google.client.id}")
     private String GOOGLE_OAUTH_CLIENT_ID;
@@ -65,13 +65,13 @@ public class GoogleOauth implements SocialOauth {
     public Response<SignInOutput> requestLogin(String code) {
         // 1. code 로 Access token 정보 요청
         String googleAccessToken = this.requestAccessToken(code);
-        if(googleAccessToken == null) {
+        if (googleAccessToken == null) {
             log.error("[auth/google/callback/get] UNAUTHORIZED ACCESS TOKEN error");
             return new Response<>(UNAUTHORIZED_TOKEN);
         }
         // 2. Access Token 으로 사용자 정보 반환
         JsonNode userInfo = this.requestUserInfo(googleAccessToken);
-        if(userInfo == null) {
+        if (userInfo == null) {
             log.error("[auth/google/callback/get] UNAUTHORIZED ACCESS TOKEN error");
             return new Response<>(UNAUTHORIZED_TOKEN);
         }
@@ -86,13 +86,14 @@ public class GoogleOauth implements SocialOauth {
             if (userDBs.size() == 0) { // 최초 로그인
                 SignInOutput oauthOutput =
                         SignInOutput.builder()
-                        .oauth(
-                                OauthOutput.builder()
-                                .id(googleId)
-                                .email(email)
-                                .nickname(nickname)
-                                .image(image)
-                                .build()).build();
+                                .oauth(
+                                        OauthOutput.builder()
+                                                .type("GOOGLE")
+                                                .id(googleId)
+                                                .email(email)
+                                                .nickname(nickname)
+                                                .image(image)
+                                                .build()).build();
                 return new Response<>(oauthOutput, NEED_SIGNUP);
             }
             if (!StringUtils.isNotEmpty(userDBs.get(0).getOauthId())) { // 기존에 이메일로 가입했을 경우
@@ -120,7 +121,14 @@ public class GoogleOauth implements SocialOauth {
         SignInOutput signInOutput = SignInOutput.builder().
                 userId(userDB.getId())
                 .accessToken(accessToken)
-                .build();
+                .oauth(
+                        OauthOutput.builder()
+                                .type("GOOGLE")
+                                .id(googleId)
+                                .email(email)
+                                .nickname(nickname)
+                                .image(image)
+                                .build()).build();
         return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 
@@ -162,7 +170,7 @@ public class GoogleOauth implements SocialOauth {
         try {
             final HttpResponse response = client.execute(get);
             final int responseCode = response.getStatusLine().getStatusCode();
-            if(responseCode == 200) {
+            if (responseCode == 200) {
                 ObjectMapper mapper = new ObjectMapper();
                 returnNode = mapper.readTree(response.getEntity().getContent());
             }

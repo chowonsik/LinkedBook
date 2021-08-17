@@ -39,9 +39,12 @@ export default function SignUp() {
   const [auth, setAuth] = useState(signUpValues ? signUpValues.auth : "");
   const [area, setArea] = useState({});
 
+  const [oauthUserData, setOAuthUserData] = useState(signUpValues ? signUpValues.oauthUserData : null);
+  
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
+
   function passwordConfirmValidator(value) {
     if (password.value !== value) {
       return { isValid: false, errorMessage: "비밀번호가 일치하지 않습니다." };
@@ -63,7 +66,7 @@ export default function SignUp() {
       dispatch(showToast("모든 항목을 입력하세요."));
       return;
     }
-    if (emailCheck.value !== auth) {
+    if (!oauthUserData && emailCheck.value !== auth) {
       dispatch(showToast("이메일 인증이 필요합니다."));
       return;
     }
@@ -74,6 +77,7 @@ export default function SignUp() {
       info: "",
       image: "",
       areaId: area.areaId,
+      ...oauthUserData,
     };
     const response = await request("POST", "/users/signup", data);
     if (response.isSuccess) {
@@ -121,9 +125,24 @@ export default function SignUp() {
       password: password.value,
       passwordConfirm: passwordConfirm.value,
       auth: auth,
+      oauthUserData: oauthUserData,
     };
     localStorage.setItem("signUpValues", JSON.stringify(signUpValues));
   }
+
+  useEffect(() => {
+    if (location.state && location.state.oauthUser) {
+      const { nickname:_nickname, email:_email, ..._oauthUserData } = location.state.oauthUser;
+
+      nickname.setValue(_nickname);
+      email.setValue(_email);
+      setOAuthUserData({
+        oauth: _oauthUserData.type,
+        oauthId: _oauthUserData.id,
+        image: _oauthUserData.image,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (location.state && location.state.area) {
@@ -135,6 +154,7 @@ export default function SignUp() {
     <>
       <Header title="회원가입" isBack />
       <Wrapper>
+
         <Input
           type="text"
           placeholder="이메일"
@@ -142,16 +162,23 @@ export default function SignUp() {
           onChange={email.onChange}
           isValid={email.isValid}
           errorMessage={email.errorMessage}
+          readonly={!!oauthUserData}
+          witdh="80%"
         />
-        <RoundButton value="이메일 인증" onClick={ handleEmailAuth }/>
-        <Input
-          type="text"
-          placeholder="인증번호"
-          value={emailCheck.value}
-          onChange={emailCheck.onChange}
-          isValid={emailCheck.isValid}
-          errorMessage={emailCheck.errorMessage}
-        />
+        {!oauthUserData &&
+          <>
+            <RoundButton value="이메일 인증" onClick={handleEmailAuth} />
+            <Input
+              type="text"
+              placeholder="인증번호"
+              value={emailCheck.value}
+              onChange={emailCheck.onChange}
+              isValid={emailCheck.isValid}
+              errorMessage={emailCheck.errorMessage}
+            />
+          </>
+        }
+
         <Input
           type="text"
           placeholder="닉네임"

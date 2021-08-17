@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { HashRouter as Router, Route } from "react-router-dom";
+// import { HashRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
 import Main from "./pages/Main";
@@ -24,6 +26,8 @@ import BookInfo from "./pages/book/BookInfo";
 import { checkNewAlarm } from "./actions/Alarm";
 import LikeBooks from "./pages/book/LikeBooks";
 import LikeComments from "./pages/book/LikeComments";
+import OauthLogin from "./pages/user/SignIn/OAuth";
+
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -60,6 +64,7 @@ function App() {
           exact={true}
           component={LikeComments}
         />
+        <Route path="/auth/:type/callback" exact={true} component={OauthLogin} />
       </Router>
       <ToastMessage />
     </div>
