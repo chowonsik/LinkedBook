@@ -1,7 +1,7 @@
 import { SET_USER_COMMENTS } from "../../actions/Comments";
 
 const INIT_STATE = {
-  comments: {},
+  comments: [],
 };
 
 export const commentReducer = (state = INIT_STATE, action) => {

@@ -11,6 +11,7 @@ export const getUserComments =
       size: 10,
     };
     const { result } = await requestGet(`/comments`, params);
+    console.log(result);
     if (page === 0) {
       dispatch(setUserComments(result));
     } else {

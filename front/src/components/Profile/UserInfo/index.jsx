@@ -37,7 +37,7 @@ const UserInfo = ({ userObj, isFollow, toggleFollowBtn }) => {
               <MannerScore score={userObj.mannerScore} />
             </div>
             {LOGIN_USER_ID !== userObj.userId ? (
-              <button onClick={toggleFollowBtn} className="follow-btn">
+              <button onClick={toggleFollowBtn} isFollow className="follow-btn">
                 {isFollow ? "팔로잉" : "팔로우"}
               </button>
             ) : (
