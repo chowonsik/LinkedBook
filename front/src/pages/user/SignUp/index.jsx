@@ -13,7 +13,7 @@ import {
 } from "../../../validators.js";
 import Header from "../../../components/Layout/Header";
 import { request } from "../../../api.js";
-import RoundButton from '../../../components/common/Buttons/RoundButton';
+import RoundButton from "../../../components/common/Buttons/RoundButton";
 
 export default function SignUp() {
   const signUpValues = JSON.parse(localStorage.getItem("signUpValues"));
@@ -25,9 +25,7 @@ export default function SignUp() {
     signUpValues ? signUpValues.email : "",
     emailValidator
   );
-  const emailCheck = useInput(
-    signUpValues ? signUpValues.emailCheck : ""
-  );
+  const emailCheck = useInput(signUpValues ? signUpValues.emailCheck : "");
   const password = useInput(
     signUpValues ? signUpValues.password : "",
     passwordValidator
@@ -39,9 +37,14 @@ export default function SignUp() {
   const [auth, setAuth] = useState(signUpValues ? signUpValues.auth : "");
   const [area, setArea] = useState({});
 
+  const [oauthUserData, setOAuthUserData] = useState(
+    signUpValues ? signUpValues.oauthUserData : null
+  );
+
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
+
   function passwordConfirmValidator(value) {
     if (password.value !== value) {
       return { isValid: false, errorMessage: "비밀번호가 일치하지 않습니다." };
@@ -51,8 +54,10 @@ export default function SignUp() {
   }
 
   async function handleSignUp() {
-    console.log(auth);
-    console.log(emailCheck.value);
+    if (password.value !== passwordConfirm.value) {
+      dispatch(showToast("비밀번호를 확인해주세요."));
+      return;
+    }
     if (
       !nickname.isValid ||
       !email.isValid ||
@@ -63,7 +68,7 @@ export default function SignUp() {
       dispatch(showToast("모든 항목을 입력하세요."));
       return;
     }
-    if (emailCheck.value !== auth) {
+    if (!oauthUserData && emailCheck.value !== auth) {
       dispatch(showToast("이메일 인증이 필요합니다."));
       return;
     }
@@ -74,11 +79,12 @@ export default function SignUp() {
       info: "",
       image: "",
       areaId: area.areaId,
+      ...oauthUserData,
     };
     const response = await request("POST", "/users/signup", data);
     if (response.isSuccess) {
       dispatch(showToast("회원가입이 완료되었습니다."));
-      history.push({ pathname: "/signin" });
+      history.replace({ pathname: "/signin" });
     } else {
       if (response.code === 404) {
         dispatch(showToast("이미 사용중인 이메일입니다."));
@@ -91,23 +97,20 @@ export default function SignUp() {
   }
 
   async function handleEmailAuth() {
-    if (
-      !email.isValid
-    ) {
+    if (!email.isValid) {
       dispatch(showToast("이메일을 입력하세요."));
       return;
     }
     const data = {
       email: email.value,
     };
+    dispatch(showToast("이메일로 인증번호를 발송했습니다."));
     const response = await request("POST", "/users/email", data);
     if (response.isSuccess) {
-      console.log(response.result.auth);
       setAuth(response.result.auth);
-      dispatch(showToast("이메일로 인증번호를 발송했습니다."));
     } else {
-      if (response.code === 400) {
-        dispatch(showToast("이메일 인증번호 발송에 실패했습니다."));
+      if (response.status === 400) {
+        dispatch(showToast(response.message));
       }
       return;
     }
@@ -121,9 +124,28 @@ export default function SignUp() {
       password: password.value,
       passwordConfirm: passwordConfirm.value,
       auth: auth,
+      oauthUserData: oauthUserData,
     };
     localStorage.setItem("signUpValues", JSON.stringify(signUpValues));
   }
+
+  useEffect(() => {
+    if (location.state && location.state.oauthUser) {
+      const {
+        nickname: _nickname,
+        email: _email,
+        ..._oauthUserData
+      } = location.state.oauthUser;
+
+      nickname.setValue(_nickname);
+      email.setValue(_email);
+      setOAuthUserData({
+        oauth: _oauthUserData.type,
+        oauthId: _oauthUserData.id,
+        image: _oauthUserData.image,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (location.state && location.state.area) {
@@ -135,23 +157,38 @@ export default function SignUp() {
     <>
       <Header title="회원가입" isBack />
       <Wrapper>
-        <Input
-          type="text"
-          placeholder="이메일"
-          value={email.value}
-          onChange={email.onChange}
-          isValid={email.isValid}
-          errorMessage={email.errorMessage}
-        />
-        <RoundButton value="이메일 인증" onClick={ handleEmailAuth }/>
-        <Input
-          type="text"
-          placeholder="인증번호"
-          value={emailCheck.value}
-          onChange={emailCheck.onChange}
-          isValid={emailCheck.isValid}
-          errorMessage={emailCheck.errorMessage}
-        />
+        <div className="email-container">
+          <Input
+            type="text"
+            placeholder="이메일"
+            value={email.value}
+            onChange={email.onChange}
+            isValid={email.isValid}
+            errorMessage={email.errorMessage}
+            readonly={!!oauthUserData}
+          />
+          {!oauthUserData && (
+            <RoundButton
+              value="이메일 인증"
+              onClick={handleEmailAuth}
+              width="125px"
+              fontSize="15px"
+            />
+          )}
+        </div>
+        {!oauthUserData && (
+          <>
+            <Input
+              type="text"
+              placeholder="인증번호"
+              value={emailCheck.value}
+              onChange={emailCheck.onChange}
+              isValid={emailCheck.isValid}
+              errorMessage={emailCheck.errorMessage}
+            />
+          </>
+        )}
+
         <Input
           type="text"
           placeholder="닉네임"

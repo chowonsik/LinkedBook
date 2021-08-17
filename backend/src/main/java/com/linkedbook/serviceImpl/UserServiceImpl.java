@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+
 import org.springframework.data.domain.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -91,7 +92,10 @@ public class UserServiceImpl implements UserService {
         }
 
         // 4. 결과 return
-        SignInOutput signInOutput = new SignInOutput(userDB.getId(), accessToken);
+        SignInOutput signInOutput = SignInOutput.builder()
+                .userId(userDB.getId())
+                .accessToken(accessToken)
+                .build();
         return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 
@@ -110,17 +114,17 @@ public class UserServiceImpl implements UserService {
         // 2. 유저 생성
         UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword())
                 .nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage())
-                .status("ACTIVATE").build();
+                .oauth(signUpInput.getOauth()).oauthId(signUpInput.getOauthId()).status("ACTIVATE").build();
         UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
             String nickname = signUpInput.getNickname();
-            List<UserDB> existUsers = userRepository.findByEmailAndStatus(email, "ACTIVATE");
-            List<UserDB> existNickname = userRepository.findByNicknameAndStatus(nickname, "ACTIVATE");
+            boolean existUsers = userRepository.existsByEmailAndStatus(email, "ACTIVATE");
+            boolean existNickname = userRepository.existsByNicknameAndStatus(nickname, "ACTIVATE");
 
-            if (existUsers.size() > 0) { // 이메일 중복 제어
+            if (existUsers) { // 이메일 중복 제어
                 return new Response<>(EXISTS_EMAIL);
-            } else if (existNickname.size() > 0) { // 닉네임 중복 제어
+            } else if (existNickname) { // 닉네임 중복 제어
                 return new Response<>(EXISTS_NICKNAME);
             } else {
                 userDB = userRepository.save(userDB);
@@ -261,16 +265,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response<EmailOutput> sendMail(EmailInput emailInput) {
-        String generatedString = RandomStringUtils.random(10, true, true);
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(emailInput.getEmail());
-        message.setSubject("linkedbook 이메일 인증번호");
-        message.setText(generatedString);
-        EmailOutput emailOutput = EmailOutput.builder().auth(generatedString).build();
-
-        mailSender.send(message);
-
-        // 결과 return
-        return new Response<>(emailOutput, SUCCESS_SENDMAIL);
+        // 1. 값 형식 체크
+        if (emailInput == null)  return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(emailInput.getEmail()))  return new Response<>(BAD_REQUEST);
+        // 2. 중복 메일인지 체크
+        try {
+            if(userRepository.existsByEmailAndStatus(emailInput.getEmail(), "ACTIVATE")) {
+                log.error("[users/email/post] DUPLICATE EMAIL error");
+                return new Response<>(EXISTS_EMAIL);
+            }
+        } catch (Exception e) {
+            log.error("[users/email/post] database error", e);
+            return new Response<>(DATABASE_ERROR);
+        }
+        // 3. 인증 메일 전송
+        EmailOutput emailOutput;
+        try {
+            String generatedString = RandomStringUtils.random(10, true, true);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(emailInput.getEmail());
+            message.setSubject("[LinkedBook] 회원가입 이메일 인증번호입니다.");
+            message.setText(generatedString);
+            emailOutput = EmailOutput.builder().auth(generatedString).build();
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("[users/email/post] send email error", e);
+            return new Response<>(FAILED_TO_SEND_EMAIL);
+        }
+        // 4. 결과 return
+        return new Response<>(emailOutput, SUCCESS_SEND_MAIL);
     }
 }
