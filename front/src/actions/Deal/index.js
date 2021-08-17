@@ -1,4 +1,5 @@
 import { request, requestGet } from "../../api.js";
+import { createAlarm } from "../Alarm/index.js";
 
 export const SET_SEARCH = "SET_SEARCH";
 export const SET_FILTER = "SET_FILTER";
@@ -48,7 +49,10 @@ export const addLikeDeal = (dealId) => async (dispatch, getState) => {
   );
   dispatch(setSelectDeals(getState().dealReducer.filter));
   const response = await request("POST", "/like-deals", { dealId: dealId });
-  console.log(response);
+  if (response.isSuccess) {
+    console.log("Success");
+    dispatch(createAlarm({ type: "LIKE_DEAL", dealId: dealId }));
+  }
 };
 export const deleteLikeDeal = (dealId) => async (dispatch, getState) => {
   const newNEW = getState().dealReducer.deals.NEW.map((deal) =>

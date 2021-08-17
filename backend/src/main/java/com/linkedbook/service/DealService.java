@@ -1,6 +1,7 @@
 package com.linkedbook.service;
 
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
+import com.linkedbook.dto.deal.createDeal.CreateDealOutput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
 import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
@@ -16,7 +17,7 @@ import java.util.List;
 public interface DealService {
     PageResponse<SelectDealOutput> selectDealList(SelectDealInput selectDealInput, Pageable pageable);
 
-    Response<Object> createDeal(CreateDealInput createDealInput);
+    Response<CreateDealOutput> createDeal(CreateDealInput createDealInput);
 
     Response<Object> updateDeal(UpdateDealInput updateDealInput, int dealId);
 
