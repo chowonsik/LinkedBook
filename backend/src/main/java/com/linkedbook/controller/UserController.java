@@ -3,7 +3,6 @@ package com.linkedbook.controller;
 import com.linkedbook.dto.user.email.EmailInput;
 import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.jwt.JwtOutput;
-import com.linkedbook.dto.user.signin.KakaoSignInInput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
@@ -108,18 +107,5 @@ public class UserController {
     public Response<EmailOutput> mailSend(@RequestBody EmailInput emailInput) {
         log.info("[POST] /users/email");
         return userService.sendMail(emailInput);
-    }
-
-    /**
-     * 카카오 로그인 API [POST] /users/signin/kakao
-     * 
-     * @return Response<SignInOutput>
-     */
-    // Body
-    @ResponseBody
-    @PostMapping("/signin/kakao")
-    public Response<SignInOutput> signInKakao(@RequestBody KakaoSignInInput kakaoSignInInput) {
-        log.info("[POST] /users/signin/kakao");
-        return userService.signInKakao(kakaoSignInInput);
     }
 }

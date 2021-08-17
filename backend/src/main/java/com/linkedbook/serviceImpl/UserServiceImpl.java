@@ -1,13 +1,10 @@
 package com.linkedbook.serviceImpl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.email.EmailInput;
 import com.linkedbook.dto.user.email.EmailOutput;
-import com.linkedbook.dto.user.signin.KakaoSignInInput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
@@ -30,18 +27,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.data.domain.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -245,84 +236,5 @@ public class UserServiceImpl implements UserService {
 
         // 결과 return
         return new Response<>(emailOutput, SUCCESS_SENDMAIL);
-    }
-
-    @Override
-    @Transactional
-    public Response<SignInOutput> signInKakao(KakaoSignInInput kakaoSignInInput) {
-        // 1. 카카오 서버에 요청
-        final HttpClient client = HttpClientBuilder.create().build();
-        final HttpPost post = new HttpPost(userRequestURL);
-
-        post.addHeader("Authorization", "Bearer " + kakaoSignInInput.getAccess_token());
-
-        JsonNode json = null;
-
-        HttpResponse response;
-        UserDB userDB;
-        try {
-            response = client.execute(post);
-            ObjectMapper mapper = new ObjectMapper();
-            if (response.getStatusLine().getStatusCode() == 200) {
-                json = mapper.readTree(response.getEntity().getContent());
-            } else {
-                return new Response<>(UNAUTHORIZED_TOKEN);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        long kakaoId = json.get("id").asLong();
-        String name = json.get("kakao_account").get("profile").get("nickname").toString();
-        name = name.substring(1, name.length() - 1);
-        String picture = null;
-        if (json.get("kakao_account").get("profile").has("profile_image_url")) {
-            picture = json.get("kakao_account").get("profile").get("profile_image_url").toString();
-            picture = picture.substring(1, picture.length() - 1);
-            String temp = picture.substring(0, 4);
-            String temp2 = picture.substring(4, picture.length());
-            picture = temp + "s" + temp2; // https 작업
-        }
-        String email = null;
-        if (json.get("kakao_account").has("email")) {
-            email = json.get("kakao_account").get("email").toString();
-            email = email.substring(1, email.length() - 1);
-        }
-
-        // 2. user 정보 가져오기
-        try {
-            List<UserDB> userDBs = userRepository.findByEmailAndStatus(email, "ACTIVATE");
-            if (userDBs.size() == 0) { // 이메일이 존재하지 않는 경우 추가정보 입력페이지로 이동 시키기
-                return new Response<>(NEED_SIGNUP);
-            }
-            if (!StringUtils.isNotEmpty(userDBs.get(0).getOauthId())) { // 기존에 이메일로 가입했을 경우
-                userDBs.get(0).setOauth("KAKAO");
-                userDBs.get(0).setOauthId(Long.toString(kakaoId));
-                userDB = userRepository.save(userDBs.get(0));
-            } else {
-                userDB = userDBs.get(0);
-            }
-        } catch (Exception e) {
-            log.error("[users/signin/post] database error", e);
-            return new Response<>(DATABASE_ERROR);
-        }
-
-        // 3. access token 생성
-        String accessToken;
-        try {
-            accessToken = jwtService.createAccessToken(userDB.getId());
-            if (accessToken.isEmpty()) {
-                return new Response<>(FAILED_TO_CREATE_TOKEN);
-            }
-        } catch (Exception e) {
-            return new Response<>(FAILED_TO_CREATE_TOKEN);
-        }
-
-        // 4. 결과 return
-        SignInOutput signInOutput = SignInOutput.builder()
-                .userId(userDB.getId())
-                .accessToken(accessToken)
-                .build();
-        return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 }

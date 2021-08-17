@@ -1,6 +1,5 @@
 package com.linkedbook.dao;
 
-import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.entity.UserDB;
 import org.springframework.data.domain.Page;
