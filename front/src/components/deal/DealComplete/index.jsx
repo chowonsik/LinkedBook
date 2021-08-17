@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { showToast } from "../../../actions/Notification";
 import { useHistory } from "react-router-dom";
 import { doRefresh } from "../../../actions/Deal";
+import { createAlarm } from "../../../actions/Alarm";
 export default function DealComplete({ show, onCancleButtonClick, dealId }) {
   const [chatList, setChatList] = useState([]);
   const [selectedUser, setSelectedUser] = useState({});
@@ -22,7 +23,10 @@ export default function DealComplete({ show, onCancleButtonClick, dealId }) {
       userId: selectedUser.id,
       score: rating,
     });
+    console.log(response);
     if (response.isSuccess) {
+      const userDealId = response.result.userDealId;
+      dispatch(createAlarm({ type: "EVAL", evalId: userDealId }));
       dispatch(showToast("거래가 완료되었습니다."));
       dispatch(doRefresh());
       history.push("/");
