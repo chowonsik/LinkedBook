@@ -1,5 +1,6 @@
 import { StarFill, BookmarkFill } from "react-bootstrap-icons";
 import { Wrapper } from "./styles";
+import { Link } from "react-router-dom";
 
 const BookDetail = ({ bookInfo }) => {
   return (
@@ -32,7 +33,9 @@ const BookDetail = ({ bookInfo }) => {
               <span className="bookmark-cnt">
                 {bookInfo.like && bookInfo.like.totalLikeCnt}
               </span>
-              <BookmarkFill className="icon" />
+              <Link to={{ pathname: `/book/likes/${bookInfo.id}` }}>
+                <BookmarkFill className="icon" />
+              </Link>
             </strong>
           </div>
         </div>
