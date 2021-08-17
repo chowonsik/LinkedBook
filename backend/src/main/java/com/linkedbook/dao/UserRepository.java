@@ -1,6 +1,5 @@
 package com.linkedbook.dao;
 
-import com.linkedbook.dto.user.selectUser.SelectUserOutput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.entity.UserDB;
 import org.springframework.data.domain.Page;
@@ -15,8 +14,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserDB, Integer> {
     List<UserDB> findByEmailAndStatus(String email, String status);
+    boolean existsByEmailAndStatus(String email, String status);
 
-    List<UserDB> findByNicknameAndStatus(String nickname, String status);
+    boolean existsByNicknameAndStatus(String nickname, String status);
 
     UserDB findByIdAndStatus(int toUserId, String status);
 

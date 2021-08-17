@@ -105,6 +105,7 @@ export default function CreateDeal() {
       author: updateDealData.bookAuthor,
       publisher: updateDealData.bookPublisher,
       price: parseInt(updateDealData.bookPrice),
+      datetime: updateDealData.bookDateTime,
     });
   }
   function setUpdateData() {
@@ -191,7 +192,6 @@ export default function CreateDeal() {
       if (bookInfo.isbn) {
         data.bookId = bookInfo.isbn.split(" ")[1];
       }
-      console.log(data);
       const result = await request(
         "PATCH",
         `/deals/${updateDealData.dealId}`,
@@ -214,7 +214,6 @@ export default function CreateDeal() {
         images: images,
       };
       const response = await request("POST", "/deals", data);
-      console.log(response);
       dispatch(showToast("판매 등록이 완료되었습니다."));
       dispatch(
         createAlarm({ type: "NEW_DEAL_FOLLOW", dealId: response.result.dealId })

@@ -82,9 +82,7 @@ export default function DealDetail() {
     const response = await requestGet(`/deals/${dealId}`);
     setDealData(response.result);
     const bookId = response.result.bookId;
-    console.log(response.result);
     const bookResponse = await requestGet(`/books/${bookId}`);
-    console.log(bookResponse.result);
     setBookInfo(bookResponse.result);
   }
 
@@ -101,7 +99,6 @@ export default function DealDetail() {
     const response = await request("PATCH", `/deals/${dealData.dealId}`, {
       status: "DELETED",
     });
-    console.log(response);
     if (response.isSuccess) {
       dispatch(showToast("게시글이 삭제되었습니다."));
       dispatch(doRefresh());
@@ -116,7 +113,10 @@ export default function DealDetail() {
   }
 
   function handleModifyButtonClick() {
-    history.push({ pathname: "/update/deal", state: { dealData: dealData } });
+    history.push({
+      pathname: "/update/deal",
+      state: { dealData: { ...dealData, bookDateTime: bookInfo.dateTime } },
+    });
   }
 
   function getContentHeight(height = window.innerHeight - 125 - 150) {
