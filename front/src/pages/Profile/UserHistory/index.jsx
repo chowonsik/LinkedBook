@@ -83,7 +83,9 @@ function UserHistory({ match }) {
               </Link>
             ))}
         </ImgList>
-        <button>유저의 한줄평 보러가기</button>
+        <Link to={{ pathname: `/profile/${userId}/history/comments` }}>
+          <button className="user-comments">유저의 한줄평 보러가기</button>
+        </Link>
       </Wrapper>
     </>
   );

@@ -13,6 +13,7 @@ import { searchReducer } from "../reducers/Search";
 import { notificationReducer } from "../reducers/Notification";
 import { chatReducer } from "../reducers/Chat";
 import { myHistoryReducer } from "../reducers/MyHistory";
+import { commentReducer } from "../reducers/Comments";
 
 const rootReducer = combineReducers({
   bookReducer,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   notificationReducer,
   chatReducer,
   myHistoryReducer,
+  commentReducer,
 });
 
 const persistConfig = {

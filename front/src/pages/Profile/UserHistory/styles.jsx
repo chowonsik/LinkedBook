@@ -8,6 +8,11 @@ export const Wrapper = styled.div`
     h2 {
       font-size: ${fonts.md};
     }
+    .user-comments {
+      font-weight: 500;
+      color: ${colors.black};
+      padding: 0 5px;
+    }
   }
 `;
 

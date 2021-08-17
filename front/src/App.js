@@ -24,6 +24,8 @@ import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
 import LikeBooks from "./pages/book/LikeBooks";
+import MyComments from "./pages/Profile/MyComments";
+
 function App() {
   return (
     <div className="App">
@@ -55,6 +57,11 @@ function App() {
           path="/profile/:id/history"
           exact={true}
           component={UserHistory}
+        />
+        <Route
+          path="/profile/:id/history/comments"
+          exact={true}
+          component={MyComments}
         />
         <Route
           path="/profile/update/password"
