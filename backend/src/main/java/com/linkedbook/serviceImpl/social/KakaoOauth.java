@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.user.signin.OauthOutput;
 import com.linkedbook.dto.user.signin.SignInOutput;
+import com.linkedbook.dto.user.signin.SocialLoginType;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
@@ -91,13 +92,13 @@ public class KakaoOauth implements SocialOauth {
         // 3. user 정보 가져오기
         UserDB userDB;
         try {
-            List<UserDB> userDBs = userRepository.findByOauthIdAndStatus(kakaoId, "ACTIVATE");
+            List<UserDB> userDBs = userRepository.findByEmailAndStatus(email, "ACTIVATE");
             if (userDBs.size() == 0) { // 최초 로그인
                 SignInOutput oauthOutput =
                         SignInOutput.builder()
                                 .oauth(
                                         OauthOutput.builder()
-                                                .type("KAKAO")
+                                                .type(SocialLoginType.KAKAO)
                                                 .id(kakaoId)
                                                 .email(email)
                                                 .nickname(nickname)
@@ -106,7 +107,7 @@ public class KakaoOauth implements SocialOauth {
                 return new Response<>(oauthOutput, NEED_SIGNUP);
             }
             if (!StringUtils.isNotEmpty(userDBs.get(0).getOauthId())) { // 기존에 이메일로 가입했을 경우
-                userDBs.get(0).setOauth("KAKAO");
+                userDBs.get(0).setOauth(SocialLoginType.KAKAO);
                 userDBs.get(0).setOauthId(kakaoId);
                 userDB = userRepository.save(userDBs.get(0));
             } else {
@@ -132,7 +133,7 @@ public class KakaoOauth implements SocialOauth {
                 .accessToken(accessToken)
                 .oauth(
                         OauthOutput.builder()
-                                .type("KAKAO")
+                                .type(SocialLoginType.KAKAO)
                                 .id(kakaoId)
                                 .email(email)
                                 .nickname(nickname)

@@ -8,6 +8,7 @@ import com.linkedbook.dto.user.email.EmailOutput;
 import com.linkedbook.dto.user.selectUser.SelectUserInput;
 import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
+import com.linkedbook.dto.user.signin.SocialLoginType;
 import com.linkedbook.dto.user.signup.SignUpInput;
 import com.linkedbook.entity.AreaDB;
 import com.linkedbook.entity.UserAreaDB;
@@ -114,7 +115,9 @@ public class UserServiceImpl implements UserService {
         // 2. 유저 생성
         UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword())
                 .nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage())
-                .oauth(signUpInput.getOauth()).oauthId(signUpInput.getOauthId()).status("ACTIVATE").build();
+                .oauth(signUpInput.getOauth() == null ? null : SocialLoginType.valueOf(signUpInput.getOauth()))
+                .oauthId(signUpInput.getOauthId()).status("ACTIVATE").build();
+
         UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
