@@ -64,7 +64,7 @@ public class GoogleOauth implements SocialOauth {
     @Override
     public Response<SignInOutput> requestLogin(String code) {
         // 1. code 로 Access token 정보 요청
-        String googleAccessToken = requestAccessToken(code);
+        String googleAccessToken = this.requestAccessToken(code);
         if(googleAccessToken == null) {
             log.error("[auth/google/callback/get] UNAUTHORIZED ACCESS TOKEN error");
             return new Response<>(UNAUTHORIZED_TOKEN);
@@ -124,6 +124,7 @@ public class GoogleOauth implements SocialOauth {
         return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 
+    @Override
     public String requestAccessToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -149,6 +150,7 @@ public class GoogleOauth implements SocialOauth {
         return accessToken;
     }
 
+    @Override
     public JsonNode requestUserInfo(String accessToken) {
         // 구글 서버에 요청
         final HttpClient client = HttpClientBuilder.create().build();
