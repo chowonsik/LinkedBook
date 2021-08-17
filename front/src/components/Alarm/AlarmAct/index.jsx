@@ -62,7 +62,15 @@ function AlarmAct({ height }) {
       }
     }
   }
-
+  function handleClickAlarm(id) {
+    dispatch(updateAlarmStatus(id));
+    const params = {
+      type: "act",
+      page: 0,
+      size: alarmActList.length,
+    };
+    dispatch(getActAlarm(params));
+  }
   return (
     <Wrapper onScroll={handleScroll} height={height}>
       {alarmActList &&
@@ -72,10 +80,12 @@ function AlarmAct({ height }) {
               <AlarmActItem
                 type={alarm.type}
                 alarmId={alarm.id}
+                userId={alarm.fromUser.id}
                 dealId={alarm.deal && alarm.deal.id}
                 nickName={alarm.fromUser.nickname}
                 bookTitle={alarm.deal && alarm.deal.title}
                 createdAt={handleTimeLog(alarm.created_at)}
+                onClick={handleClickAlarm}
                 key={alarm.id}
               />
             )

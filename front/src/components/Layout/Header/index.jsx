@@ -40,6 +40,10 @@ function Header({
   onClickSearch,
 }) {
   const newAlarm = useSelector((state) => state.alarmReducer.isNewAlarm);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkNewAlarm());
+  }, []);
   function handleClickBack() {
     history.goBack();
   }

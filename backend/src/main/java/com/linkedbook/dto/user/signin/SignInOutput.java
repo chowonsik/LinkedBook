@@ -1,13 +1,13 @@
 package com.linkedbook.dto.user.signin;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
-@Setter
 public class SignInOutput {
     private int userId;
     private String accessToken;
+    private OauthOutput oauth;
 }
