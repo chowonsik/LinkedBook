@@ -6,6 +6,7 @@ import FollowItem from "../../../components/Follow/FollowItem";
 import { getLikeBooks } from "../../../actions/Books";
 import { createFollow, deleteFollowing } from "../../../actions/Follow";
 import { Wrapper, Container } from "./styles";
+import { getLikeComments } from "../../../actions/Report";
 function LikeBooks() {
   const dispatch = useDispatch();
   const history = useHistory();

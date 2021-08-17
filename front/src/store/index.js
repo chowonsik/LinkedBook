@@ -11,6 +11,7 @@ import { dealReducer } from "../reducers/Deal";
 import { reportReducer } from "../reducers/Report";
 import { searchReducer } from "../reducers/Search";
 import { notificationReducer } from "../reducers/Notification";
+import { alarmReducer } from "../reducers/Alarm";
 import { chatReducer } from "../reducers/Chat";
 import { myHistoryReducer } from "../reducers/MyHistory";
 import { commentReducer } from "../reducers/Comments";
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   reportReducer,
   searchReducer,
   notificationReducer,
+  alarmReducer,
   chatReducer,
   myHistoryReducer,
   commentReducer,

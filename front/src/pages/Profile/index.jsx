@@ -15,10 +15,13 @@ import { Wrapper, DealList } from "./styles";
 import { request, requestDelete, requestGet } from "../../api";
 import Footer from "../../components/Layout/Footer";
 import Header from "../../components/Layout/Header";
+import { createAlarm } from "../../actions/Alarm";
 
 const Profile = ({ match }) => {
   const dispatch = useDispatch();
-  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
+  const LOGIN_USER_ID = JSON.parse(
+    window.localStorage.getItem("loginUser")
+  )?.id;
   const USER_ID = parseInt(match.params.id);
   const userObj = useSelector((state) => state.userProfileReducer.userObj);
   const userTabInfo = useSelector(
@@ -53,7 +56,8 @@ const Profile = ({ match }) => {
       fromUserId: LOGIN_USER_ID,
     };
     await request("post", "/follow", data);
-    dispatch(getUserObj(USER_ID));
+    await dispatch(getUserObj(USER_ID));
+    await dispatch(createAlarm({ type: "FOLLOW", followId: userObj.isFollow }));
   }
 
   async function unFollow() {
@@ -79,7 +83,7 @@ const Profile = ({ match }) => {
           <>
             <UserInfo
               userObj={userObj}
-              isFollow={isFollow}
+              isFollow={userObj.isFollow}
               toggleFollowBtn={toggleFollowBtn}
             />
             <UserActivity

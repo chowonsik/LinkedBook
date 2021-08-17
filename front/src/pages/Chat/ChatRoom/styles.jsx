@@ -11,7 +11,6 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column-reverse;
-  gap: 15px;
   padding: 15px 10px;
   overflow: auto;
 `;

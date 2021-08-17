@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
@@ -13,6 +14,7 @@ import UserHistory from "./pages/Profile/UserHistory";
 import ChangePassword from "./pages/Profile/ChangePassword";
 import FollowerList from "./pages/Follow/FollowerList";
 import FollowingList from "./pages/Follow/FollowingList";
+import Alarm from "./pages/Alarm";
 import LocationSetting from "./pages/Main/LocationSetting";
 import DealDetail from "./pages/Main/DealDetail";
 import DealCreate from "./pages/deal/CreateDeal";
@@ -23,10 +25,16 @@ import ToastMessage from "./components/common/ToastMessage";
 import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
+import { checkNewAlarm } from "./actions/Alarm";
 import LikeBooks from "./pages/book/LikeBooks";
 import MyComments from "./pages/Profile/MyComments";
 
+import LikeComments from "./pages/book/LikeComments";
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkNewAlarm());
+  }, []);
   return (
     <div className="App">
       <Router>
@@ -70,11 +78,17 @@ function App() {
         />
         <Route path="/following/list" exact={true} component={FollowingList} />
         <Route path="/follower/list" exact={true} component={FollowerList} />
+        <Route path="/alarm" exact={true} component={Alarm} />
         <Route path="/redbell/:dealId" exact={true} component={Report} />
         <Route path="/search/user" exact={true} component={SearchUser} />
         <Route path="/chat" exact={true} component={ChatRoomList} />
         <Route path="/chat/room/:id" exact={true} component={ChatRoom} />
         <Route path="/book/likes/:isbn" exact={true} component={LikeBooks} />
+        <Route
+          path="/comment/:id/likes"
+          exact={true}
+          component={LikeComments}
+        />
       </Router>
       <ToastMessage />
     </div>

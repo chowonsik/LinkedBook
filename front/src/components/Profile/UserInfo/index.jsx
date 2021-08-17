@@ -5,7 +5,9 @@ import { Wrapper } from "./styles";
 import MannerScore from "../../common/MannerScore";
 
 const UserInfo = ({ userObj, isFollow, toggleFollowBtn }) => {
-  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
+  const LOGIN_USER_ID = JSON.parse(
+    window.localStorage.getItem("loginUser")
+  )?.id;
   return (
     <Wrapper>
       <div className="profile-content">

@@ -6,7 +6,7 @@ const useFooter = () => {
   const onClick = (e) => {
     const LOGIN_USER_ID = JSON.parse(
       window.localStorage.getItem("loginUser")
-    ).id;
+    )?.id;
     const beforeActive = document.querySelector("#active");
     const curActive = e.target;
     if (beforeActive) beforeActive.id = "";
@@ -17,6 +17,7 @@ const useFooter = () => {
     } else if (curActive.classList.contains("new-post")) {
       history.push("/create/deal");
     } else if (curActive.classList.contains("chat")) {
+      history.push("/chat");
     } else if (curActive.classList.contains("profile")) {
       history.push(`/profile/${LOGIN_USER_ID}`);
     }

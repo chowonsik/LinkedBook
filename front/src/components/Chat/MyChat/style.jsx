@@ -5,6 +5,7 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  margin-top: 15px;
   .createdAt {
     display: flex;
     align-items: flex-end;

@@ -2,7 +2,7 @@ package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.*;
-import com.linkedbook.dto.book.search.BookInfoInput;
+import com.linkedbook.dto.book.search.BookInput;
 import com.linkedbook.dto.book.search.BookPopularOutput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
 import com.linkedbook.dto.common.CommonLikeOutput;
@@ -31,45 +31,45 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Response<Object> createBookInfo(BookInfoInput bookInfoInput) {
+    public Response<Object> createBookInfo(BookInput bookInput) {
         // 1. 값 형식 체크
-        if (bookInfoInput == null) return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValid(bookInfoInput.getIsbn())
-                || !ValidationCheck.isValid(bookInfoInput.getTitle())
-                || !ValidationCheck.isValidId(bookInfoInput.getPrice())
-                || !ValidationCheck.isValid(bookInfoInput.getAuthor())
-                || !ValidationCheck.isValidDate(bookInfoInput.getDateTime())
-                || !ValidationCheck.isValid(bookInfoInput.getThumbnail())
+        if (bookInput == null) return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(bookInput.getIsbn())
+                || !ValidationCheck.isValid(bookInput.getTitle())
+                || !ValidationCheck.isValidId(bookInput.getPrice())
+                || !ValidationCheck.isValid(bookInput.getAuthor())
+                || !ValidationCheck.isValidDate(bookInput.getDateTime())
+                || !ValidationCheck.isValid(bookInput.getThumbnail())
         )
             return new Response<>(BAD_REQUEST);
 
         // 2. 책 정보 생성
         BookDB bookDB;
         try {
-            String isbn = bookInfoInput.getIsbn();
+            String isbn = bookInput.getIsbn();
             BookDB existBook = bookRepository.findById(isbn).orElse(null);
             if (existBook == null) {
                 bookDB = BookDB.builder()
                         .id(isbn)
-                        .title(bookInfoInput.getTitle())
-                        .price(bookInfoInput.getPrice())
-                        .author(bookInfoInput.getAuthor())
-                        .publisher(bookInfoInput.getPublisher())
-                        .contents(bookInfoInput.getContents())
-                        .dateTime(bookInfoInput.getDateTime())
-                        .image(bookInfoInput.getThumbnail())
-                        .status(bookInfoInput.getStatus())
+                        .title(bookInput.getTitle())
+                        .price(bookInput.getPrice())
+                        .author(bookInput.getAuthor())
+                        .publisher(bookInput.getPublisher())
+                        .contents(bookInput.getContents())
+                        .dateTime(bookInput.getDateTime())
+                        .image(bookInput.getThumbnail())
+                        .status(bookInput.getStatus())
                         .build();
             } else {
                 bookDB = existBook;
-                existBook.setTitle(bookInfoInput.getTitle());
-                existBook.setPrice(bookInfoInput.getPrice());
-                existBook.setAuthor(bookInfoInput.getAuthor());
-                existBook.setPublisher(bookInfoInput.getPublisher());
-                existBook.setContents(bookInfoInput.getContents());
-                existBook.setDateTime(bookInfoInput.getDateTime());
-                existBook.setImage(bookInfoInput.getThumbnail());
-                existBook.setStatus(bookInfoInput.getStatus());
+                existBook.setTitle(bookInput.getTitle());
+                existBook.setPrice(bookInput.getPrice());
+                existBook.setAuthor(bookInput.getAuthor());
+                existBook.setPublisher(bookInput.getPublisher());
+                existBook.setContents(bookInput.getContents());
+                existBook.setDateTime(bookInput.getDateTime());
+                existBook.setImage(bookInput.getThumbnail());
+                existBook.setStatus(bookInput.getStatus());
             }
 
             bookRepository.save(bookDB);

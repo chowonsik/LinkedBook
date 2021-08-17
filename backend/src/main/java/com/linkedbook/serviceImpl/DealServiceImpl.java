@@ -8,6 +8,7 @@ import com.linkedbook.dao.ImageRepository;
 import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.deal.createDeal.CreateDealImage;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
+import com.linkedbook.dto.deal.createDeal.CreateDealOutput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
 import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
@@ -76,7 +77,7 @@ public class DealServiceImpl implements DealService {
 
     @Override
     @Transactional
-    public Response<Object> createDeal(CreateDealInput createDealInput) {
+    public Response<CreateDealOutput> createDeal(CreateDealInput createDealInput) {
         // 1. 값 형식 체크
         if (createDealInput == null)
             return new Response<>(NO_VALUES);
@@ -91,6 +92,7 @@ public class DealServiceImpl implements DealService {
         if (!ValidationCheck.isValid(createDealInput.getContent()))
             return new Response<>(NO_VALUES);
 
+        CreateDealOutput createDealOutput;
         try {
             UserDB user = userRepository.findById(jwtService.getUserId()).orElse(null);
             BookDB book = bookRepository.findById(createDealInput.getBookId()).orElse(null);
@@ -102,6 +104,7 @@ public class DealServiceImpl implements DealService {
                     .price(createDealInput.getPrice()).quality(createDealInput.getQuality())
                     .content(createDealInput.getContent()).status("ACTIVATE").build();
             dealDB = dealRepository.save(dealDB);
+            createDealOutput = CreateDealOutput.builder().dealId(dealDB.getId()).build();
             List<CreateDealImage> images = createDealInput.getImages();
             if (images.size() != 0) {
                 for (CreateDealImage image : images) {
@@ -121,7 +124,7 @@ public class DealServiceImpl implements DealService {
             return new Response<>(DATABASE_ERROR);
         }
         // 3. 결과 return
-        return new Response<>(null, CREATED_DEAL);
+        return new Response<>(createDealOutput, CREATED_DEAL);
     }
 
     @Override
