@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserDB, Integer> {
+    Optional<UserDB> findByEmail(String email);
+
     List<UserDB> findByEmailAndStatus(String email, String status);
     boolean existsByEmailAndStatus(String email, String status);
 
@@ -47,5 +49,6 @@ public interface UserRepository extends JpaRepository<UserDB, Integer> {
             nativeQuery = true)
     Page<UserDB> findAreaStar(int userId, int areaId, Pageable paging);
 
-    Optional<UserDB> findByEmail(String email);
+    List<UserDB> findByOauthIdAndStatus(String oauthId, String status);
+
 }

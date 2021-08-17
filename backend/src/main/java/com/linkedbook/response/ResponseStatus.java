@@ -75,7 +75,7 @@ public enum ResponseStatus {
     BAD_SEARCH_TYPE_VALUE(400, 420, "올바른 검색 타입을 입력해주세요."), BAD_ID_VALUE(400, 416, "올바른 아이디를 입력해주세요."),
     BAD_STATUS_VALUE(400, 417, "올바른 상태를 입력해주세요."), BAD_AREA_VALUE(400, 416, "올바른 지역을 입력해주세요."),
     EXISTS_INFO(400, 420, "이미 존재하는 정보입니다."), NEED_SIGNUP(400, 422, "회원가입이 필요합니다."),
-    FAILED_TO_SEND_EMAIL(400, 444, "인증 메일을 전송하는데 실패하였습니다."),
+    FAILED_TO_SEND_EMAIL(400, 444, "인증 메일을 발송하는데 실패하였습니다."),
 
     // 401 Unauthorized - 클라이언트가 권한이 없기 때문에 작업을 진행할 수 없는 경우
     UNAUTHORIZED(401, 400, "권한이 없습니다."), UNAUTHORIZED_TOKEN(401, 410, "유효하지 않은 토큰입니다."),
