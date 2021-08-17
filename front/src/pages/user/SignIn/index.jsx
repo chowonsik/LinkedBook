@@ -45,6 +45,10 @@ export default function SignIn() {
     }
   }
   useEffect(() => {
+    const onboarding = localStorage.getItem("onboarding");
+    if (!onboarding) {
+      history.push("/onboarding");
+    }
     localStorage.removeItem("signUpValues");
   }, []);
   return (

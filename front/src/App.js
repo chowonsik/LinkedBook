@@ -24,6 +24,7 @@ import BookInfo from "./pages/book/BookInfo";
 import { checkNewAlarm } from "./actions/Alarm";
 import LikeBooks from "./pages/book/LikeBooks";
 import LikeComments from "./pages/book/LikeComments";
+import Onboarding from "./pages/Onboarding";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -60,6 +61,7 @@ function App() {
           exact={true}
           component={LikeComments}
         />
+        <Route path="/onboarding" exact={true} component={Onboarding} />
       </Router>
       <ToastMessage />
     </div>
