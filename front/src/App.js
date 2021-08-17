@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { HashRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
 import Main from "./pages/Main";
@@ -8,6 +8,10 @@ import LocationSearch from "./pages/user/LocationSearch";
 import RecommendUser from "./pages/user/RecommendUser";
 import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
+import Profile from "./pages/Profile";
+import ProfileUpdate from "./pages/Profile/ProfileUpdate";
+import UserHistory from "./pages/Profile/UserHistory";
+import ChangePassword from "./pages/Profile/ChangePassword";
 import FollowerList from "./pages/Follow/FollowerList";
 import FollowingList from "./pages/Follow/FollowingList";
 import Alarm from "./pages/Alarm";
@@ -23,6 +27,8 @@ import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
 import { checkNewAlarm } from "./actions/Alarm";
 import LikeBooks from "./pages/book/LikeBooks";
+import MyComments from "./pages/Profile/MyComments";
+
 import LikeComments from "./pages/book/LikeComments";
 import Onboarding from "./pages/Onboarding";
 function App() {
@@ -48,6 +54,29 @@ function App() {
         <Route path="/books" exact component={SearchBook} />
         <Route path="/books/:isbn" component={BookInfo} />
         <Route path="/recommend" exact={true} component={RecommendUser} />
+        <Switch>
+          <Route
+            path="/profile/update"
+            exact={true}
+            component={ProfileUpdate}
+          />
+          <Route path="/profile/:id" exact={true} component={Profile} />
+        </Switch>
+        <Route
+          path="/profile/:id/history"
+          exact={true}
+          component={UserHistory}
+        />
+        <Route
+          path="/profile/:id/history/comments"
+          exact={true}
+          component={MyComments}
+        />
+        <Route
+          path="/profile/update/password"
+          exact={true}
+          component={ChangePassword}
+        />
         <Route path="/following/list" exact={true} component={FollowingList} />
         <Route path="/follower/list" exact={true} component={FollowerList} />
         <Route path="/alarm" exact={true} component={Alarm} />

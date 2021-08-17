@@ -5,11 +5,14 @@ function Input({
   placeholder,
   value,
   onChange,
+  onClick,
   isValid,
   errorMessage = "no",
   width,
   height,
   fontSize,
+  id,
+  readOnly,
   readonly,
 }) {
   return (
@@ -23,6 +26,9 @@ function Input({
           width={width}
           height={height}
           fontSize={fontSize}
+          id={id}
+          onClick={onClick}
+          readOnly={readOnly}
           readonly={readonly}
         />
         {errorMessage !== "no" && (

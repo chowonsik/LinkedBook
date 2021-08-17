@@ -13,6 +13,7 @@ public enum ResponseStatus {
      * 2XX Success
      */
     // 200 OK - 클라이언트의 요청을 서버가 정상적으로 처리했다.
+    SUCCESS_UPDATE_PROFILE(200, 204, "프로필 수정에 성공하였습니다."),
     SUCCESS_SELECT_USERDEAL_LIST(200, 205, "유저 거래 내역 조회에 성공하였습니다."),
     SUCCESS_UPDATE_USERDEAL(200, 206, "유저 거래 내역 수정에 성공하였습니다."),
 
