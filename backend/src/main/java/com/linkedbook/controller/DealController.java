@@ -4,6 +4,7 @@ import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.DealService;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
+import com.linkedbook.dto.deal.createDeal.CreateDealOutput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealInput;
 import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
 import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
@@ -38,7 +39,7 @@ public class DealController {
     // Body
     @ResponseBody
     @PostMapping
-    public Response<Object> createDeal(@RequestBody CreateDealInput createDealInput) {
+    public Response<CreateDealOutput> createDeal(@RequestBody CreateDealInput createDealInput) {
         log.info("[POST] /deals");
         return dealService.createDeal(createDealInput);
     }

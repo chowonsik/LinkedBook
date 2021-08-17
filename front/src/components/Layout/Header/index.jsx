@@ -36,6 +36,7 @@ function Header({
   isAlarm = false,
   isDeclare = false,
   isDone = false,
+  DoneBtnClick,
   onClickSearch,
 }) {
   const newAlarm = useSelector((state) => state.alarmReducer.isNewAlarm);
@@ -78,7 +79,9 @@ function Header({
           </Link>
 
           <PatchExclamationFill className="declare" />
-          <DoneButton className="done-btn">완료</DoneButton>
+          <DoneButton className="done-btn" onClick={DoneBtnClick}>
+            완료
+          </DoneButton>
         </IconsAndDone>
       </Wrapper>
     </Block>

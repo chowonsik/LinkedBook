@@ -13,6 +13,7 @@ export const StyledInput = styled.input.attrs((props) => ({
   placeholder: props.placeholder,
   value: props.value,
   onChange: props.onChange,
+  id: props.id,
   autocapitalize: "off",
   readOnly: props.readonly,
 }))`
@@ -24,7 +25,7 @@ export const StyledInput = styled.input.attrs((props) => ({
   font-size: ${(props) => props.fontSize || "18px"};
   outline: none;
   border: none;
-  padding: 0 10px;
+  padding: 7px 14px;
 `;
 
 export const ErrorMessage = styled.div`

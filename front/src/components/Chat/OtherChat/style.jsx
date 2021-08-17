@@ -4,7 +4,7 @@ import { colors, fonts } from "../../../styles";
 export const Container = styled.div`
   width: 100%;
   display: flex;
-  gap: 10px;
+  margin-top: 15px;
   .img-container {
     img {
       width: 30px;
@@ -12,6 +12,7 @@ export const Container = styled.div`
       border-radius: 30px;
       object-fit: cover;
     }
+    margin-right: 10px;
   }
   .message {
     max-width: 60%;

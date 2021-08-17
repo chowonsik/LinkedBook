@@ -29,6 +29,7 @@ import {
   addLikeDeal,
   deleteLikeDeal,
   doNotRefresh,
+  doRefresh,
 } from "../../../actions/Deal";
 import { showToast } from "../../../actions/Notification";
 import DeleteConfirm from "../../../components/deal/DeleteConfirm";
@@ -103,6 +104,7 @@ export default function DealDetail() {
     console.log(response);
     if (response.isSuccess) {
       dispatch(showToast("게시글이 삭제되었습니다."));
+      dispatch(doRefresh());
       history.goBack();
     } else {
       dispatch(showToast("삭제 실패"));

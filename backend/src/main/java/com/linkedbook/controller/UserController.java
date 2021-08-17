@@ -9,6 +9,7 @@ import com.linkedbook.dto.user.selectprofile.SelectProfileOutput;
 import com.linkedbook.dto.user.signin.SignInInput;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
+import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
 import com.linkedbook.dto.user.signup.SignUpInput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
@@ -17,6 +18,7 @@ import com.linkedbook.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -66,6 +68,19 @@ public class UserController {
     public Response<SelectProfileOutput> selectProfile(@PathVariable("id") int userId) {
         log.info("[GET] /users/" + userId + "/profile");
         return userService.selectProfile(userId);
+    }
+
+    /**
+     * 유저 프로필 수정 API [PATCH]] /users/:id/profile
+     * 
+     * @return Response<SelectProfileOutput>
+     */
+    // Path-variable
+    @ResponseBody
+    @PatchMapping()
+    public Response<Object> updateProfile(@RequestBody UpdateProfileInput updateProfileInput) {
+        System.out.println("[PATCH] /user/{id}/profile");
+        return userService.updateProfile(updateProfileInput);
     }
 
     /**

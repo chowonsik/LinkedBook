@@ -1,4 +1,4 @@
-import { requestGet } from "../../api.js";
+import { request, requestGet } from "../../api";
 
 export const SET_AREAS = "SET_AREAS";
 export const SET_SELECT = "SET_SELECT";
