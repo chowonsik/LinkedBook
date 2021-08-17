@@ -54,8 +54,10 @@ export default function SignUp() {
   }
 
   async function handleSignUp() {
-    console.log(auth);
-    console.log(emailCheck.value);
+    if (password.value !== passwordConfirm.value) {
+      dispatch(showToast("비밀번호를 확인해주세요."));
+      return;
+    }
     if (
       !nickname.isValid ||
       !email.isValid ||
@@ -82,7 +84,7 @@ export default function SignUp() {
     const response = await request("POST", "/users/signup", data);
     if (response.isSuccess) {
       dispatch(showToast("회원가입이 완료되었습니다."));
-      history.push({ pathname: "/signin" });
+      history.replace({ pathname: "/signin" });
     } else {
       if (response.code === 404) {
         dispatch(showToast("이미 사용중인 이메일입니다."));
@@ -106,12 +108,11 @@ export default function SignUp() {
     };
     const response = await request("POST", "/users/email", data);
     if (response.isSuccess) {
-      console.log(response.result.auth);
       setAuth(response.result.auth);
       dispatch(showToast("이메일로 인증번호를 발송했습니다."));
     } else {
-      if (response.code === 400) {
-        dispatch(showToast("이메일 인증번호 발송에 실패했습니다."));
+      if (response.status === 400) {
+        dispatch(showToast(response.message));
       }
       return;
     }
