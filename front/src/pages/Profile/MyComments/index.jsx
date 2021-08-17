@@ -5,8 +5,6 @@ import { getUserComments } from "../../../actions/Comments";
 import CommentItem from "../../../components/Profile/CommentItem";
 import Header from "../../../components/Layout/Header";
 import { Wrapper } from "./styles";
-import { useHistory } from "react-router";
-import { useState } from "react";
 
 const MyComments = ({ match }) => {
   const dispatch = useDispatch();
@@ -26,13 +24,18 @@ const MyComments = ({ match }) => {
   useEffect(() => {
     dispatch(getUserComments(userId));
   }, []);
+  console.log(userComments);
   return (
     <>
       <Header isBack title="한줄평" />
       <Wrapper onScroll={handleScroll} height={listHeight}>
-        {userComments?.map((commentInfo) => (
-          <CommentItem commentInfo={commentInfo} />
-        ))}
+        {userComments ? (
+          userComments.map((commentInfo, idx) => (
+            <CommentItem key={idx} commentInfo={commentInfo} />
+          ))
+        ) : (
+          <span>작성된 한줄평이 없습니다.</span>
+        )}
       </Wrapper>
     </>
   );
