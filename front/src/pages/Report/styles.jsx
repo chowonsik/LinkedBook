@@ -4,6 +4,7 @@ import { fonts, colors } from "../../styles";
 export const Wrapper = styled.div`
   width: 100%;
   height: 100vh;
+  margin-top: -4.5rem;
 `;
 export const Container = styled.div`
   width: 100%;

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'; // 히스토리 모드 제거
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"; // 히스토리 모드 제거
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
 import Main from "./pages/Main";
@@ -32,11 +32,8 @@ import MyComments from "./pages/Profile/MyComments";
 import LikeComments from "./pages/book/LikeComments";
 import OauthLogin from "./pages/user/SignIn/OAuth";
 
+import Onboarding from "./pages/Onboarding";
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(checkNewAlarm());
-  }, []);
   return (
     <div className="App">
       <Router>
@@ -91,7 +88,12 @@ function App() {
           exact={true}
           component={LikeComments}
         />
-        <Route path="/auth/:type/callback" exact={true} component={OauthLogin} />
+        <Route
+          path="/auth/:type/callback"
+          exact={true}
+          component={OauthLogin}
+        />
+        <Route path="/onboarding" exact={true} component={Onboarding} />
       </Router>
       <ToastMessage />
     </div>
