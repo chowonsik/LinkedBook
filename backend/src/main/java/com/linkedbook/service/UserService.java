@@ -11,6 +11,7 @@ import com.linkedbook.response.Response;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpInput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
+import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
 
 public interface UserService {
     Response<SignInOutput> signIn(SignInInput signInInput);
@@ -18,6 +19,8 @@ public interface UserService {
     Response<SignUpOutput> signUp(SignUpInput signUpInput);
 
     Response<SelectProfileOutput> selectProfile(int id);
+
+    Response<Object> updateProfile(UpdateProfileInput updateProfileInput);
 
     PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput);
 

@@ -102,9 +102,7 @@ const BookInfo = ({ match, history }) => {
     const { result } = await requestGet(`/books/${isbn}`);
     const bookData = {
       ...result,
-      price: result.price.toLocaleString("ko-KR", {
-        currency: "KRW",
-      }),
+      price: result.price.toLocaleString(),
       commentAvgScore: result.commentAvgScore,
       date: `${result.dateTime.substr(0, 4)}년 ${result.dateTime.substr(
         5,
