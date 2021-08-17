@@ -1,27 +1,27 @@
 import {
-  SET_MY_PROFILE,
-  SET_MY_TAB_INFO,
+  SET_USER_OBJ,
+  SET_USER_TAB_INFO,
   SET_ACTIVE_TAB,
-} from "../../actions/MyProfile";
+} from "../../actions/Profile";
 
 const INITIAL_STATE = {
-  myProfile: {},
+  userObj: {},
   activeTab: 0,
-  myTabInfo: {},
-  myLikeDealList: {},
+  userTabInfo: [],
+  userLikeDealList: [],
 };
 
-export const myProfileReducer = (state = INITIAL_STATE, action) => {
+export const userProfileReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SET_MY_PROFILE:
+    case SET_USER_OBJ:
       return {
         ...state,
-        myProfile: action.userObj,
+        userObj: action.userObj,
       };
-    case SET_MY_TAB_INFO:
+    case SET_USER_TAB_INFO:
       return {
         ...state,
-        myTabInfo: action.myTabInfo,
+        userTabInfo: action.userTabInfo,
       };
     case SET_ACTIVE_TAB:
       return {
