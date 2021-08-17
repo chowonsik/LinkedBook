@@ -32,10 +32,6 @@ import MyComments from "./pages/Profile/MyComments";
 import LikeComments from "./pages/book/LikeComments";
 import Onboarding from "./pages/Onboarding";
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(checkNewAlarm());
-  }, []);
   return (
     <div className="App">
       <Router>

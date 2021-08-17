@@ -16,6 +16,10 @@ export const Wrapper = styled.div`
 export const Content = styled.div`
   width: 70%;
   font-weight: 500;
+  .icon {
+    font-size: ${fonts.lg};
+    color: ${colors.yellow};
+  }
 `;
 
 export const ItemAndIcon = styled.div`
@@ -26,5 +30,6 @@ export const ItemAndIcon = styled.div`
   .icon {
     font-size: ${fonts.xl};
     color: ${colors.yellow};
+    margin-top: 0.3rem;
   }
 `;

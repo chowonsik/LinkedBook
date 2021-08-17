@@ -12,7 +12,6 @@ function Alarm() {
   const dispatch = useDispatch();
   useEffect(() => {
     handleSetHeight();
-    dispatch(setNewAlarm(false));
   }, []);
   function handleClickType() {
     setType(!type);
