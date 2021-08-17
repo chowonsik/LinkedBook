@@ -12,6 +12,7 @@ import Header from "../../../components/Layout/Header";
 import RoundButton from "../../../components/common/Buttons/RoundButton";
 import ToastMessage from "../../../components/common/ToastMessage";
 import { showToast } from "../../../actions/Notification";
+import { createAlarm } from "../../../actions/Alarm";
 
 const BookInfo = ({ match, history }) => {
   const dispatch = useDispatch();
@@ -293,7 +294,8 @@ const BookInfo = ({ match, history }) => {
     getBookInfo();
   };
 
-  const likeComment = async (commentId) => {
+  const likeComment = async (commentId, commentLikeId) => {
+    console.log(commentId);
     await request("post", "/like-comments", { id: commentId });
     setBookComments(
       bookComments.map((comment) =>
@@ -309,6 +311,7 @@ const BookInfo = ({ match, history }) => {
           : comment
       )
     );
+    dispatch(createAlarm({ type: "LIKE_COMMENT", commentId: commentId }));
   };
 
   const unlikeComment = async (likeId) => {

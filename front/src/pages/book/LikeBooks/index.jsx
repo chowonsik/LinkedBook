@@ -34,7 +34,6 @@ function LikeBooks() {
 
   function handleClick(e) {
     const type = e.target.innerText;
-    console.log(e.target.id);
     if (type === "팔로우") {
       const data = {
         toUserId: parseInt(e.target.id),
