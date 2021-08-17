@@ -6,6 +6,7 @@ import {
   SuitHeart,
   SuitHeartFill,
 } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 
 const BookCommentItem = ({
   commentInfo,
@@ -15,30 +16,29 @@ const BookCommentItem = ({
   likeComment,
   unlikeComment,
 }) => {
-  const commentTime = timeForToday(commentInfo.user.created_at);
-  function timeForToday(value) {
+  function dateToString(date) {
     const today = new Date();
-    const timeValue = new Date(value);
+    const timeValue = new Date(date);
 
     const betweenTime = Math.floor(
       (today.getTime() - timeValue.getTime()) / 1000 / 60
     );
-    if (betweenTime < 1) return "방금 전";
+    if (betweenTime < 1) return "방금전";
     if (betweenTime < 60) {
-      return `${betweenTime}분 전`;
+      return `${betweenTime}분전`;
     }
 
     const betweenTimeHour = Math.floor(betweenTime / 60);
     if (betweenTimeHour < 24) {
-      return `${betweenTimeHour}시간 전`;
+      return `${betweenTimeHour}시간전`;
     }
 
     const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
     if (betweenTimeDay < 365) {
-      return `${betweenTimeDay}일 전`;
+      return `${betweenTimeDay}일전`;
     }
 
-    return `${Math.floor(betweenTimeDay / 365)}년 전`;
+    return `${Math.floor(betweenTimeDay / 365)}년전`;
   }
   return (
     <Wrapper>
@@ -90,11 +90,15 @@ const BookCommentItem = ({
           <div className="comment-info">
             <p className="comment">
               {commentInfo.comment.content}
-              <span className="created-time">{commentTime}</span>
+              <span className="created-time">
+                {dateToString(commentInfo.user.created_at)}
+              </span>
             </p>
           </div>
           <span className="like">
-            <span className="like-cnt">{commentInfo.like.totalLikeCnt}</span>
+            <Link to={{ pathname: `/comment/${commentInfo.comment.id}/likes` }}>
+              <span className="like-cnt">{commentInfo.like.totalLikeCnt}</span>
+            </Link>
             {commentInfo.like.userLike ? (
               <SuitHeartFill
                 onClick={() => unlikeComment(commentInfo.like.id)}
@@ -102,7 +106,9 @@ const BookCommentItem = ({
               />
             ) : (
               <SuitHeart
-                onClick={() => likeComment(commentInfo.comment.id)}
+                onClick={() =>
+                  likeComment(commentInfo.comment.id, commentInfo.like.id)
+                }
                 className="heart-icon"
               />
             )}
