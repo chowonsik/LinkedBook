@@ -13,7 +13,7 @@ import {
 } from "../../../validators.js";
 import Header from "../../../components/Layout/Header";
 import { request } from "../../../api.js";
-import RoundButton from '../../../components/common/Buttons/RoundButton';
+import RoundButton from "../../../components/common/Buttons/RoundButton";
 
 export default function SignUp() {
   const signUpValues = JSON.parse(localStorage.getItem("signUpValues"));
@@ -25,9 +25,7 @@ export default function SignUp() {
     signUpValues ? signUpValues.email : "",
     emailValidator
   );
-  const emailCheck = useInput(
-    signUpValues ? signUpValues.emailCheck : ""
-  );
+  const emailCheck = useInput(signUpValues ? signUpValues.emailCheck : "");
   const password = useInput(
     signUpValues ? signUpValues.password : "",
     passwordValidator
@@ -39,8 +37,10 @@ export default function SignUp() {
   const [auth, setAuth] = useState(signUpValues ? signUpValues.auth : "");
   const [area, setArea] = useState({});
 
-  const [oauthUserData, setOAuthUserData] = useState(signUpValues ? signUpValues.oauthUserData : null);
-  
+  const [oauthUserData, setOAuthUserData] = useState(
+    signUpValues ? signUpValues.oauthUserData : null
+  );
+
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -97,19 +97,17 @@ export default function SignUp() {
   }
 
   async function handleEmailAuth() {
-    if (
-      !email.isValid
-    ) {
+    if (!email.isValid) {
       dispatch(showToast("이메일을 입력하세요."));
       return;
     }
     const data = {
       email: email.value,
     };
+    dispatch(showToast("이메일로 인증번호를 발송했습니다."));
     const response = await request("POST", "/users/email", data);
     if (response.isSuccess) {
       setAuth(response.result.auth);
-      dispatch(showToast("이메일로 인증번호를 발송했습니다."));
     } else {
       if (response.status === 400) {
         dispatch(showToast(response.message));
@@ -133,7 +131,11 @@ export default function SignUp() {
 
   useEffect(() => {
     if (location.state && location.state.oauthUser) {
-      const { nickname:_nickname, email:_email, ..._oauthUserData } = location.state.oauthUser;
+      const {
+        nickname: _nickname,
+        email: _email,
+        ..._oauthUserData
+      } = location.state.oauthUser;
 
       nickname.setValue(_nickname);
       email.setValue(_email);
@@ -155,20 +157,27 @@ export default function SignUp() {
     <>
       <Header title="회원가입" isBack />
       <Wrapper>
-
-        <Input
-          type="text"
-          placeholder="이메일"
-          value={email.value}
-          onChange={email.onChange}
-          isValid={email.isValid}
-          errorMessage={email.errorMessage}
-          readonly={!!oauthUserData}
-          witdh="80%"
-        />
-        {!oauthUserData &&
+        <div className="email-container">
+          <Input
+            type="text"
+            placeholder="이메일"
+            value={email.value}
+            onChange={email.onChange}
+            isValid={email.isValid}
+            errorMessage={email.errorMessage}
+            readonly={!!oauthUserData}
+          />
+          {!oauthUserData && (
+            <RoundButton
+              value="이메일 인증"
+              onClick={handleEmailAuth}
+              width="125px"
+              fontSize="15px"
+            />
+          )}
+        </div>
+        {!oauthUserData && (
           <>
-            <RoundButton value="이메일 인증" onClick={handleEmailAuth} />
             <Input
               type="text"
               placeholder="인증번호"
@@ -178,7 +187,7 @@ export default function SignUp() {
               errorMessage={emailCheck.errorMessage}
             />
           </>
-        }
+        )}
 
         <Input
           type="text"

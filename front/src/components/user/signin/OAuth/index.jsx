@@ -9,7 +9,7 @@ export default function OAuth() {
       <div className="icon-container">
         <div className="icon google">
           <a href="/api/auth/google">
-          <img src="images/google.png" alt="google" />
+            <img src="images/google.png" alt="google" />
           </a>
         </div>
         <div className="icon">
