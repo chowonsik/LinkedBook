@@ -5,6 +5,7 @@ import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dao.UserDealRepository;
 import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
+import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealOutput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
 import com.linkedbook.dto.userDeal.updateUserDeal.UpdateUserDealInput;
@@ -49,7 +50,7 @@ public class UserDealServiceImpl implements UserDealService {
 
     @Override
     @Transactional
-    public Response<Object> createUserDeal(CreateUserDealInput createUserDealInput) {
+    public Response<CreateUserDealOutput> createUserDeal(CreateUserDealInput createUserDealInput) {
         // 값 형식 체크
         if (createUserDealInput == null)
             return new Response<>(BAD_REQUEST);
@@ -60,6 +61,7 @@ public class UserDealServiceImpl implements UserDealService {
         if (!ValidationCheck.isValidScore(createUserDealInput.getScore()))
             return new Response<>(BAD_REQUEST);
 
+        CreateUserDealOutput createUserDealOutput;
         try {
             UserDB saleUser = userRepository.findById(jwtService.getUserId()).orElse(null);
             DealDB deal = dealRepository.findById(createUserDealInput.getDealId()).orElse(null);
@@ -72,8 +74,8 @@ public class UserDealServiceImpl implements UserDealService {
                     .score(createUserDealInput.getScore()).build();
             UserDealDB saleUserDB = UserDealDB.builder().user(saleUser).deal(deal).type("SALE").score(3).build();
             userDealRepository.save(purchaseUserDB);
-            userDealRepository.save(saleUserDB);
-
+            saleUserDB = userDealRepository.save(saleUserDB);
+            createUserDealOutput = CreateUserDealOutput.builder().userDealId(saleUserDB.getId()).build();
             deal.setStatus("COMPLETE");
             dealRepository.save(deal);
 
@@ -85,7 +87,7 @@ public class UserDealServiceImpl implements UserDealService {
             return new Response<>(DATABASE_ERROR);
         }
         // 결과 return
-        return new Response<>(null, CREATED_USERDEAL);
+        return new Response<>(createUserDealOutput, CREATED_USERDEAL);
     }
 
     @Override
