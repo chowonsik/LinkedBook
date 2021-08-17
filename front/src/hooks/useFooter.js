@@ -13,6 +13,7 @@ const useFooter = () => {
     } else if (curActive.classList.contains("new-post")) {
       history.push("/create/deal");
     } else if (curActive.classList.contains("chat")) {
+      history.push("/chat");
     } else if (curActive.classList.contains("profile")) {
       history.push("/test");
     }

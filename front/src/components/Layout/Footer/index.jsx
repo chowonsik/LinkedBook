@@ -5,6 +5,7 @@ import {
   BookFill,
   PlusCircleFill,
   ChatDots,
+  ChatDotsFill,
   Person,
   PersonFill,
 } from "react-bootstrap-icons";
@@ -18,35 +19,43 @@ function Footer() {
   const footer = useFooter();
   return (
     <>
-      <Wrapper onClick={footer.onClick}>
-        <IconBox>
+      <Wrapper>
+        <IconBox onClick={footer.onClick} className="home-btn">
           {history.location.pathname === "/" ? (
             <HouseDoorFill />
           ) : (
             <HouseDoor className="home-btn" />
           )}
-          <p>홈</p>
+          <p className="home-btn">홈</p>
         </IconBox>
-        <IconBox>
+        <IconBox onClick={footer.onClick} className="search-book">
           {history.location.pathname === "/books" ? (
             <BookFill />
           ) : (
             <Book className="search-book" />
           )}
-          <p>책 검색</p>
+          <p className="search-book">책 검색</p>
         </IconBox>
-        <PlusCircleFill className="new-post" />
-        <IconBox>
-          <ChatDots className="chat" />
-          <p>채팅</p>
+        <IconBox className="new-post" onClick={footer.onClick}>
+          <PlusCircleFill className="new-post" />
         </IconBox>
-        <IconBox>
+
+        <IconBox onClick={footer.onClick}>
+          {history.location.pathname === "/chat" ? (
+            <ChatDotsFill />
+          ) : (
+            <ChatDots className="chat" />
+          )}
+
+          <p className="chat">채팅</p>
+        </IconBox>
+        <IconBox onClick={footer.onClick} className="profile">
           {history.location.pathname === "/test" ? (
             <PersonFill />
           ) : (
             <Person className="profile" />
           )}
-          <p>프로필</p>
+          <p className="profile">프로필</p>
         </IconBox>
       </Wrapper>
     </>
