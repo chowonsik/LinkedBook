@@ -17,3 +17,14 @@ export const Content = styled.div`
   width: 70%;
   font-weight: 500;
 `;
+
+export const ItemAndIcon = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  .icon {
+    font-size: ${fonts.xl};
+    color: ${colors.yellow};
+  }
+`;
