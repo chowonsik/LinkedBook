@@ -52,6 +52,10 @@ export default function DealDetail() {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  function redbell() {
+    history.push(`/redbell/${dealData.dealId}`);
+  }
+
   function handleDealCompleteButtonClick() {
     setCompletePageShow(true);
   }
@@ -80,6 +84,15 @@ export default function DealDetail() {
 
   async function fetchData() {
     const response = await requestGet(`/deals/${dealId}`);
+    console.log(response);
+    if (!response.isSuccess) {
+      dispatch(showToast("거래 조회에 실패했습니다."));
+      history.goBack();
+    }
+    if (response.result.dealStatus === "DELETED") {
+      dispatch(showToast("삭제된 게시물입니다."));
+      history.goBack();
+    }
     setDealData(response.result);
     const bookId = response.result.bookId;
     const bookResponse = await requestGet(`/books/${bookId}`);
@@ -249,7 +262,8 @@ export default function DealDetail() {
             <div className="deal-content">{dealData.dealContent}</div>
           </BookInfo>
           <DealState>
-            {dealData.userId === getLoginUser().id ? (
+            {dealData.userId === getLoginUser().id &&
+            dealData.dealStatus === "ACTIVATE" ? (
               <div
                 className="complete-button"
                 onClick={handleDealCompleteButtonClick}
@@ -290,7 +304,14 @@ export default function DealDetail() {
           )}
         </div>
         <div className="button-container">
-          {dealData.userId === getLoginUser().id ? (
+          {dealData.dealStatus === "COMPLETE" ? (
+            <RoundButton
+              value="거래완료"
+              width="40%"
+              fontSize={fonts.xl}
+              backgroundColor={colors.gray}
+            />
+          ) : dealData.userId === getLoginUser().id ? (
             <RoundButton
               value="수정하기"
               width="40%"
@@ -321,6 +342,7 @@ export default function DealDetail() {
               width="40%"
               fontSize={fonts.xl}
               backgroundColor={colors.red}
+              onClick={redbell}
             />
           )}
         </div>

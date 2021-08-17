@@ -32,13 +32,14 @@ export const LocationContainer = styled.div`
 export const InputContainer = styled.div`
   width: 100%;
   display: flex;
-  gap: 10px;
   padding: 0 20px;
+  button {
+    margin-left: 10px;
+  }
 `;
 export const SortByList = styled.div`
   width: 100%;
   display: flex;
-  gap: 10px;
   padding: 0 20px;
 `;
 
@@ -53,6 +54,7 @@ export const SortButton = styled.button`
   height: 22px;
   padding: 0 10px;
   border-radius: 100px;
+  margin-right: 10px;
 `;
 
 export const SpinnerContainer = styled.div`

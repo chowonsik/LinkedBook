@@ -36,6 +36,11 @@ function ChatRoom() {
   useEffect(() => {
     setReversedChatLogs(chatLogs.slice().reverse());
   }, [chatLogs]);
+  useEffect(() => {
+    if (toUserId) {
+      window.location.reload();
+    }
+  });
 
   function isDayChanged(date1, date2) {
     if (

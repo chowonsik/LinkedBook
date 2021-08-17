@@ -122,7 +122,7 @@ export default function RecommendUser() {
           unFollow={unFollow}
         />
       </Wrapper>
-      <FooterButton value="완료" onClick={handlePassButtonClick} />
+      <FooterButton value="건너뛰기" onClick={handlePassButtonClick} />
     </>
   );
 }
