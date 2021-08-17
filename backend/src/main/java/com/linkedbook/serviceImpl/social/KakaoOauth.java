@@ -75,25 +75,23 @@ public class KakaoOauth implements SocialOauth {
             return new Response<>(UNAUTHORIZED_TOKEN);
         }
         String kakaoId = userInfo.get("id").asText();
-        String nickname = userInfo.get("kakao_account").get("profile").get("nickname").toString();
-        nickname = nickname.substring(1, nickname.length() - 1);
+        String nickname = userInfo.get("kakao_account").get("profile").get("nickname").asText();
         String image = null;
         if (userInfo.get("kakao_account").get("profile").has("profile_image_url")) {
             image = userInfo.get("kakao_account").get("profile").get("profile_image_url").toString();
             image = image.substring(1, image.length() - 1);
             String temp = image.substring(0, 4);
-            String temp2 = image.substring(4, image.length());
+            String temp2 = image.substring(4);
             image = temp + "s" + temp2; // https 작업
         }
         String email = null;
         if (userInfo.get("kakao_account").has("email")) {
-            email = userInfo.get("kakao_account").get("email").toString();
-            email = email.substring(1, email.length() - 1);
+            email = userInfo.get("kakao_account").get("email").asText();
         }
         // 3. user 정보 가져오기
         UserDB userDB;
         try {
-            List<UserDB> userDBs = userRepository.findByEmailAndStatus(email, "ACTIVATE");
+            List<UserDB> userDBs = userRepository.findByOauthIdAndStatus(kakaoId, "ACTIVATE");
             if (userDBs.size() == 0) { // 최초 로그인
                 SignInOutput oauthOutput =
                         SignInOutput.builder()

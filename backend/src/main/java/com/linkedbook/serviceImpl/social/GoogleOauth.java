@@ -82,7 +82,7 @@ public class GoogleOauth implements SocialOauth {
         // 3. user 정보 가져오기
         UserDB userDB;
         try {
-            List<UserDB> userDBs = userRepository.findByEmailAndStatus(email, "ACTIVATE");
+            List<UserDB> userDBs = userRepository.findByOauthIdAndStatus(googleId, "ACTIVATE");
             if (userDBs.size() == 0) { // 최초 로그인
                 SignInOutput oauthOutput =
                         SignInOutput.builder()
