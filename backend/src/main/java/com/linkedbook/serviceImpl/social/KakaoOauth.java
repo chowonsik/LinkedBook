@@ -41,7 +41,7 @@ public class KakaoOauth implements SocialOauth {
     private final String KAKAO_OAUTH_BASE_URL = "https://kauth.kakao.com/oauth/authorize";
     private final String KAKAO_OAUTH_TOKEN_BASE_URL = "https://kauth.kakao.com/oauth/token";
     private final String KAKAO_OAUTH_RESOURCE_BASE_URL = "https://kapi.kakao.com/v2/user/me";
-    private final String KAKAO_OAUTH_CALLBACK_URL = "http://localhost:3000/auth/kakao/callback";
+    private final String KAKAO_OAUTH_CALLBACK_URL = "http://i5b307.p.ssafy.io/auth/kakao/callback";
 
     @Value("${custom.oauth2.kakao.client.id}")
     private String KAKAO_OAUTH_CLIENT_ID;

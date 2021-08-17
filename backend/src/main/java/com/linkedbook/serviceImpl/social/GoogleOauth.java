@@ -40,7 +40,7 @@ public class GoogleOauth implements SocialOauth {
     private final String GOOGLE_OAUTH_BASE_URL = "https://accounts.google.com/o/oauth2/v2/auth";
     private final String GOOGLE_OAUTH_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
     private final String GOOGLE_OAUTH_RESOURCE_BASE_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
-    private final String GOOGLE_OAUTH_CALLBACK_URL = "http://localhost:3000/auth/google/callback";
+    private final String GOOGLE_OAUTH_CALLBACK_URL = "http://i5b307.p.ssafy.io/auth/google/callback";
 
     @Value("${custom.oauth2.google.client.id}")
     private String GOOGLE_OAUTH_CLIENT_ID;
