@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SelectUserDealOutput {
+    private int userDealId;
     private int dealId;
     private String imageUrl;
     private Date created_at;
