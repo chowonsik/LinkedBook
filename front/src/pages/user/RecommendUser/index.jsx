@@ -6,34 +6,57 @@ import RecommendUserList from "../../../components/user/recommend/RecommendUserL
 
 import { Wrapper } from "./style";
 import { request, requestGet } from "../../../api.js";
+import { useDispatch } from "react-redux";
+import { createAlarm } from "../../../actions/Alarm";
 
 export default function RecommendUser() {
   const [userList, setUserList] = useState([]);
   const [dong, setDong] = useState("");
+  const [newFollowerList, setNewFollowerList] = useState([]);
   const history = useHistory();
+  const dispatch = useDispatch();
 
   function follow(userId) {
     const newUserList = userList.map((user) => {
       return user.userId === userId ? { ...user, isFollowing: true } : user;
     });
     setUserList(newUserList);
+    setNewFollowerList([...newFollowerList, userId]);
   }
   function unFollow(userId) {
     const newUserList = userList.map((user) => {
       return user.userId === userId ? { ...user, isFollowing: false } : user;
     });
     setUserList(newUserList);
+    setNewFollowerList(newFollowerList.filter((id) => id !== userId));
   }
 
-  function requestFollow() {
+  async function requestFollow() {
     const loginUserId = JSON.parse(localStorage.getItem("loginUser")).id;
     for (const user of userList) {
       if (user.isFollowing) {
-        request("POST", "/follow", {
+        await request("POST", "/follow", {
           fromUserId: loginUserId,
           toUserId: user.userId,
         });
       }
+    }
+    makeAlarm();
+  }
+
+  async function makeAlarm() {
+    const response = await requestGet("/follow/following", {
+      page: 0,
+      size: 10000,
+    });
+    console.log(response.result);
+    const followIdList = response.result
+      .filter((follow) => newFollowerList.includes(follow.user.id))
+      .map((follow) => follow.id);
+    console.log("followIdList");
+    console.log(followIdList);
+    for (const followId of followIdList) {
+      dispatch(createAlarm({ type: "FOLLOW", followId: followId }));
     }
   }
 
@@ -74,12 +97,19 @@ export default function RecommendUser() {
     };
     const response = await requestGet("/users", params);
     const result = await addFollowings(response.result);
+    if (!result || result.length === 0) {
+      history.push("/");
+    }
     setUserList(result);
   }
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log(newFollowerList);
+  }, [newFollowerList]);
   return (
     <>
       <Header title="책방 추천" />
