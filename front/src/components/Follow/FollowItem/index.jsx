@@ -1,5 +1,5 @@
 import { PersonCircle } from "react-bootstrap-icons";
-
+import { Link } from "react-router-dom";
 import {
   Wrapper,
   Image,
@@ -21,17 +21,24 @@ function FollowItem({
   return (
     <>
       <Wrapper>
-        {profileImage ? (
+        <Link to={`/profile/${userId}`}>
           <Image>
-            <img src={profileImage} alt={nickName} />
+            <img
+              src={profileImage}
+              alt={nickName}
+              onError={(e) => {
+                e.target.src =
+                  "https://www.voakorea.com/themes/custom/voa/images/Author__Placeholder.png";
+              }}
+            />
           </Image>
-        ) : (
-          <PersonCircle className="profile-icon" />
-        )}
-
+        </Link>
         <NickName>
-          <h3>{nickName}</h3>
+          <Link to={`/profile/${userId}`}>
+            <h3>{nickName}</h3>
+          </Link>
         </NickName>
+
         {isF4F || isFollow ? (
           <FollowingButton
             onClick={onClick}

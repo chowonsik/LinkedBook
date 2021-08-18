@@ -100,6 +100,7 @@ export const createFollowAlarm = (userId) => {
     const response = requestGet("/follow/following", params);
     response.then((res) => {
       const followId = res.result.filter((data) => data.user.id === userId);
+
       if (followId.length !== 0) {
         const data = {
           type: "FOLLOW",
