@@ -11,5 +11,6 @@ export const DealList = styled.div`
   margin-bottom: 50px;
   height: ${(props) => props.height}px;
   overflow: scroll;
+  overflow-x: hidden;
   align-items: center;
 `;
