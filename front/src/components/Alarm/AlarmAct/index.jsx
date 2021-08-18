@@ -3,9 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { Wrapper } from "./styles";
 import AlarmActItem from "./AlarmActItem";
+import DealComplete from "../../deal/DealComplete";
 import { getActAlarm, updateAlarmStatus } from "../../../actions/Alarm";
 function AlarmAct({ height }) {
   const dispatch = useDispatch();
+  const [completePageShow, setCompletePageShow] = useState(false);
+  const [dealId, setDealId] = useState(0);
   const currentPage = useSelector((state) => state.alarmReducer.actCurrentPage);
   const totalPages = useSelector((state) => state.alarmReducer.actTotalPages);
   const totalElements = useSelector(
@@ -71,8 +74,23 @@ function AlarmAct({ height }) {
     };
     dispatch(getActAlarm(params));
   }
+
+  function handleClickDealDone(alarmId, dealId) {
+    dispatch(updateAlarmStatus(alarmId));
+    setDealId(dealId);
+    setCompletePageShow(true);
+  }
+  function handleCancleButtonClick() {
+    setCompletePageShow(false);
+  }
   return (
     <Wrapper onScroll={handleScroll} height={height}>
+      <DealComplete
+        show={completePageShow}
+        onCancleButtonClick={handleCancleButtonClick}
+        dealId={dealId}
+        flag={false}
+      ></DealComplete>
       {alarmActList &&
         [...new Set(alarmActList)].map(
           (alarm) =>
@@ -87,6 +105,7 @@ function AlarmAct({ height }) {
                 createdAt={handleTimeLog(alarm.created_at)}
                 onClick={handleClickAlarm}
                 key={alarm.id}
+                onClickDealDone={handleClickDealDone}
               />
             )
         )}

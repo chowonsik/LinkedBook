@@ -8,6 +8,7 @@ export const Wrapper = styled.div`
   top: 0px;
   background-color: white;
   overflow-y: hidden;
+  margin-top: 1rem;
 `;
 
 export const SearchBar = styled.div`
@@ -20,7 +21,7 @@ export const SearchBar = styled.div`
 
 export const Input = styled.input`
   width: 80%;
-  height: 40%;
+  height: 45px;
   border-radius: 12px;
   border: none;
   background-color: ${colors.lightGray};
@@ -33,7 +34,7 @@ export const Input = styled.input`
 
 export const Icon = styled.div`
   color: ${colors.black};
-  font-size: ${fonts.xl};
+  font-size: ${fonts.xxl};
   margin-left: 1.5rem;
 `;
 
@@ -45,6 +46,7 @@ export const ResultContainer = styled.div`
 
 export const ErrorMessage = styled.div`
   color: ${colors.red};
+  margin-top: 1.5rem;
   display: ${(props) =>
     props.currentPage === 0 && props.users.length === 0 && props.flag
       ? "block"

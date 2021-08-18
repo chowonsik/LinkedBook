@@ -12,7 +12,7 @@ import {
 import { useHistory } from "react-router-dom";
 
 import useFooter from "../../../hooks/useFooter.js";
-import { Wrapper, IconBox } from "./styles";
+import { Wrapper, IconBox, NewPostBtn } from "./styles";
 
 function Footer() {
   const history = useHistory();
@@ -38,7 +38,11 @@ function Footer() {
           <p className="search-book">책 검색</p>
         </IconBox>
         <IconBox className="new-post" onClick={footer.onClick}>
-          <PlusCircleFill className="new-post" />
+          <NewPostBtn className="new-post" onClick={footer.onClick}>
+            <p className="new-post" onClick={footer.onClick}>
+              +
+            </p>
+          </NewPostBtn>
         </IconBox>
 
         <IconBox onClick={footer.onClick}>

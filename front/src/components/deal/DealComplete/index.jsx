@@ -8,7 +8,12 @@ import { showToast } from "../../../actions/Notification";
 import { useHistory } from "react-router-dom";
 import { doRefresh } from "../../../actions/Deal";
 import { createAlarm } from "../../../actions/Alarm";
-export default function DealComplete({ show, onCancleButtonClick, dealId }) {
+export default function DealComplete({
+  show,
+  onCancleButtonClick,
+  dealId,
+  flag = true,
+}) {
   const [chatList, setChatList] = useState([]);
   const [selectedUser, setSelectedUser] = useState({});
   const [rating, setRating] = useState(3);
@@ -30,6 +35,7 @@ export default function DealComplete({ show, onCancleButtonClick, dealId }) {
       dispatch(showToast("거래가 완료되었습니다."));
       dispatch(doRefresh());
       history.push("/");
+      if (!flag) history.push("/alarm");
     } else {
       console.log(response);
       dispatch(showToast("실패함!"));
