@@ -1,6 +1,7 @@
 import { Wrapper, Content, ItemAndIcon } from "./styles";
 import { Link } from "react-router-dom";
 import { ArrowRightCircleFill } from "react-bootstrap-icons";
+
 function AlarmActItem({
   type,
   alarmId,
@@ -10,6 +11,7 @@ function AlarmActItem({
   bookTitle,
   createdAt,
   onClick,
+  onClickDealDone,
 }) {
   if (type === "LIKE_DEAL") {
     return (
@@ -32,17 +34,15 @@ function AlarmActItem({
     );
   } else if (type === "EVAL") {
     return (
-      <Link to={`/deal/${dealId}`} onClick={() => onClick(alarmId)}>
-        <Wrapper>
-          <Content>
-            '{bookTitle}'책의 구매가 확정되었습니다. 후기를 등록해볼까요?
-          </Content>
-          <ItemAndIcon>
-            <p className="created-at">{createdAt}</p>
-            <ArrowRightCircleFill className="icon" />
-          </ItemAndIcon>
-        </Wrapper>
-      </Link>
+      <Wrapper onClick={() => onClickDealDone(alarmId, dealId)}>
+        <Content>
+          '{bookTitle}'책의 구매가 확정되었습니다. 후기를 등록해볼까요?
+        </Content>
+        <ItemAndIcon>
+          <p className="created-at">{createdAt}</p>
+          <ArrowRightCircleFill className="icon" />
+        </ItemAndIcon>
+      </Wrapper>
     );
   } else if (type === "NEW_DEAL_FOLLOW") {
     return (
