@@ -57,7 +57,6 @@ const Profile = ({ match }) => {
     };
     await request("post", "/follow", data);
     await dispatch(getUserObj(USER_ID));
-    await dispatch(createAlarm({ type: "FOLLOW", followId: userObj.isFollow }));
   }
 
   async function unFollow() {
