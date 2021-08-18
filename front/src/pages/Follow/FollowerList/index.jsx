@@ -78,6 +78,7 @@ function FollowerList({
     const innerHeight = window.innerHeight;
     setHeight(innerHeight - 55);
   }
+
   return (
     <Wrapper>
       <Header isBack={true} isAlarm={true} title={"팔로워"} />
