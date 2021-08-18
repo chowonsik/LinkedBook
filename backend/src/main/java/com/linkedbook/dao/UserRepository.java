@@ -28,9 +28,9 @@ public interface UserRepository extends JpaRepository<UserDB, Integer> {
             "case when exists(select * from follow f where f.to_user_id = ?1 and f.from_user_id = ?2) then (select f.id from follow f where f.to_user_id = ?1 and f.from_user_id = ?2) else 0 end as isFollow "
             + "from user u "
             + "inner join(select ua.user_id, a.dongmyeonri from user_area ua join area a on a.id = ua.area_id where ua.orders = 1) as dong on dong.user_id = u.id "
-            + "left outer join(select user_id, count(id) as dealCnt from deal group by user_id) as deal on deal.user_id = u.id "
-            + "left outer join(select from_user_id, count(id) as followerCnt from follow group by from_user_id) as follower on follower.from_user_id = u.id "
-            + "left outer join(select to_user_id, count(id) as followingCnt from follow group by to_user_id) as following on following.to_user_id = u.id "
+            + "left outer join(select user_id, count(id) as dealCnt from deal where status = 'ACTIVATE' group by user_id) as deal on deal.user_id = u.id "
+            + "left outer join(select f.from_user_id, count(f.id) as followingCnt from follow f join user u on f.to_user_id = u.id where u.status = 'ACTIVATE' group by from_user_id) as following on following.from_user_id = u.id "
+            + "left outer join(select f.to_user_id, count(f.id) as followerCnt from follow f join user u on f.from_user_id = u.id where u.status = 'ACTIVATE' group by to_user_id) as follower on follower.to_user_id = u.id "
             + "left outer join(select user_id, avg(score) as mannerScore from user_deal group by user_id) as manner on manner.user_id = u.id "
             + "where u.id = ?1", nativeQuery = true)
     SelectProfileOutput findUserProfile(int id, int myId);

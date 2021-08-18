@@ -189,17 +189,20 @@ public class UserServiceImpl implements UserService {
             // 유저 id 가져오기
             int myId = jwtService.getUserId();
             UserDB selectUser = userRepository.findByIdAndStatus(myId, "ACTIVATE");
-            userDB = selectUser;
-
             // 입력 값 벨리데이션
             if (StringUtils.isNotBlank(updateProfileInput.getPassword()))
-                userDB.setPassword(new AES128(USER_INFO_PASSWORD_KEY).encrypt(updateProfileInput.getPassword()));
-            if (StringUtils.isNotBlank(updateProfileInput.getNickname()))
-                userDB.setNickname(updateProfileInput.getNickname());
+                selectUser.setPassword(new AES128(USER_INFO_PASSWORD_KEY).encrypt(updateProfileInput.getPassword()));
+            if (StringUtils.isNotBlank(updateProfileInput.getNickname())) {
+                boolean existNickname = userRepository.existsByNicknameAndStatus(updateProfileInput.getNickname(), "ACTIVATE");
+                if (existNickname) { // 닉네임 중복 제어
+                    return new Response<>(EXISTS_NICKNAME);
+                }
+                selectUser.setNickname(updateProfileInput.getNickname());
+            }
             if (StringUtils.isNotBlank(updateProfileInput.getInfo()))
-                userDB.setInfo(updateProfileInput.getInfo());
+                selectUser.setInfo(updateProfileInput.getInfo());
             if (StringUtils.isNotBlank(updateProfileInput.getImage()))
-                userDB.setImage(updateProfileInput.getImage());
+                selectUser.setImage(updateProfileInput.getImage());
             if (ValidationCheck.isValidId(updateProfileInput.getAreaId())) {
                 UserAreaDB userAreaDB;
                 Optional<UserAreaDB> getUserAreaDB = userAreaRepository.findByUserIdAndOrders(myId, 1);
@@ -212,7 +215,7 @@ public class UserServiceImpl implements UserService {
                 userAreaDB.setArea(areaDB);
                 userAreaRepository.save(userAreaDB);
             }
-            userRepository.save(userDB);
+            userRepository.save(selectUser);
         } catch (Exception e) {
             return new Response<>(DATABASE_ERROR);
         }
