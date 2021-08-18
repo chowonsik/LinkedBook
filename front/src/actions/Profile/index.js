@@ -1,4 +1,5 @@
 import { request, requestGet } from "../../api";
+import { showToast } from "../Notification";
 
 // 유저프로필
 export const SET_USER_OBJ = "SET_USER_OBJ";
@@ -12,8 +13,15 @@ export const getUserObj = (userId) => async (dispatch) => {
 
 export const updateUserObj = (data) => async (dispatch) => {
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
-  await request("patch", `/users`, data);
-  dispatch(getUserObj(LOGIN_USER_ID));
+  const res = await request("patch", `/users`, data);
+  if (res.status === 200) {
+    dispatch(getUserObj(LOGIN_USER_ID));
+    dispatch(showToast("프로필이 수정되었습니다."));
+    return 200;
+  } else {
+    dispatch(showToast(res.message));
+    return 400;
+  }
 };
 
 export const getUserTabInfo =
