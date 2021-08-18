@@ -2,22 +2,20 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../../components/Layout/Footer";
 import Header from "../../../components/Layout/Header";
 import { Wrapper, ChatRoom } from "./style";
-import { request, requestGet } from "../../../api.js";
+import { requestGet } from "../../../api.js";
 import { useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
 
 export default function ChatRoomList() {
   const [chatList, setChatList] = useState([]);
   const history = useHistory();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     getChatList();
   }, []);
+
   async function getChatList() {
     const loginUserId = JSON.parse(localStorage.getItem("loginUser")).id;
     const response = await requestGet("/chat/rooms", { userId: loginUserId });
-    console.log(response);
     if (response.isSuccess) {
       const list = response.result.map((chat) => {
         const data = {
@@ -36,7 +34,6 @@ export default function ChatRoomList() {
           data.userImage = chat.toUserImage;
           data.userNickname = chat.toUserNickname;
         }
-        console.log(data);
         return data;
       });
       setChatList(list);
@@ -71,6 +68,27 @@ export default function ChatRoomList() {
       return md;
     }
   }
+  async function enterChatRoom(chatRoom) {
+    const myId = JSON.parse(localStorage.getItem("loginUser")).id;
+    const response = await requestGet(`/users/${myId}/profile`);
+    const fromUser = {
+      fromUserId: myId,
+      fromUserImage: response.result.image,
+      fromUserNickname: response.result.nickname,
+    };
+    history.push({
+      pathname: `/chat/room/${chatRoom.room_id}`,
+      state: {
+        toUser: {
+          toUserId: chatRoom.userId,
+          toUserImage: chatRoom.userImage,
+          toUserNickname: chatRoom.userNickname,
+        },
+        fromUser: fromUser,
+      },
+    });
+  }
+
   return (
     <>
       <Header isLogo isSearch isAlarm />
@@ -79,7 +97,7 @@ export default function ChatRoomList() {
           <ChatRoom
             key={i}
             onClick={() => {
-              history.push(`/chat/room/${chatRoom.room_id}`);
+              enterChatRoom(chatRoom);
             }}
           >
             <div className="user-img-container">

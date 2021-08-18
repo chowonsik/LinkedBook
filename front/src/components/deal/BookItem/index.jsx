@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Wrapper } from "./style";
 
 export default function BookItem({ book, onBookClick }) {
