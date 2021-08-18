@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useEffect } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Wrapper, Bar, ProgressBar, Icon } from "./styles";
 
 function useWindowSize() {

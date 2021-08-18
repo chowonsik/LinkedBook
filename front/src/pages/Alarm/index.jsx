@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+
 import Header from "../../components/Layout/Header";
 
 import AlarmAct from "../../components/Alarm/AlarmAct";
 import AlarmFollow from "../../components/Alarm/AlarmFollow";
-import { setNewAlarm } from "../../actions/Alarm";
-import { Wrapper, AlarmType, AlarmTypeItem, ContentContainer } from "./styles";
+
+import { Wrapper, AlarmType, AlarmTypeItem } from "./styles";
 function Alarm() {
   const [type, setType] = useState(true);
   const [height, setHeight] = useState(0);
-  const dispatch = useDispatch();
+
   useEffect(() => {
     handleSetHeight();
   }, []);
