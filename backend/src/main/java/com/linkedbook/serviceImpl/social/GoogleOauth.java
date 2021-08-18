@@ -154,7 +154,7 @@ public class GoogleOauth implements SocialOauth {
                 accessToken = mapper.readTree(responseEntity.getBody()).get("access_token").toString();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("[auth/google] database error", e);
         }
 
         return accessToken;
@@ -177,7 +177,7 @@ public class GoogleOauth implements SocialOauth {
                 returnNode = mapper.readTree(response.getEntity().getContent());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("[auth/google] database error", e);
         }
         return returnNode;
     }
