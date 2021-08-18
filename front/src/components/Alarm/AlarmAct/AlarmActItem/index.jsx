@@ -63,7 +63,7 @@ function AlarmActItem({
     return (
       <Link to={`/profile/${userId}`} onClick={() => onClick(alarmId)}>
         <Wrapper>
-          <Content>'{bookTitle}'책이 입고되었습니다. </Content>
+          <Content>관심책으로 등록한 책이 새롭게 입고되었습니다. </Content>
           <ItemAndIcon>
             <p className="created-at">{createdAt}</p>
             <ArrowRightCircleFill className="icon" />

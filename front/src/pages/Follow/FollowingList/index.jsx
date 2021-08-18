@@ -75,6 +75,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
               isFollow={true}
               isF4F={following.f4f}
               followId={following.id}
+              userId={following.user.id}
               onClick={handleClick}
               key={idx}
             />
