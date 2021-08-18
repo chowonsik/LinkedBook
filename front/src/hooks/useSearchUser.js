@@ -1,10 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  getSearchUserResult,
-  setUserListReset,
-  setCurrentPage,
-} from "../actions/Search";
+import { getSearchUserResult, setUserListReset } from "../actions/Search";
 const useSearchUser = () => {
   const [value, setValue] = useState("");
   const [isActive, setIsActive] = useState(false);
@@ -78,7 +74,6 @@ const useSearchUser = () => {
     handleScroll,
     handleChange,
     handleKeyPress,
-    handleClickSearch,
   };
 };
 
