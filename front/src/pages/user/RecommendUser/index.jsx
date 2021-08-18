@@ -47,7 +47,7 @@ export default function RecommendUser() {
   async function makeAlarm() {
     const response = await requestGet("/follow/following", {
       page: 0,
-      size: 10000,
+      size: 1000,
     });
     console.log(response.result);
     const followIdList = response.result
@@ -76,7 +76,7 @@ export default function RecommendUser() {
   async function addFollowings(bookStars) {
     const response = await requestGet("/follow/following", {
       page: 0,
-      size: 10000,
+      size: 1000,
     });
     const followings = response.result.map((following) => following.user);
     const bookStarsWithFollowing = bookStars.map((bookStar) => {
@@ -122,7 +122,7 @@ export default function RecommendUser() {
           unFollow={unFollow}
         />
       </Wrapper>
-      <FooterButton value="완료" onClick={handlePassButtonClick} />
+      <FooterButton value="건너뛰기" onClick={handlePassButtonClick} />
     </>
   );
 }
