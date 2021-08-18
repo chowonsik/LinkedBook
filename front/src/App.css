@@ -1,1 +1,18 @@
+@media screen and (min-width: 500px) {
+  .App #app-content {
+    display: none;
+  }
+  .App #alert {
+    display: block;
+  }
+}
 
+@media screen and (max-width: 500px) {
+  .App #app-content {
+    display: block;
+    margin-top: 0;
+  }
+  .App #alert {
+    display: none;
+  }
+}
