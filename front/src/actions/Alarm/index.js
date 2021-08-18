@@ -5,6 +5,7 @@ export const SET_ALARM_FOLLOW_LIST = "SET_ALARM_FOLLOW_LIST";
 export const SET_ALARM_ACT_LIST = "SET_ALARM_ACT_LIST";
 export const SET_ALARM_ACT_PAGE = "SET_ALARM_ACT_PAGE";
 export const SET_NEW_ALARM = "SET_NEW_ALARM";
+export const UPDATE_FOLLOW_ALARM_LIST = "UPDATE_FOLLOW_ALARM_LIST";
 export const getFollowAlarm = (params) => {
   return (dispatch) => {
     const response = requestGet("/alerts", params);
@@ -42,8 +43,9 @@ export const setAlarmFollowPage = (
 };
 
 export const updateAlarmStatus = (alarmId) => {
-  return () => {
+  return (dispatch) => {
     const response = requestPatch(`/alerts/${alarmId}`);
+    dispatch(updateFollowAlarmList(alarmId));
   };
 };
 
@@ -97,5 +99,12 @@ export const setNewAlarm = (code) => {
 export const createAlarm = (data) => {
   return () => {
     const response = request("post", "/alerts", data);
+  };
+};
+
+export const updateFollowAlarmList = (alarmId) => {
+  return {
+    type: UPDATE_FOLLOW_ALARM_LIST,
+    alarmId,
   };
 };

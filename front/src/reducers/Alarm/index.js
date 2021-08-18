@@ -4,6 +4,7 @@ import {
   SET_ALARM_ACT_LIST,
   SET_ALARM_ACT_PAGE,
   SET_NEW_ALARM,
+  UPDATE_FOLLOW_ALARM_LIST,
 } from "../../actions/Alarm";
 
 const INIT_STATE = {
@@ -54,6 +55,13 @@ export const alarmReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         isNewAlarm: action.code,
+      };
+    case UPDATE_FOLLOW_ALARM_LIST:
+      return {
+        ...state,
+        alarmFollowList: state.alarmFollowList.filter(
+          (alarm) => alarm.id !== action.alarmId
+        ),
       };
     default:
       return state;
