@@ -1,6 +1,8 @@
 package com.linkedbook.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -21,9 +23,6 @@ public class AES128 {
     private final String ips;
     private final Key keySpec;
 
-    @Value("${custom.aes128.secret.key}")
-    private String AES128_SECRET_KEY;
-
     public AES128(String key) {
         byte[] keyBytes = new byte[16];
         byte[] b = key.getBytes(UTF_8);
@@ -35,7 +34,7 @@ public class AES128 {
 
     public String encrypt(String value) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException,
             IllegalBlockSizeException, InvalidAlgorithmParameterException, InvalidKeyException {
-        Cipher cipher = Cipher.getInstance(AES128_SECRET_KEY);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(ips.getBytes()));
         byte[] encrypted = cipher.doFinal(value.getBytes(UTF_8));
         return new String(Base64.getEncoder().encode(encrypted));
@@ -43,7 +42,7 @@ public class AES128 {
 
     public String decrypt(String value) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException,
             IllegalBlockSizeException, InvalidAlgorithmParameterException, InvalidKeyException {
-        Cipher cipher = Cipher.getInstance(AES128_SECRET_KEY);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, keySpec, new IvParameterSpec(ips.getBytes(UTF_8)));
         byte[] decrypted = Base64.getDecoder().decode(value.getBytes());
         return new String(cipher.doFinal(decrypted), UTF_8);
