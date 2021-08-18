@@ -1,5 +1,5 @@
 import { request, requestGet, requestDelete } from "../../api";
-import axios from "axios";
+import { createAlarm } from "../Alarm";
 export const SET_FOLLOWING_LIST = "SET_FOLLOWING_LIST";
 export const SET_FOLLOWER_LIST = "SET_FOLLOWER_LIST";
 export const SET_FOLLOW_PAGE_INFO = "SET_FOLLOW_PAGE_INFO";
@@ -45,8 +45,9 @@ export const updateFollowingList = (followId) => {
   };
 };
 export const createFollow = (data) => {
-  return () => {
+  return (dispatch) => {
     const response = request("post", "/follow", data);
+    dispatch(createFollowAlarm(data.toUserId));
   };
 };
 // 팔로워 리스트 불러오기
@@ -89,5 +90,26 @@ export const setFollowReset = () => {
 export const setLoginUserInfo = () => {
   return {
     type: SET_LOGIN_USER_INFO,
+  };
+};
+
+export const createFollowAlarm = (userId) => {
+  const params = {
+    page: 0,
+    size: 10,
+  };
+  return (dispatch) => {
+    const response = requestGet("/follow/following", params);
+    response.then((res) => {
+      const followId = res.result.filter((data) => data.user.id === userId);
+      if (followId.length !== 0) {
+        // console.log(followId);
+        const data = {
+          type: "FOLLOW",
+          followId: followId[0].follow.id,
+        };
+        dispatch(createAlarm(data));
+      }
+    });
   };
 };

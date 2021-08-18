@@ -30,6 +30,7 @@ import { request } from "../../../api.js";
 import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import { doRefresh } from "../../../actions/Deal";
+import { createAlarm } from "../../../actions/Alarm";
 
 export default function CreateDeal() {
   const [search, setSearch] = useState("");
@@ -104,6 +105,7 @@ export default function CreateDeal() {
       author: updateDealData.bookAuthor,
       publisher: updateDealData.bookPublisher,
       price: parseInt(updateDealData.bookPrice),
+      datetime: updateDealData.bookDateTime,
     });
   }
   function setUpdateData() {
@@ -190,7 +192,6 @@ export default function CreateDeal() {
       if (bookInfo.isbn) {
         data.bookId = bookInfo.isbn.split(" ")[1];
       }
-      console.log(data);
       const result = await request(
         "PATCH",
         `/deals/${updateDealData.dealId}`,
@@ -212,9 +213,14 @@ export default function CreateDeal() {
         content: dealContent.value,
         images: images,
       };
-      const result = await request("POST", "/deals", data);
-      console.log(result);
+      const response = await request("POST", "/deals", data);
       dispatch(showToast("판매 등록이 완료되었습니다."));
+      dispatch(
+        createAlarm({ type: "NEW_DEAL_FOLLOW", dealId: response.result.dealId })
+      );
+      dispatch(
+        createAlarm({ type: "NEW_DEAL_BOOK", dealId: response.result.dealId })
+      );
       history.push({ pathname: "/" });
     }
   }

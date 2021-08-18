@@ -34,6 +34,10 @@ export const Wrapper = styled.div`
   }
   .google {
     border: 1px solid rgba(0, 0, 0, 0.1);
+    img {
+      transform: scale(1.1);
+      transform: translateY(2px);
+    }
   }
 `;
 

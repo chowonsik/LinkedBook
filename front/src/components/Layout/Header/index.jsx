@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
+import { checkNewAlarm } from "../../../actions/Alarm";
 import {
   ArrowLeft,
   Search,
@@ -15,6 +18,8 @@ import {
   IconsAndDone,
   DoneButton,
   Block,
+  AlarmBox,
+  NewAlarmIcon,
 } from "./styles";
 
 /*
@@ -31,11 +36,18 @@ function Header({
   isAlarm = false,
   isDeclare = false,
   isDone = false,
+  DoneBtnClick,
   onClickSearch,
 }) {
+  const newAlarm = useSelector((state) => state.alarmReducer.isNewAlarm);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkNewAlarm());
+  }, []);
   function handleClickBack() {
     history.goBack();
   }
+
   return (
     <Block>
       <Wrapper>
@@ -63,9 +75,17 @@ function Header({
           <Link to="/search/user">
             <Search className="search-btn" onClick={onClickSearch} />
           </Link>
-          <BellFill className="alarm-btn" />
+          <Link to="/alarm">
+            <AlarmBox>
+              <BellFill className="alarm-btn" />
+              <NewAlarmIcon newAlarm={newAlarm} isAlarm={isAlarm} />
+            </AlarmBox>
+          </Link>
+
           <PatchExclamationFill className="declare" />
-          <DoneButton className="done-btn">완료</DoneButton>
+          <DoneButton className="done-btn" onClick={DoneBtnClick}>
+            완료
+          </DoneButton>
         </IconsAndDone>
       </Wrapper>
     </Block>

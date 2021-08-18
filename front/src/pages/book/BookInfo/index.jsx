@@ -1,7 +1,8 @@
 // import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { BookmarkFill, PencilFill } from "react-bootstrap-icons";
+import { useDispatch } from "react-redux";
+import { BookmarkFill, Bookmark, PencilFill } from "react-bootstrap-icons";
 import { Wrapper, BookComments, Footer } from "./styles";
 import { request, requestGet, requestDelete } from "../../../api";
 import BookDetail from "../../../components/book/BookDetail";
@@ -9,8 +10,12 @@ import BookCommentItem from "../../../components/book/BookCommentItem";
 import BookCommentModal from "../../../components/book/BookCommentModal";
 import Header from "../../../components/Layout/Header";
 import RoundButton from "../../../components/common/Buttons/RoundButton";
+import ToastMessage from "../../../components/common/ToastMessage";
+import { showToast } from "../../../actions/Notification";
+import { createAlarm } from "../../../actions/Alarm";
 
-const BookInfo = ({ match }) => {
+const BookInfo = ({ match, history }) => {
+  const dispatch = useDispatch();
   const LOGIN_USER = JSON.parse(localStorage.getItem("loginUser")).id;
   const {
     params: { isbn },
@@ -20,6 +25,7 @@ const BookInfo = ({ match }) => {
   const [modalActive, setModalActive] = useState(false);
   const [newComment, setNewComment] = useState({});
   const [editing, setEditing] = useState(false);
+  const [isBookLike, setIsBookLike] = useState(false);
   const [starRatingState, setStarRatingState] = useState([
     false,
     false,
@@ -97,9 +103,7 @@ const BookInfo = ({ match }) => {
     const { result } = await requestGet(`/books/${isbn}`);
     const bookData = {
       ...result,
-      price: result.price.toLocaleString("ko-KR", {
-        currency: "KRW",
-      }),
+      price: result.price.toLocaleString(),
       commentAvgScore: result.commentAvgScore,
       date: `${result.dateTime.substr(0, 4)}년 ${result.dateTime.substr(
         5,
@@ -107,6 +111,7 @@ const BookInfo = ({ match }) => {
       )}월 ${result.dateTime.substr(8, 2)}일 출간`,
     };
     setBookInfo(bookData);
+    setIsBookLike(bookData.like);
   };
 
   const infiniteScroll = () => {
@@ -229,15 +234,15 @@ const BookInfo = ({ match }) => {
     const tagData = findSelectedTag();
     if (!valid) return;
     const commentData = { isbn, ...newComment, categories: tagData };
+    modalToggle();
     await request("post", "/comments", commentData);
     const { result } = await requestGet("/comments", {
       bookId: isbn,
       page: 0,
-      size: bookComments.length,
+      size: 5,
     });
     setBookComments(result);
     getBookInfo();
-    modalToggle();
   };
 
   const onUpdateClick = async ({ comment }) => {
@@ -289,7 +294,8 @@ const BookInfo = ({ match }) => {
     getBookInfo();
   };
 
-  const likeComment = async (commentId) => {
+  const likeComment = async (commentId, commentLikeId) => {
+    console.log(commentId);
     await request("post", "/like-comments", { id: commentId });
     setBookComments(
       bookComments.map((comment) =>
@@ -305,6 +311,7 @@ const BookInfo = ({ match }) => {
           : comment
       )
     );
+    dispatch(createAlarm({ type: "LIKE_COMMENT", commentId: commentId }));
   };
 
   const unlikeComment = async (likeId) => {
@@ -323,6 +330,20 @@ const BookInfo = ({ match }) => {
           : comment
       )
     );
+  };
+
+  const likeBook = async () => {
+    setIsBookLike({ ...isBookLike, userLike: !isBookLike.userLike });
+    await request("post", `/like-books`, { id: isbn });
+    dispatch(showToast("관심책으로 등록되었습니다."));
+    getBookInfo();
+  };
+
+  const unlikeBook = async () => {
+    setIsBookLike({ ...isBookLike, userLike: !isBookLike.userLike });
+    await requestDelete(`/like-books/${isBookLike.id}`);
+    dispatch(showToast("관심책에서 삭제되었습니다."));
+    getBookInfo();
   };
 
   return (
@@ -367,7 +388,11 @@ const BookInfo = ({ match }) => {
         />
       </Wrapper>
       <Footer>
-        <BookmarkFill className="bookmark-icon" />
+        {isBookLike.userLike && isBookLike.userLike ? (
+          <BookmarkFill onClick={unlikeBook} className="bookmark-icon" />
+        ) : (
+          <Bookmark onClick={likeBook} className="bookmark-icon" />
+        )}
         <RoundButton value="거래보기" width="70%" />
       </Footer>
     </>

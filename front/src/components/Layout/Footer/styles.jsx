@@ -24,6 +24,7 @@ export const IconBox = styled.div`
   flex-direction: column;
   align-items: center;
   font-size: 22px;
+  padding: 0.5rem;
   p {
     color: ${colors.black};
     font-size: 12px;

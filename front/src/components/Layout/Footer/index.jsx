@@ -5,6 +5,7 @@ import {
   BookFill,
   PlusCircleFill,
   ChatDots,
+  ChatDotsFill,
   Person,
   PersonFill,
 } from "react-bootstrap-icons";
@@ -16,37 +17,48 @@ import { Wrapper, IconBox } from "./styles";
 function Footer() {
   const history = useHistory();
   const footer = useFooter();
+  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser"));
   return (
     <>
-      <Wrapper onClick={footer.onClick}>
-        <IconBox>
+      <Wrapper>
+        <IconBox onClick={footer.onClick} className="home-btn">
           {history.location.pathname === "/" ? (
             <HouseDoorFill />
           ) : (
             <HouseDoor className="home-btn" />
           )}
-          <p>홈</p>
+          <p className="home-btn">홈</p>
         </IconBox>
-        <IconBox>
+        <IconBox onClick={footer.onClick} className="search-book">
           {history.location.pathname === "/books" ? (
             <BookFill />
           ) : (
             <Book className="search-book" />
           )}
-          <p>책 검색</p>
+          <p className="search-book">책 검색</p>
         </IconBox>
-        <PlusCircleFill className="new-post" />
-        <IconBox>
-          <ChatDots className="chat" />
-          <p>채팅</p>
+        <IconBox className="new-post" onClick={footer.onClick}>
+          <PlusCircleFill className="new-post" />
         </IconBox>
-        <IconBox>
-          {history.location.pathname === "/test" ? (
+
+        <IconBox onClick={footer.onClick}>
+          {history.location.pathname === "/chat" ? (
+            <ChatDotsFill />
+          ) : (
+            <ChatDots className="chat" />
+          )}
+
+          <p className="chat">채팅</p>
+        </IconBox>
+
+        <IconBox onClick={footer.onClick} className="profile">
+          {LOGIN_USER_ID &&
+          history.location.pathname === `/profile/${LOGIN_USER_ID.id}` ? (
             <PersonFill />
           ) : (
             <Person className="profile" />
           )}
-          <p>프로필</p>
+          <p className="profile">프로필</p>
         </IconBox>
       </Wrapper>
     </>

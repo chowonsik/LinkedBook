@@ -1,6 +1,6 @@
 package com.linkedbook.controller;
 
-import com.linkedbook.dto.book.search.BookInfoInput;
+import com.linkedbook.dto.book.search.BookInput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
@@ -37,8 +37,8 @@ public class BookController {
     // Body
     @ResponseBody
     @PostMapping
-    public Response<Object> createBookInfo(@RequestBody BookInfoInput bookInfoInput) {
+    public Response<Object> createBookInfo(@RequestBody BookInput bookInput) {
         log.info("[POST] /books");
-        return bookService.createBookInfo(bookInfoInput);
+        return bookService.createBookInfo(bookInput);
     }
 }

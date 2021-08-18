@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.configuration.security.CustomUserDetailsService;
 import com.linkedbook.entity.UserDB;
-import com.linkedbook.model.Role;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.dao.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ public class JwtServiceImpl implements JwtService {
     @Autowired
     CustomUserDetailsService customUserDetailsService;
 
-    public String createAccessToken(Role role, int userId) {
+    public String createAccessToken(int userId) {
         Date now = new Date();
         return Jwts.builder().claim("userId", userId).setIssuedAt(now)
                 // .setExpiration(new Date(now.getTime() + ConstantConfig.VALID_TIME))

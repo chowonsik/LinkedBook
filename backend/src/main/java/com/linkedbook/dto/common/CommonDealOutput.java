@@ -1,16 +1,20 @@
-package com.linkedbook.dto.comment;
+package com.linkedbook.dto.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class CommentBookOutput {
-    private String id;
+public class CommonDealOutput {
+    private int id;
     private String title;
-    private String image;
+    private int price;
+    private Date created_at;
+    private Date updated_at;
 }

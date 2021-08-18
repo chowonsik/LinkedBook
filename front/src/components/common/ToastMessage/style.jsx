@@ -3,7 +3,7 @@ import { colors, fonts } from "../../../styles";
 
 export const Wrapper = styled.div`
   position: fixed;
-  bottom: ${(props) => (props.toastShow ? "70px" : "-100px")};
+  bottom: ${(props) => (props.toastShow ? "70px" : "-60px")};
   opacity: ${(props) => (props.toastShow ? "1" : "0")};
   width: 100vw;
   display: flex;
