@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
   opacity: ${(props) => (props.toastShow ? "1" : "0")};
   width: 100vw;
   display: flex;
+  z-index: 999;
   justify-content: center;
   transition: all 0.5s;
 `;

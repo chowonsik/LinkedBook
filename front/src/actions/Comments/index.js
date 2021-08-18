@@ -1,4 +1,4 @@
-import { request, requestGet, KakaoBook } from "../../api.js";
+import { requestGet } from "../../api.js";
 
 export const SET_USER_COMMENTS = "SET_USER_COMMENTS";
 
