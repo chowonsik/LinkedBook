@@ -3,13 +3,16 @@ package com.linkedbook.serviceImpl;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.FollowRepository;
 import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dto.alert.AlertStatus;
 import com.linkedbook.dto.common.CommonFollowOutput;
 import com.linkedbook.dto.common.CommonUserOutput;
 import com.linkedbook.dto.follow.*;
+import com.linkedbook.entity.AlertDB;
 import com.linkedbook.entity.FollowDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
+import com.linkedbook.service.AlertService;
 import com.linkedbook.service.FollowService;
 import com.linkedbook.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final AlertService alertService;
 
     @Override
     public PageResponse<FollowSearchOutput> getFollowList(String info, FollowSearchInput followSearchInput) {
@@ -120,12 +124,22 @@ public class FollowServiceImpl implements FollowService {
                 return new Response<>(EXISTS_INFO);
             }
 
-            FollowDB followDB = FollowDB.builder()
+            followRepository.save(
+                    FollowDB.builder()
                     .toUser(toUser)
                     .fromUser(fromUser)
-                    .build();
+                    .build());
 
-            followRepository.save(followDB);
+            // 신규 팔로우 알림(follow_id, to_user_id)
+            if(!alertService.checkDuplicateUncheckedAlert(AlertStatus.FOLLOW, null, null, null, fromUser, toUser)) {
+                AlertDB alertDB = AlertDB.builder()
+                        .type(AlertStatus.FOLLOW)
+                        .fromUser(fromUser)
+                        .toUser(toUser)
+                        .status("UNCHECKED")
+                        .build();
+                alertService.createAlertInfo(alertDB);
+            }
         } catch (Exception e) {
             log.error("[follow/post] database error", e);
             return new Response<>(DATABASE_ERROR);

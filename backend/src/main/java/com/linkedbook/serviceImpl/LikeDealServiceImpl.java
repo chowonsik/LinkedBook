@@ -4,15 +4,18 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dao.LikeDealRepository;
 import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dto.alert.AlertStatus;
 import com.linkedbook.dto.likeDeal.createLikeDeal.CreateLikeDealInput;
 import com.linkedbook.dto.likeDeal.deleteLikeDeal.DeleteLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealInput;
 import com.linkedbook.dto.likeDeal.selectLikeDeal.SelectLikeDealOutput;
+import com.linkedbook.entity.AlertDB;
 import com.linkedbook.entity.DealDB;
 import com.linkedbook.entity.LikeDealDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
+import com.linkedbook.service.AlertService;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.LikeDealService;
 
@@ -37,16 +40,14 @@ public class LikeDealServiceImpl implements LikeDealService {
     private final LikeDealRepository likeDealRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final AlertService alertService;
 
     @Override
     @Transactional
     public Response<Object> createLikeDeal(CreateLikeDealInput createLikeDealInput) {
         // 값 형식 체크
-
-        if (createLikeDealInput == null)
-            return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValidId(createLikeDealInput.getDealId()))
-            return new Response<>(BAD_REQUEST);
+        if (createLikeDealInput == null)  return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValidId(createLikeDealInput.getDealId()))  return new Response<>(BAD_REQUEST);
 
         LikeDealDB likeDeal;
         try {
@@ -57,11 +58,23 @@ public class LikeDealServiceImpl implements LikeDealService {
             }
 
             likeDeal = LikeDealDB.builder().user(user).deal(deal).build();
-
             likeDealRepository.save(likeDeal);
 
+            // 자신의 거래글 좋아요 알림(deal_id, to_user_id)
+            if(!alertService.checkDuplicateUncheckedAlert(AlertStatus.LIKE_DEAL, null, deal, null,
+                    user, deal.getUser()) && user.getId() != deal.getUser().getId()) {
+                AlertDB alertDB = AlertDB.builder()
+                        .type(AlertStatus.LIKE_DEAL)
+                        .deal(deal)
+                        .fromUser(user)
+                        .toUser(deal.getUser())
+                        .status("UNCHECKED")
+                        .build();
+                alertService.createAlertInfo(alertDB);
+            }
+
         } catch (Exception e) {
-            log.error("[POST]/like-deals database error", e);
+            log.error("[like-deals/post] database error", e);
             return new Response<>(DATABASE_ERROR);
         }
         // 결과 return
