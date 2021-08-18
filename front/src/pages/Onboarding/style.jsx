@@ -53,9 +53,11 @@ export const Footer = styled.div`
   align-items: center;
   button {
     background-color: ${colors.yellow};
-    padding: 10px 80px;
+    padding: 10px 0;
+    width: 80%;
     border-radius: 6px;
     color: white;
     transform: translateY(-20px);
+    font-size: 18px;
   }
 `;
