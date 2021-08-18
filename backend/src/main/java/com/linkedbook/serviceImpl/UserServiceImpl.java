@@ -1,5 +1,6 @@
 package com.linkedbook.serviceImpl;
 
+import com.linkedbook.configuration.AES128;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dto.user.selectUser.SelectUserOutput;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import static com.linkedbook.response.ResponseStatus.*;
+import static com.linkedbook.configuration.ConstantConfig.*;
 
 @Service("UserService")
 @AllArgsConstructor
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
         UserDB userDB;
         try {
             String email = signInInput.getEmail();
-            String password = signInInput.getPassword();
+            String password = new AES128(USER_INFO_PASSWORD_KEY).encrypt(signInInput.getPassword());
             List<UserDB> userDBs = userRepository.findByEmailAndStatus(email, "ACTIVATE");
             if (userDBs.size() == 0) {
                 return new Response<>(NOT_FOUND_USER);
@@ -93,10 +95,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 4. 결과 return
-        SignInOutput signInOutput = SignInOutput.builder()
-                .userId(userDB.getId())
-                .accessToken(accessToken)
-                .build();
+        SignInOutput signInOutput = SignInOutput.builder().userId(userDB.getId()).accessToken(accessToken).build();
         return new Response<>(signInOutput, SUCCESS_SIGN_IN);
     }
 
@@ -113,17 +112,18 @@ public class UserServiceImpl implements UserService {
             return new Response<>(BAD_NAME_VALUE);
 
         // 2. 유저 생성
-        UserDB userDB = UserDB.builder().email(signUpInput.getEmail()).password(signUpInput.getPassword())
-                .nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage())
-                .oauth(signUpInput.getOauth() == null ? null : SocialLoginType.valueOf(signUpInput.getOauth()))
-                .oauthId(signUpInput.getOauthId()).status("ACTIVATE").build();
-
+        UserDB userDB;
         UserAreaDB userAreaDB;
         try {
             String email = signUpInput.getEmail();
             String nickname = signUpInput.getNickname();
             boolean existUsers = userRepository.existsByEmailAndStatus(email, "ACTIVATE");
             boolean existNickname = userRepository.existsByNicknameAndStatus(nickname, "ACTIVATE");
+            String password = new AES128(USER_INFO_PASSWORD_KEY).encrypt(signUpInput.getPassword());
+            userDB = UserDB.builder().email(signUpInput.getEmail()).password(password)
+                    .nickname(signUpInput.getNickname()).info(signUpInput.getInfo()).image(signUpInput.getImage())
+                    .oauth(signUpInput.getOauth() == null ? null : SocialLoginType.valueOf(signUpInput.getOauth()))
+                    .oauthId(signUpInput.getOauthId()).status("ACTIVATE").build();
 
             if (existUsers) { // 이메일 중복 제어
                 return new Response<>(EXISTS_EMAIL);
@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
 
             // 입력 값 벨리데이션
             if (StringUtils.isNotBlank(updateProfileInput.getPassword()))
-                userDB.setPassword(updateProfileInput.getPassword());
+                userDB.setPassword(new AES128(USER_INFO_PASSWORD_KEY).encrypt(updateProfileInput.getPassword()));
             if (StringUtils.isNotBlank(updateProfileInput.getNickname()))
                 userDB.setNickname(updateProfileInput.getNickname());
             if (StringUtils.isNotBlank(updateProfileInput.getInfo()))
@@ -269,11 +269,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Response<EmailOutput> sendMail(EmailInput emailInput) {
         // 1. 값 형식 체크
-        if (emailInput == null)  return new Response<>(NO_VALUES);
-        if (!ValidationCheck.isValid(emailInput.getEmail()))  return new Response<>(BAD_REQUEST);
+        if (emailInput == null)
+            return new Response<>(NO_VALUES);
+        if (!ValidationCheck.isValid(emailInput.getEmail()))
+            return new Response<>(BAD_REQUEST);
         // 2. 중복 메일인지 체크
         try {
-            if(userRepository.existsByEmailAndStatus(emailInput.getEmail(), "ACTIVATE")) {
+            if (userRepository.existsByEmailAndStatus(emailInput.getEmail(), "ACTIVATE")) {
                 log.error("[users/email/post] DUPLICATE EMAIL error");
                 return new Response<>(EXISTS_EMAIL);
             }
