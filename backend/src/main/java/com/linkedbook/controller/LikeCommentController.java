@@ -6,13 +6,13 @@ import com.linkedbook.dto.comment.like.LikeCommentSearchInput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.LikeCommentService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/like-comments")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class LikeCommentController {
 
@@ -24,7 +24,6 @@ public class LikeCommentController {
      * @return PageResponse<LikeCommentSearchOutput>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<LikeCommentSearchOutput> getLikeCommentList(LikeCommentSearchInput likeCommentSearchInput) {
         log.info("[GET] /like-comments");
@@ -37,7 +36,6 @@ public class LikeCommentController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createLikeComment(@RequestBody LikeCommentInput likeCommentInput) {
         log.info("[POST] /like-comments");
@@ -50,7 +48,6 @@ public class LikeCommentController {
      * @return Response<Object>
      */
     // Path-Variable
-    @ResponseBody
     @DeleteMapping("/{id}")
     public Response<Object> deleteLikeComment(@PathVariable("id") int id) {
         log.info("[DELETE] /like-comments/" + id);

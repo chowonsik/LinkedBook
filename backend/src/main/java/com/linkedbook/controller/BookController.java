@@ -4,13 +4,13 @@ import com.linkedbook.dto.book.search.BookInput;
 import com.linkedbook.dto.book.search.BookSearchOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/books")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class BookController {
 
@@ -22,7 +22,6 @@ public class BookController {
      * @return Response<BookSearchOutput>
      */
     // Params
-    @ResponseBody
     @GetMapping("/{isbn}")
     public Response<BookSearchOutput> getBookInfo(@PathVariable("isbn") String isbn) {
         log.info("[GET] /books/" + isbn);
@@ -35,7 +34,6 @@ public class BookController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createBookInfo(@RequestBody BookInput bookInput) {
         log.info("[POST] /books");

@@ -6,13 +6,13 @@ import com.linkedbook.dto.follow.FollowSearchInput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.FollowService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/follow")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class FollowController {
 
@@ -25,7 +25,6 @@ public class FollowController {
      * @return PageResponse<FollowSearchOutput>
      */
     // Path-Variable, Params
-    @ResponseBody
     @GetMapping("/{info}")
     public PageResponse<FollowSearchOutput> getFollowList(@PathVariable("info") String info, FollowSearchInput followSearchInput) {
         log.info("[GET] /follow/" + info);
@@ -38,7 +37,6 @@ public class FollowController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createFollowRelation(@RequestBody FollowInput followInput) {
         log.info("[POST] /follow");
@@ -51,7 +49,6 @@ public class FollowController {
      * @return Response<Object>
      */
     // Path-Variable
-    @ResponseBody
     @DeleteMapping("/{id}")
     public Response<Object> createFollowRelation(@PathVariable("id") int id) {
         log.info("[DELETE] /follow/" + id);

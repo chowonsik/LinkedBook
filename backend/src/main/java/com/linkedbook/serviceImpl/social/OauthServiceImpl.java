@@ -6,7 +6,7 @@ import com.linkedbook.dto.user.signin.SocialLoginType;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.social.OauthService;
 import com.linkedbook.service.social.SocialOauth;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +15,10 @@ import java.io.IOException;
 import java.util.List;
 
 @Service("OauthService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class OauthServiceImpl implements OauthService {
+
     private final List<SocialOauth> socialOauthList;
     private final HttpServletResponse response;
 
