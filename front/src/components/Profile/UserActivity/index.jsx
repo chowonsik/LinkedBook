@@ -11,7 +11,7 @@ function UserActivity({ userId, dealCnt, followerCnt, followingCnt }) {
           <dt>게시글</dt>
           <dd>{dealCnt}</dd>
         </div>
-        <div onClick={() => history.push({ pathname: `/follower/${userId}` })}>
+        <div onClick={() => history.push(`/follower/${userId}`)}>
           <dt>팔로워</dt>
           <dd>{followerCnt}</dd>
         </div>
