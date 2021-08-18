@@ -32,9 +32,6 @@ export const setFollowingList = (followings, currentPage) => {
 export const deleteFollowing = (followingId) => {
   return (dispatch) => {
     const response = requestDelete(`/follow/${followingId}`);
-    response.then((res) => {
-      dispatch(updateFollowingList(followingId));
-    });
   };
 };
 
