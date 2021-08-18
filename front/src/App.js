@@ -1,5 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom"; // 히스토리 모드 제거
+
+import { BrowserRouter as Router, Switch } from "react-router-dom"; // 히스토리 모드 제거
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
 import Main from "./pages/Main";
