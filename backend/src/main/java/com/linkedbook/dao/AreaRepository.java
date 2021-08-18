@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface AreaRepository extends JpaRepository<AreaDB, Integer> {
     @Query("select new com.linkedbook.dto.area.selectArea.SelectAreaOutput(a.id, a.dongmyeonri, concat(a.sido, ' ', a.sigungu, ' ', a.dongmyeonri))"

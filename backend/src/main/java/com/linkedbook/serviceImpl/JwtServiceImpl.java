@@ -6,8 +6,8 @@ import com.linkedbook.configuration.security.CustomUserDetailsService;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.dao.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,14 +19,12 @@ import java.util.Date;
 
 import static com.linkedbook.configuration.ConstantConfig.*;
 
-@Slf4j
 @Service("JwtService")
+@AllArgsConstructor
+@Slf4j
 public class JwtServiceImpl implements JwtService {
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    private final UserRepository userRepository;
+    private final CustomUserDetailsService customUserDetailsService;
 
     public String createAccessToken(int userId) {
         Date now = new Date();

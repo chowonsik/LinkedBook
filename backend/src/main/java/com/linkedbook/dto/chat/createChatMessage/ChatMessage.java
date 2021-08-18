@@ -1,7 +1,5 @@
 package com.linkedbook.dto.chat.createChatMessage;
 
-import java.util.Date;
-
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 

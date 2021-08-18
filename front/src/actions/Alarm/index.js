@@ -97,8 +97,5 @@ export const setNewAlarm = (code) => {
 export const createAlarm = (data) => {
   return () => {
     const response = request("post", "/alerts", data);
-    response.then((res) => {
-      console.log(res);
-    });
   };
 };

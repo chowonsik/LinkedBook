@@ -6,10 +6,9 @@ import Header from "../../components/Layout/Header";
 import FooterButton from "../../components/common/Buttons/FooterButton";
 import Category from "../../components/Report/Category";
 import ReportContent from "../../components/Report/ReportContent";
-import ConfirmBox from "../../components/Report/ConfirmBox";
-import Modal from "../../components/Report/Modal";
+
 import { setReport, setReportStatus } from "../../actions/Report";
-import { request } from "../../api";
+import { showToast } from "../../actions/Notification";
 import { useEffect } from "react";
 
 // 신고 항목 선택을 위한 hook
@@ -42,13 +41,14 @@ const useText = (initValue, validator) => {
 
 const useSubmit = (userId, dealId, category, content, setReport, history) => {
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
   const onClick = () => {
     if (category === "") {
-      setError("신고 항목을 선택해주세요.");
+      dispatch(showToast("신고 항목을 선택해주세요."));
     } else if (content.length === 0) {
-      setError("신고 사유를 입력해주세요.");
+      dispatch(showToast("신고 사유를 입력해주세요."));
     } else if (content.length < 10) {
-      setError("신고 사유를 10글자 이상 작성해주세요.");
+      dispatch(showToast("신고 사유를 10글자 이상 작성해주세요."));
     } else {
       setError("");
       const data = {
@@ -56,7 +56,7 @@ const useSubmit = (userId, dealId, category, content, setReport, history) => {
         category,
         content,
       };
-
+      dispatch(showToast("신고가 성공적으로 접수되었습니다."));
       setReport(data);
     }
   };
@@ -118,10 +118,6 @@ function Report({ match, setReport }) {
 
   return (
     <Wrapper>
-      <Modal
-        text={"신고가 성공적으로 접수되었습니다."}
-        isActive={isActive}
-      ></Modal>
       <Header title={"신고하기"} isBack={true} />
 
       <Container>
