@@ -1,6 +1,5 @@
 package com.linkedbook.controller;
 
-import com.linkedbook.dto.alert.AlertInput;
 import com.linkedbook.dto.alert.AlertSearchInput;
 import com.linkedbook.dto.alert.AlertSearchOutput;
 import com.linkedbook.response.PageResponse;
@@ -17,18 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class AlertController {
 
     private final AlertService alertService;
-
-    /**
-     * 알람 정보 생성 API
-     * [POST] /alerts
-     * @return Response<Object>
-     */
-    // Body
-    @PostMapping
-    public Response<Object> createAlertInfo(@RequestBody AlertInput alertInput) {
-        log.info("[POST] /alerts");
-        return alertService.createAlertInfo(alertInput);
-    }
 
     /**
      * 알람 상태 수정 API

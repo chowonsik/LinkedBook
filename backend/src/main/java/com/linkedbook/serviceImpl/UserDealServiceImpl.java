@@ -4,11 +4,13 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dao.UserDealRepository;
 import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dto.alert.AlertStatus;
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealInput;
 import com.linkedbook.dto.userDeal.createUserDeal.CreateUserDealOutput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealInput;
 import com.linkedbook.dto.userDeal.selectUserDeal.SelectUserDealOutput;
 import com.linkedbook.dto.userDeal.updateUserDeal.UpdateUserDealInput;
+import com.linkedbook.entity.AlertDB;
 import com.linkedbook.entity.DealDB;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.entity.UserDealDB;
@@ -37,6 +39,7 @@ public class UserDealServiceImpl implements UserDealService {
     private final UserDealRepository userDealRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final AlertServiceImpl alertService;
 
     @Override
     @Transactional
@@ -62,13 +65,25 @@ public class UserDealServiceImpl implements UserDealService {
 
             UserDealDB purchaseUserDB = UserDealDB.builder().user(purchaseUser).deal(deal).type("PURCHASE")
                     .score(createUserDealInput.getScore()).build();
-            UserDealDB saleUserDB = UserDealDB.builder().user(saleUser).deal(deal).type("SALE").score(3).build();
+            UserDealDB saleUserDealDB = UserDealDB.builder().user(saleUser).deal(deal).type("SALE").score(3).build();
             userDealRepository.save(purchaseUserDB);
-            saleUserDB = userDealRepository.save(saleUserDB);
-            createUserDealOutput = CreateUserDealOutput.builder().userDealId(saleUserDB.getId()).build();
+            saleUserDealDB = userDealRepository.save(saleUserDealDB);
+            createUserDealOutput = CreateUserDealOutput.builder().userDealId(saleUserDealDB.getId()).build();
             deal.setStatus("COMPLETE");
             dealRepository.save(deal);
 
+            // 거래 구매완료 알림(eval_id, deal_id, to_user_id)
+            if(!alertService.checkDuplicateUncheckedAlert(AlertStatus.EVAL, null, deal, saleUserDealDB,
+                    saleUser, purchaseUser)) {
+                AlertDB alertDB = AlertDB.builder()
+                        .type(AlertStatus.EVAL)
+                        .eval(saleUserDealDB)
+                        .fromUser(saleUser)
+                        .toUser(purchaseUser)
+                        .status("UNCHECKED")
+                        .build();
+                alertService.createAlertInfo(alertDB);
+            }
         } catch (IllegalArgumentException e) {
             log.error("[POST]/user-deals undefined status exception", e);
             return new Response<>(BAD_STATUS_VALUE);
