@@ -75,7 +75,7 @@ public class UserController {
     // Path-variable
     @PatchMapping
     public Response<Object> updateProfile(@RequestBody UpdateProfileInput updateProfileInput) {
-        System.out.println("[PATCH] /user/{id}/profile");
+        System.out.println("[PATCH] /users");
         return userService.updateProfile(updateProfileInput);
     }
 
