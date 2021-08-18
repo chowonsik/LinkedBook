@@ -190,7 +190,7 @@ public class UserServiceImpl implements UserService {
 
             // 입력 값 벨리데이션
             if (StringUtils.isNotBlank(updateProfileInput.getPassword()))
-                userDB.setPassword(updateProfileInput.getPassword());
+                userDB.setPassword(new AES128(USER_INFO_PASSWORD_KEY).encrypt(updateProfileInput.getPassword()));
             if (StringUtils.isNotBlank(updateProfileInput.getNickname()))
                 userDB.setNickname(updateProfileInput.getNickname());
             if (StringUtils.isNotBlank(updateProfileInput.getInfo()))
