@@ -136,6 +136,10 @@ export default function DealDetail() {
     setContentHeight(height);
   }
 
+  function handleUserClick() {
+    history.push(`/profile/${dealData.userId}`);
+  }
+
   useEffect(() => {
     fetchData();
     getLoginUser();
@@ -219,7 +223,7 @@ export default function DealDetail() {
             )}
           </div>
         </ImageWrapper>
-        <UserInfo>
+        <UserInfo onClick={handleUserClick}>
           <div className="image-container">
             <img
               src={dealData.userImage}

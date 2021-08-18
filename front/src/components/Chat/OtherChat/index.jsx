@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Container } from "./style";
 
-export default function OtherChat({ profileImage, message, createdAt }) {
+export default function OtherChat({
+  profileImage,
+  message,
+  createdAt,
+  userId,
+}) {
+  const history = useHistory();
   function dateToString(date) {
     const hour = date.getHours();
     const minute = date.getMinutes();
@@ -15,7 +22,12 @@ export default function OtherChat({ profileImage, message, createdAt }) {
   }
   return (
     <Container>
-      <div className="img-container">
+      <div
+        className="img-container"
+        onClick={() => {
+          history.push(`/profile/${userId}`);
+        }}
+      >
         <img
           src={profileImage}
           alt=""
