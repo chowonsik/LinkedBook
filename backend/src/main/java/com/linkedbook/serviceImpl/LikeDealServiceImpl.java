@@ -16,7 +16,7 @@ import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.LikeDealService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("LikeDealService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class LikeDealServiceImpl implements LikeDealService {
 

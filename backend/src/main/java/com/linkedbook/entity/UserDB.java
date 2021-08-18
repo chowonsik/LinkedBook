@@ -1,10 +1,7 @@
 package com.linkedbook.entity;
 
 import com.linkedbook.dto.user.signin.SocialLoginType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
@@ -18,12 +15,12 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Getter @Setter
+@Entity
 @Table(name = "user")
 public class UserDB {
     @Id

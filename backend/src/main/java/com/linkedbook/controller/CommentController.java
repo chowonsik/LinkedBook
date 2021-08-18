@@ -7,7 +7,7 @@ import com.linkedbook.dto.comment.CommentSearchInput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.CommentService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import static com.linkedbook.response.ResponseStatus.*;
 
 @RestController
 @RequestMapping("/comments")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class CommentController {
 
@@ -28,7 +28,6 @@ public class CommentController {
      * @return PageResponse<CommentSearchOutput>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<CommentSearchOutput> getCommentList(CommentSearchInput commentSearchInput) {
         if(!ValidationCheck.isValidId(commentSearchInput.getUserId()) && !ValidationCheck.isValid(commentSearchInput.getBookId())) {
@@ -51,7 +50,6 @@ public class CommentController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createComment(@RequestBody CommentInput commentInput) {
         log.info("[POST] /comments");
@@ -64,7 +62,6 @@ public class CommentController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PatchMapping("/{id}")
     public Response<Object> updateComment(@PathVariable("id") int id, @RequestBody CommentInput commentInput) {
         log.info("[PATCH] /comments/" + id);
@@ -77,7 +74,6 @@ public class CommentController {
      * @return Response<Object>
      */
     // Path-Variable
-    @ResponseBody
     @DeleteMapping("/{id}")
     public Response<Object> deleteComment(@PathVariable("id") int id) {
         log.info("[DELETE] /comments/" + id);

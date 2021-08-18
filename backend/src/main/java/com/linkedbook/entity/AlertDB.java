@@ -1,10 +1,7 @@
 package com.linkedbook.entity;
 
 import com.linkedbook.dto.alert.AlertStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
@@ -12,11 +9,11 @@ import java.util.Date;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter @Setter
 @Entity
 @Table(name = "alert")
 public class AlertDB {

@@ -15,8 +15,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 @JsonPropertyOrder({ "isSuccess", "status", "code", "message", "page", "result", "timestamp" })
 public class PageResponse<T> {
     @JsonProperty(value = "isSuccess")

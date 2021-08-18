@@ -1,9 +1,6 @@
 package com.linkedbook.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -12,11 +9,11 @@ import java.util.Date;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
 @DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter @Setter
 @Entity
 @Table(name = "like_book")
 public class LikeBookDB {

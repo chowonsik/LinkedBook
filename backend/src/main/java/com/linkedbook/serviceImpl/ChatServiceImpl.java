@@ -12,7 +12,7 @@ import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.ChatRoomService;
 import com.linkedbook.service.ChatService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -24,7 +24,7 @@ import static com.linkedbook.response.ResponseStatus.*;
 import java.util.List;
 
 @Service("ChatService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ChatServiceImpl implements ChatService {
 

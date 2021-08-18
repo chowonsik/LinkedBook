@@ -1,9 +1,6 @@
 package com.linkedbook.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,12 +11,12 @@ import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Getter @Setter
+@Entity
 @Table(name = "comment_category")
 public class CommentCategoryDB {
     @Id

@@ -25,7 +25,7 @@ import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
 import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +43,7 @@ import static com.linkedbook.response.ResponseStatus.*;
 import static com.linkedbook.configuration.ConstantConfig.*;
 
 @Service("UserService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
 

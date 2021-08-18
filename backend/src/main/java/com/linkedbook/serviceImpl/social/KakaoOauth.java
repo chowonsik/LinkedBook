@@ -36,6 +36,7 @@ import static com.linkedbook.response.ResponseStatus.*;
 @RequiredArgsConstructor
 @Slf4j
 public class KakaoOauth implements SocialOauth {
+
     private final UserRepository userRepository;
     private final JwtService jwtService;
 

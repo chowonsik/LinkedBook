@@ -1,10 +1,12 @@
 package com.linkedbook.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 
-@Data
+@Getter @Setter
 @Entity
 @Immutable
 @Table(name = "popular_comment")
