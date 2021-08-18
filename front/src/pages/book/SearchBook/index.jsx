@@ -14,6 +14,7 @@ import {
   setScroll,
   doNotRefresh,
   doRefresh,
+  setIsLoading,
 } from "../../../actions/Books/index.js";
 
 const SearchBook = () => {
@@ -108,6 +109,7 @@ const SearchBook = () => {
   };
 
   const handleBookItemClick = async (bookObj) => {
+    dispatch(setIsLoading(true));
     await dispatch(setBookList(books));
     saveBookData(bookObj);
     dispatch(setQuery(keyword));

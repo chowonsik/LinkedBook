@@ -8,25 +8,8 @@ export const SET_SCROLL = "SET_SCROLL";
 export const SET_LIKE_BOOKS = "SET_LIKE_BOOKS";
 export const SET_LIKE_PAGE = "SET_LIKE_PAGE";
 export const SET_BOOK_DEALS = "SET_BOOK_DEALS";
-
-// export const getBooksData = (query = "", page = 1) => {
-//   if (query.length === 0) return;
-//   return (getState, dispatch) => {
-//     const params = {
-//       query: query,
-//       sort: "accuracy",
-//       page: page,
-//       size: 10,
-//     };
-//     const { data } = KakaoBook(params);
-//     if (page === 1) {
-//       dispatch(setBookList(data.documents));
-//     } else {
-//       const newBookList = getState.bookReducer.bookList.concat(data.documents);
-//       dispatch(setBookList(newBookList));
-//     }
-//   };
-// };
+export const SET_BOOK_COMMENTS = "SET_BOOK_COMMENTS";
+export const SET_IS_LOADING = "SET_IS_LOADING";
 
 export const setBookList = (bookList) => {
   return {
@@ -109,9 +92,41 @@ export const getBookDeals =
       dispatch(setBookDeals(newBookDeals));
     }
   };
+
 export const setBookDeals = (bookDeals) => {
   return {
     type: SET_BOOK_DEALS,
     bookDeals,
+  };
+};
+
+export const getBookComments =
+  (bookId, page = 0) =>
+  async (dispatch, getState) => {
+    const { result } = await requestGet("/comments", {
+      bookId: bookId,
+      page: page,
+      size: 5,
+    });
+    if (page === 0) {
+      dispatch(setBookComments(result));
+    } else {
+      const newBookComments =
+        getState().bookReducer.bookComments.concat(result);
+      dispatch(setBookComments(newBookComments));
+    }
+  };
+
+export const setBookComments = (bookComments) => {
+  return {
+    type: SET_BOOK_COMMENTS,
+    bookComments,
+  };
+};
+
+export const setIsLoading = (isLoading) => {
+  return {
+    type: SET_IS_LOADING,
+    isLoading: isLoading,
   };
 };

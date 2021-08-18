@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Wrapper } from "./styles";
 import {
   StarFill,
@@ -46,7 +45,10 @@ const BookCommentItem = ({
       <img
         src={commentInfo.user.image}
         alt="user"
-        onClick={() => history.push(`/profile/${commentInfo.user.id}`)}
+        onClick={() => {
+          window.scrollTo(0, 0);
+          history.push(`/profile/${commentInfo.user.id}`);
+        }}
         onError={(e) => {
           e.target.src =
             "https://www.voakorea.com/themes/custom/voa/images/Author__Placeholder.png";

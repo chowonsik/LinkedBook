@@ -5,6 +5,7 @@ export const Wrapper = styled.div`
   & {
     width: 100%;
     height: 100%;
+
     margin-bottom: 60px;
     .book-comments-container {
       padding: 0 25px;
@@ -23,7 +24,9 @@ export const Wrapper = styled.div`
   }
 `;
 
-export const BookComments = styled.ul``;
+export const BookComments = styled.ul`
+  margin-bottom: 100px;
+`;
 
 export const Footer = styled.div`
   position: fixed;
@@ -41,5 +44,30 @@ export const Footer = styled.div`
     margin-left: 10px;
   }
   .button-container {
+  }
+`;
+
+export const SpinnerContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+export const Spinner = styled.span`
+  margin: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 6px solid ${colors.yellow};
+  border-top-color: transparent;
+  animation: spinner 0.8s ease-in infinite;
+
+  @keyframes spinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `;

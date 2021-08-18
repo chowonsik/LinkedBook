@@ -7,6 +7,8 @@ import {
   SET_LIKE_BOOKS,
   SET_LIKE_PAGE,
   SET_BOOK_DEALS,
+  SET_BOOK_COMMENTS,
+  SET_IS_LOADING,
 } from "../../actions/Books";
 
 const INIT_STATE = {
@@ -19,6 +21,8 @@ const INIT_STATE = {
   likeTotalPages: 0,
   likeTotalElements: 0,
   bookDeals: [],
+  bookComments: [],
+  isLoading: false,
 };
 
 export const bookReducer = (state = INIT_STATE, action) => {
@@ -66,6 +70,17 @@ export const bookReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         bookDeals: action.bookDeals,
+      };
+    case SET_BOOK_COMMENTS:
+      return {
+        ...state,
+        bookComments: action.bookComments,
+      };
+
+    case SET_IS_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading,
       };
     default:
       return state;

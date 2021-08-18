@@ -17,7 +17,7 @@ const BookDetail = ({ bookInfo }) => {
       <div className="book-detail">
         <div className="book-header">
           <h1 className="title">{bookInfo.title}</h1>
-          <div className="test">
+          <div className="icons">
             {bookInfo.popular && (
               <strong className="score">
                 <StarFill className="icon" />
