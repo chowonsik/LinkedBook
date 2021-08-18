@@ -60,7 +60,6 @@ public class KakaoOauth implements SocialOauth {
         return KAKAO_OAUTH_BASE_URL + "?" + parameterString;
     }
 
-
     @Override
     public Response<SignInOutput> requestLogin(String code) {
         // 1. code 로 Access token 정보 요청

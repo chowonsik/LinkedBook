@@ -22,20 +22,17 @@ import com.linkedbook.entity.UserDB;
 import com.linkedbook.entity.BookDB;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
-import com.linkedbook.response.ResponseStatus;
 import com.linkedbook.service.DealService;
 import com.linkedbook.service.JwtService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.linkedbook.response.ResponseStatus.*;
@@ -45,17 +42,11 @@ import static com.linkedbook.response.ResponseStatus.*;
 @Slf4j
 public class DealServiceImpl implements DealService {
 
-    @Autowired
     private final DealRepository dealRepository;
-    @Autowired
     private final BookRepository bookRepository;
-    @Autowired
     private final ImageRepository imageRepository;
-    @Autowired
     private final DealImageRepository dealImageRepository;
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final JwtService jwtService;
 
     @Override
