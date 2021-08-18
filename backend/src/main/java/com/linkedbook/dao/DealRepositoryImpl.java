@@ -17,9 +17,6 @@ import com.linkedbook.entity.QUserDB;
 import com.linkedbook.entity.QUserAreaDB;
 import com.linkedbook.entity.QAreaDB;
 import com.linkedbook.entity.QUserDealDB;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryResults;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -69,7 +66,7 @@ public class DealRepositoryImpl implements DealRepositoryCustom {
                 .offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
         List<SelectDealOutput> content = queryResult;
         long totalCount = queryResult.size();
-        return new PageImpl<SelectDealOutput>(content, pageable, totalCount);
+        return new PageImpl<>(content, pageable, totalCount);
     }
 
     @Override
