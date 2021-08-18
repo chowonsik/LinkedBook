@@ -129,10 +129,11 @@ const ProfileUpdate = () => {
   }
 
   async function submitUserData() {
-    dispatch(updateUserObj(changedData));
-    dispatch(showToast("프로필이 수정되었습니다."));
+    const res = await dispatch(updateUserObj(changedData));
     await dispatch(getUserObj(LOGIN_USER_ID));
-    history.push(`/profile/${LOGIN_USER_ID}`);
+    if (res === 200) {
+      history.push(`/profile/${LOGIN_USER_ID}`);
+    }
   }
 
   function handleLogoutClick() {
