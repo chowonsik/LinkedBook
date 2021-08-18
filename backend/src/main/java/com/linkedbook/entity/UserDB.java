@@ -1,5 +1,6 @@
 package com.linkedbook.entity;
 
+import com.linkedbook.dto.user.signin.SocialLoginType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,8 +50,9 @@ public class UserDB {
     @Column(name = "image", nullable = false, length = 45)
     private String image;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "oauth", length = 45)
-    private String oauth;
+    private SocialLoginType oauth;
 
     @Column(name = "oauth_id", length = 255)
     private String oauthId;
