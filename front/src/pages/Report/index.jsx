@@ -6,7 +6,7 @@ import Header from "../../components/Layout/Header";
 import FooterButton from "../../components/common/Buttons/FooterButton";
 import Category from "../../components/Report/Category";
 import ReportContent from "../../components/Report/ReportContent";
-import Modal from "../../components/Report/Modal";
+
 import { setReport, setReportStatus } from "../../actions/Report";
 import { showToast } from "../../actions/Notification";
 import { useEffect } from "react";
