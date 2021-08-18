@@ -3,7 +3,6 @@ package com.linkedbook.serviceImpl;
 import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.DealRepository;
 import com.linkedbook.dao.ReportRepository;
-import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.report.ReportInput;
 import com.linkedbook.dto.report.ReportStatus;
 import com.linkedbook.entity.DealDB;

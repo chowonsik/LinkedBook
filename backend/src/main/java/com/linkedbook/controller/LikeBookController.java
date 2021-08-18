@@ -4,8 +4,6 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dto.book.like.LikeBookInput;
 import com.linkedbook.dto.book.like.LikeBookSearchInput;
 import com.linkedbook.dto.book.like.LikeBookSearchOutput;
-import com.linkedbook.dto.comment.like.LikeCommentSearchInput;
-import com.linkedbook.dto.comment.like.LikeCommentSearchOutput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.LikeBookService;

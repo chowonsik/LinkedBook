@@ -18,7 +18,6 @@ import com.linkedbook.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import lombok.AllArgsConstructor;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -94,6 +93,19 @@ public class UserController {
     public PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput) {
         log.info("[GET] /users");
         return userService.selectUser(selectUserInput);
+    }
+
+    /**
+     * 회원탈퇴 API
+     * [PATCH] /users/deactivate
+     * @return Response<Object>
+     */
+    // Body
+    @ResponseBody
+    @PatchMapping("/deactivate")
+    public Response<Object> changeDeleteStatus() {
+        log.info("[PATCH] /users/deactivate");
+        return userService.changeDeleteStatus();
     }
 
     @ResponseBody

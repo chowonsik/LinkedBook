@@ -9,8 +9,6 @@ import com.linkedbook.response.Response;
 
 public interface LikeDealService {
     Response<Object> createLikeDeal(CreateLikeDealInput createLikeDealInput);
-
     PageResponse<SelectLikeDealOutput> selectLikeDeal(SelectLikeDealInput selectLikeDealInput);
-
     Response<Object> deleteLikeDeal(DeleteLikeDealInput deleteLikeDealInput);
 }

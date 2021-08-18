@@ -7,8 +7,6 @@ import java.io.Console;
 import java.security.Principal;
 import java.util.Optional;
 
-import com.linkedbook.dao.ChatRoomRepository;
-import com.linkedbook.entity.UserDB;
 import com.linkedbook.service.ChatRoomService;
 import com.linkedbook.service.ChatService;
 import com.linkedbook.service.JwtService;
