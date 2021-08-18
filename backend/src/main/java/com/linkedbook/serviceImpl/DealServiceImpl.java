@@ -24,7 +24,7 @@ import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.DealService;
 import com.linkedbook.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +38,7 @@ import java.util.List;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("DealService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class DealServiceImpl implements DealService {
 

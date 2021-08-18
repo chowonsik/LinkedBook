@@ -6,13 +6,13 @@ import com.linkedbook.dto.alert.AlertSearchOutput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.AlertService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/alerts")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class AlertController {
 
@@ -24,7 +24,6 @@ public class AlertController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createAlertInfo(@RequestBody AlertInput alertInput) {
         log.info("[POST] /alerts");
@@ -37,7 +36,6 @@ public class AlertController {
      * @return Response<Object>
      */
     // Path-Variable
-    @ResponseBody
     @PatchMapping("/{id}")
     public Response<Object> updateAlertStatus(@PathVariable("id") int id) {
         log.info("[POST] /alerts");
@@ -50,7 +48,6 @@ public class AlertController {
      * @return PageResponse<AlertSearchOutput>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<AlertSearchOutput> getAlertList(AlertSearchInput alertSearchInput) {
         log.info("[GET] /alerts");
@@ -63,7 +60,6 @@ public class AlertController {
      * @return Response<Object>
      */
     // Params
-    @ResponseBody
     @GetMapping("/check")
     public Response<Object> checkNewAlert() {
         log.info("[GET] /alerts/check");

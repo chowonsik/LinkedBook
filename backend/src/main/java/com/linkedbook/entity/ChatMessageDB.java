@@ -1,9 +1,6 @@
 package com.linkedbook.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
@@ -14,12 +11,12 @@ import java.util.Date;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Getter @Setter
+@Entity
 @Table(name = "chat_message")
 public class ChatMessageDB {
     @Id

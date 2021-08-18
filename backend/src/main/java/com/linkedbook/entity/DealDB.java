@@ -1,9 +1,6 @@
 package com.linkedbook.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,12 +10,12 @@ import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Getter @Setter
+@Entity
 @Table(name = "deal")
 public class DealDB {
     @Id
