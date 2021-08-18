@@ -16,13 +16,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @CrossOrigin(origins = "*")
+@RestController
 @RequiredArgsConstructor
-@Controller
+@Slf4j
 public class ChatController {
 
     private final ChannelTopic channelTopic;
@@ -31,7 +30,6 @@ public class ChatController {
     private final ChatMessageRepository chatMessageRepository;
 
     @GetMapping("/chat-messages")
-    @ResponseBody
     public Response<List<SelectChatMessageOutput>> loadMessage(@RequestParam String roomId) {
         log.info("[GET] /chat-messages");
         return chatService.loadMessage(roomId);

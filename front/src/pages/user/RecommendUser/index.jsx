@@ -49,12 +49,9 @@ export default function RecommendUser() {
       page: 0,
       size: 1000,
     });
-    console.log(response.result);
     const followIdList = response.result
       .filter((follow) => newFollowerList.includes(follow.user.id))
       .map((follow) => follow.id);
-    console.log("followIdList");
-    console.log(followIdList);
     for (const followId of followIdList) {
       dispatch(createAlarm({ type: "FOLLOW", followId: followId }));
     }
@@ -107,9 +104,6 @@ export default function RecommendUser() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    console.log(newFollowerList);
-  }, [newFollowerList]);
   return (
     <>
       <Header title="책방 추천" />

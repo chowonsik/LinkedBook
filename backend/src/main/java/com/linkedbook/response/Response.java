@@ -12,8 +12,7 @@ import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 @JsonPropertyOrder({"isSuccess", "status", "code", "message", "result", "timestamp"})
 public class Response<T> {
     @JsonProperty(value = "isSuccess")

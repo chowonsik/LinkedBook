@@ -3,14 +3,14 @@ package com.linkedbook.controller;
 import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.social.OauthService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
 @CrossOrigin(origins = "*")
+@RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class OauthController {
 

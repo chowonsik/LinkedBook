@@ -6,7 +6,7 @@ import com.linkedbook.dto.area.selectArea.SelectAreaOutput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.service.AreaService;
 import com.linkedbook.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("AreaService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class AreaServiceImpl implements AreaService {
 

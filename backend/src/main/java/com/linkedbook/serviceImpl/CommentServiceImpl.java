@@ -9,7 +9,7 @@ import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.CommentService;
 import com.linkedbook.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("CommentService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class CommentServiceImpl implements CommentService {
 

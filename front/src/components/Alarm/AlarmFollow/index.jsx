@@ -41,12 +41,6 @@ function AlarmFollow({ height }) {
       dispatch(createFollow(data));
     }
     dispatch(updateAlarmStatus(alarmId));
-    const params = {
-      type: "follow",
-      page: 0,
-      size: alarmFollowList.length,
-    };
-    dispatch(getFollowAlarm(params));
   }
 
   function handleTimeLog(date) {

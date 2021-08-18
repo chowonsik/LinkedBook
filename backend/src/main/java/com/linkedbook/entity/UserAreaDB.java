@@ -1,9 +1,6 @@
 package com.linkedbook.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import javax.persistence.*;
 
@@ -11,12 +8,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Builder
+@Getter @Setter
+@Entity
 @Table(name = "user_area")
 public class UserAreaDB {
     @Id

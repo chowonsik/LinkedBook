@@ -10,7 +10,7 @@ import com.linkedbook.dto.deal.selectDeal.SelectDealOutput;
 import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
 import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/deals")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class DealController {
 
@@ -31,7 +31,6 @@ public class DealController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<CreateDealOutput> createDeal(@RequestBody CreateDealInput createDealInput) {
         log.info("[POST] /deals");
@@ -44,7 +43,6 @@ public class DealController {
      * @return Response<List<SelectDealOutput>>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<SelectDealOutput> selectDealList(@RequestParam(required = false) String search,
             @RequestParam(required = false) String filter, @RequestParam(required = false) Integer userId,
@@ -73,7 +71,6 @@ public class DealController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PatchMapping("/{id}")
     public Response<Object> updateDeal(@RequestBody UpdateDealInput updateDealInput, @PathVariable("id") int dealId) {
         log.info("[PATCH] /deals/" + dealId);
@@ -86,7 +83,6 @@ public class DealController {
      * @return Response<Object>
      */
     // Params
-    @ResponseBody
     @GetMapping("/{id}")
     public Response<SelectDealDetailOutput> selectDeal(@PathVariable("id") int dealId) {
         log.info("[GET] /deals/" + dealId);

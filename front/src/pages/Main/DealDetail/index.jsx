@@ -5,7 +5,6 @@ import {
   CircleFill,
   Heart,
   HeartFill,
-  InfoCircle,
 } from "react-bootstrap-icons";
 import MannerScore from "../../../components/common/MannerScore";
 
@@ -62,14 +61,41 @@ export default function DealDetail() {
 
   async function handleChatCreate() {
     const loginUser = JSON.parse(localStorage.getItem("loginUser"));
-    const response = await requestGet("/chat/rooms", { userId: loginUser.id });
+    let response = await requestGet("/chat/rooms", { userId: loginUser.id });
     const room = response.result.find(
       (room) => room.deal_id === dealData.dealId
     );
+    response = await requestGet(`/users/${loginUser.id}/profile`);
+    const fromUser = {
+      fromUserId: loginUser.id,
+      fromUserImage: response.result.image,
+      fromUserNickname: response.result.nickname,
+    };
     if (room) {
-      history.push(`/chat/room/${room.room_id}`);
+      history.push({
+        pathname: `/chat/room/${room.room_id}`,
+        state: {
+          toUser: {
+            toUserId: dealData.userId,
+            toUserImage: dealData.userImage,
+            toUserNickname: dealData.userNickname,
+          },
+          fromUser: fromUser,
+        },
+      });
     } else {
-      dispatch(createRoom(dealId, dealData.userId, history));
+      dispatch(
+        createRoom(
+          dealId,
+          {
+            toUserId: dealData.userId,
+            toUserImage: dealData.userImage,
+            toUserNickname: dealData.userNickname,
+          },
+          fromUser,
+          history
+        )
+      );
     }
   }
 
@@ -84,7 +110,6 @@ export default function DealDetail() {
 
   async function fetchData() {
     const response = await requestGet(`/deals/${dealId}`);
-    console.log(response);
     if (!response.isSuccess) {
       dispatch(showToast("거래 조회에 실패했습니다."));
       history.goBack();
@@ -277,8 +302,6 @@ export default function DealDetail() {
             ) : (
               ""
             )}
-            {/* <div className="review-button">거래 후기 남기기</div> */}
-            {/* <div className="review-button">후기 작성 완료</div> */}
           </DealState>
         </Section>
       </Wrapper>

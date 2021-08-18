@@ -9,13 +9,13 @@ import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.UserDealService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user-deals")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserDealController {
 
@@ -27,7 +27,6 @@ public class UserDealController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<CreateUserDealOutput> createUserDeal(@RequestBody CreateUserDealInput createUserDealInput) {
         log.info("[POST] /user-deals");
@@ -40,7 +39,6 @@ public class UserDealController {
      * @return Response<Page<SelectUserDealOutput>>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<SelectUserDealOutput> selectUserDeal(SelectUserDealInput selectUserDealInput) {
         log.info("[GET] /user-deals");
@@ -53,7 +51,6 @@ public class UserDealController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PatchMapping("/{id}")
     public Response<Object> updateUserDeal(@RequestBody UpdateUserDealInput updateUserDealInput,
             @PathVariable("id") int userDealId) {
