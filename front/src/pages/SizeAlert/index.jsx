@@ -5,7 +5,7 @@ function useWindowSize() {
   const [size, setSize] = useState([0, 0]);
   useLayoutEffect(() => {
     function updateSize() {
-      setSize([window.innerWidth - 500, window.innerHeight]);
+      setSize([window.innerWidth - 600, window.innerHeight]);
     }
     window.addEventListener("resize", updateSize);
     updateSize();
@@ -16,11 +16,7 @@ function useWindowSize() {
 
 function SizeAlert() {
   const [width, height] = useWindowSize();
-  const [initWidth, setInitWidth] = useState(0);
-  useEffect(() => {
-    const value = window.innerWidth - 500;
-    setInitWidth(value);
-  }, []);
+
   return (
     <Wrapper>
       <h3>화면이 너무 넓어요😅</h3>

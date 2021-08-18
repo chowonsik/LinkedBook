@@ -68,7 +68,12 @@ function App() {
             exact={true}
             component={SignIn}
           />
-          <PrivateRoute path="/signup" exact={true} component={SignUp} />
+          <PublicRoute
+            restricted={true}
+            path="/signup"
+            exact={true}
+            component={SignUp}
+          />
           <PrivateRoute
             path="/search/location"
             exact={true}
