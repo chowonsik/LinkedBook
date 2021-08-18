@@ -48,7 +48,4 @@ public interface UserRepository extends JpaRepository<UserDB, Integer> {
                     " where u.id <> ?1 and ua.area_id = ?2",
             nativeQuery = true)
     Page<UserDB> findAreaStar(int userId, int areaId, Pageable paging);
-
-    List<UserDB> findByOauthIdAndStatus(String oauthId, String status);
-
 }

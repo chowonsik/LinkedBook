@@ -6,8 +6,6 @@ import com.linkedbook.dto.chat.createChatRoom.CreateChatRoomInput;
 import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomInput;
 import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomOutput;
 import com.linkedbook.entity.ChatRoomDB;
-import com.linkedbook.entity.UserDB;
-import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.ChatRoomService;
 
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/chat")
+@Slf4j
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
@@ -34,6 +33,7 @@ public class ChatRoomController {
     @GetMapping("/rooms")
     @ResponseBody
     public Response<List<SelectChatRoomOutput>> findAllRoom(SelectChatRoomInput selectChatRoomInput) {
+        log.info("[GET] /chat/rooms");
         return chatRoomService.findAllRoom(selectChatRoomInput);
     }
 
@@ -46,12 +46,14 @@ public class ChatRoomController {
     @PostMapping("/room")
     @ResponseBody
     public Response<ChatRoomDB> createRoom(@RequestBody CreateChatRoomInput createChatRoomInput) {
+        log.info("[POST] /chat/room");
         return chatRoomService.createChatRoom(createChatRoomInput);
     }
 
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public Response<ChatRoomDB> findByRoomId(@PathVariable String roomId) {
+        log.info("[GET] /chat/room" + roomId);
         return chatRoomService.findByRoomId(roomId);
     }
 

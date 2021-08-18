@@ -10,14 +10,9 @@ import com.linkedbook.response.Response;
 
 public interface ChatRoomService {
     Response<List<SelectChatRoomOutput>> findAllRoom(SelectChatRoomInput selectChatRoomInput);
-
     Response<ChatRoomDB> findByRoomId(String id);
-
     Response<ChatRoomDB> createChatRoom(CreateChatRoomInput createChatRoomInput);
-
     void setUserEnterInfo(String sessionId, String roomId);
-
     String getUserEnterRoomId(String sessionId);
-
     void removeUserEnterInfo(String sessionId);
 }

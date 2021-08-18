@@ -18,7 +18,6 @@ import com.linkedbook.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import lombok.AllArgsConstructor;
 
 import static com.linkedbook.response.ResponseStatus.*;
 

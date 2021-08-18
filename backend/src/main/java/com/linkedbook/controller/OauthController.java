@@ -8,11 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/auth")
 @AllArgsConstructor
 @Slf4j
 public class OauthController {
+
     private final OauthService oauthService;
 
     @GetMapping("/{type}")
