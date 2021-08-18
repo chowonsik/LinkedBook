@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import OAuth from "../../../components/user/signin/OAuth";
+import OauthLogin from "../../../components/user/signin/OAuth";
 import SignInForm from "../../../components/user/signin/SignInForm";
 import useInput from "../../../hooks/useInput";
 import { emailValidator, passwordValidator } from "../../../validators";
@@ -55,7 +55,7 @@ export default function SignIn() {
       <Wrapper>
         <img src="logo.PNG" width="60%" alt="logo" />
         <SignInForm email={email} password={password} onClick={handleLogin} />
-        <OAuth />
+        <OauthLogin />
       </Wrapper>
     </>
   );
