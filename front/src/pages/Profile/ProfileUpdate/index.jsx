@@ -200,7 +200,10 @@ const ProfileUpdate = () => {
           readOnly
         />
 
-        <button onClick={handleLocationClick} className="change-password">
+        <button
+          onClick={() => history.push(`/profile/update/password`)}
+          className="change-password"
+        >
           비밀번호 변경
         </button>
         <div className="manage-account">
