@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
     display: flex;
     justify-content: center;
     padding-bottom: 4px;
-    width: 100px;
+    width: 120px;
   }
   .active {
     font-weight: 500;

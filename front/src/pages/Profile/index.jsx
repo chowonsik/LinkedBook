@@ -28,8 +28,8 @@ const Profile = ({ match }) => {
     (state) => state.userProfileReducer.userTabInfo
   );
   const activeTab = useSelector((state) => state.userProfileReducer.activeTab);
-  const [isFollow, setIsFollow] = useState(userObj.isFollow);
-  const [listHeight, setListHeight] = useState(window.innerHeight - 260);
+  const [isFollow, setIsFollow] = useState(userObj?.isFollow);
+  const listHeight = useState(window.innerHeight - 260);
 
   useEffect(() => {
     dispatch(getUserObj(USER_ID));
@@ -71,7 +71,7 @@ const Profile = ({ match }) => {
       unFollow();
     } else {
       setIsFollow(true);
-      follow(userObj.isFollow);
+      follow();
     }
   }
 
