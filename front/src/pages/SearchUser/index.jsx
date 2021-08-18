@@ -16,7 +16,7 @@ function SearchUser() {
 
   function handleSetHeight() {
     const innerHeight = window.innerHeight;
-    console.log(innerHeight - 175);
+
     setHeight(innerHeight - 175);
   }
 

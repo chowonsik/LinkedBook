@@ -220,7 +220,7 @@ export default function SignUp() {
           onClick={() => {
             saveData();
             history.push({
-              pathname: "/search/location",
+              pathname: "/signup/search/location",
               state: { isSignUp: true },
             });
           }}
