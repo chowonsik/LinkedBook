@@ -14,7 +14,6 @@ import com.linkedbook.dto.userArea.createUserArea.CreateUserAreaInput;
 import com.linkedbook.dto.userArea.selectUserArea.SelectUserAreaOutput;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +24,10 @@ import static com.linkedbook.response.ResponseStatus.*;
 @Service("UserAreaService")
 @AllArgsConstructor
 public class UserAreaServiceImpl implements UserAreaService {
-    @Autowired
+
     private final UserRepository userRepository;
-    @Autowired
     private final UserAreaRepository userAreaRepository;
-    @Autowired
     private final AreaRepository areaRepository;
-    @Autowired
     private final JwtService jwtService;
 
     @Override

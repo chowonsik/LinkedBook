@@ -1,6 +1,5 @@
 package com.linkedbook.dto.follow;
 
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

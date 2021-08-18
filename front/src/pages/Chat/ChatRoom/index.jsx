@@ -36,6 +36,11 @@ function ChatRoom() {
   useEffect(() => {
     setReversedChatLogs(chatLogs.slice().reverse());
   }, [chatLogs]);
+  useEffect(() => {
+    if (toUserId) {
+      window.location.reload();
+    }
+  });
 
   function isDayChanged(date1, date2) {
     if (
@@ -231,6 +236,7 @@ function ChatRoom() {
       <Container height={chatListHeight}>
         {reversedChatLogs &&
           reversedChatLogs.map((chat, i) => {
+            console.log(chat);
             if (chat.type === "TALK") {
               if (isMe(chat.userId)) {
                 if (
@@ -271,6 +277,7 @@ function ChatRoom() {
                         profileImage={chat.image}
                         message={chat.message}
                         createdAt={chat.createdAt}
+                        userId={stateToUser.id}
                       />
                       <DateLine date={chat.createdAt} />
                     </>
@@ -283,6 +290,7 @@ function ChatRoom() {
                       profileImage={chat.image}
                       message={chat.message}
                       createdAt={chat.createdAt}
+                      userId={stateToUser.id}
                     />
                   );
                 }

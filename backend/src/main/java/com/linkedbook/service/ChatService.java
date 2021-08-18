@@ -8,8 +8,6 @@ import com.linkedbook.response.Response;
 
 public interface ChatService {
     String getRoomId(String destination);
-
     void sendChatMessage(ChatMessage chatMessage);
-
     Response<List<SelectChatMessageOutput>> loadMessage(String roomId);
 }

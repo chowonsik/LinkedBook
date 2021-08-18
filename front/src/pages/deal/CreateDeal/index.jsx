@@ -285,12 +285,14 @@ export default function CreateDeal() {
     }
     const ext = fileNm.slice(fileNm.lastIndexOf(".") + 1).toLowerCase();
     if (!(ext === "gif" || ext === "jpg" || ext === "png" || ext === "jpeg")) {
-      alert("이미지파일 (.jpg, .png, .gif ) 만 업로드 가능합니다.");
+      dispatch(
+        showToast("이미지파일 (.jpg, .png, .gif ) 만 업로드 가능합니다.")
+      );
       e.target.value = "";
       return false;
     }
     if (postImg.length + fileList.length > 5) {
-      alert("이미지파일은 5개까지 업로드 가능합니다.");
+      dispatch(showToast("이미지파일은 5개까지 업로드 가능합니다."));
       return false;
     }
     Array.from(fileList).forEach(async (file) => {

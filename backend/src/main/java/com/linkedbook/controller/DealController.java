@@ -12,23 +12,17 @@ import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import static com.linkedbook.response.ResponseStatus.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/deals")
 @AllArgsConstructor
 @Slf4j
 public class DealController {
-    @Autowired
+
     private final DealService dealService;
 
     /**

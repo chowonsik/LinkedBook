@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import useInput from "../../../hooks/useInput";
 import { Wrapper } from "./styles";
 import Input from "../../../components/common/Input";
@@ -9,16 +9,20 @@ import Header from "../../../components/Layout/Header";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
 import { showToast } from "../../../actions/Notification";
 import { getUserObj, updateUserObj } from "../../../actions/Profile";
+import { request } from "../../../api";
+import ReactS3Client from "../../../S3.js";
 
 const ProfileUpdate = () => {
-  let history = useHistory();
+  const history = useHistory();
   const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
+
   const userObj = useSelector((state) => state.userProfileReducer.userObj);
   const dispatch = useDispatch();
   const nickname = useInput(userObj.nickname, nicknameValidator);
   const description = useInput(userObj.info, descValidator);
   const [userImg, setUserImg] = useState(userObj.image);
   const [changedData, setChangedData] = useState({});
+  const [listHeight, setListHeight] = useState(window.innerHeight - 260);
 
   useEffect(() => {
     setChangedData({ ...changedData, image: userImg });
@@ -52,45 +56,114 @@ const ProfileUpdate = () => {
     }
   }
 
-  function onFileChange(event) {
-    const {
-      target: { files },
-    } = event;
-    const theFile = files[0];
-    const reader = new FileReader();
-    reader.onload = (finishedEvent) => {
-      const {
-        currentTarget: { result },
-      } = finishedEvent;
-      setUserImg(result);
-    };
-    if (theFile) {
-      reader.readAsDataURL(theFile);
+  // s3 서버에 업로드 할 유니크한 파일 이름
+  function getFileName(file) {
+    const today = new Date();
+    const fileName = `user-${today.getFullYear()}${
+      today.getMonth() + 1
+    }${today.getDate()}${today.getHours()}${today.getMinutes()}${today.getSeconds()}${today.getMilliseconds()}${
+      file.name
+    }`;
+    return fileName;
+  }
+
+  // s3 서버에 이미지 업로드 하고 {url, order} 리스트 반환
+  async function getImage(image) {
+    if (image.files) {
+      const file = image.files[0];
+      const newFileName = getFileName(file);
+      await ReactS3Client.uploadFile(file, newFileName)
+        .then((data) => {
+          setUserImg(data.location);
+        })
+        .catch((err) => console.error(err));
     }
   }
 
-  function handleLocationClick() {
-    history.push("/search/location");
+  // 파일읽기
+  function handleImageReader(file) {
+    // 보여주기 위한 사진정보를 추출
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    return new Promise((resolve, reject) => {
+      reader.onerror = () => {
+        reader.abort();
+        reject(new DOMException("Problem parsing input file."));
+      };
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+    });
   }
+  // 사용자가 업로드한 이미지 postImg state에 저장
+  async function handleImageCreate(e) {
+    const fileNm = e.target.value;
+    const fileList = e.target.files;
+    if (!fileNm) {
+      return false;
+    }
+    const ext = fileNm.slice(fileNm.lastIndexOf(".") + 1).toLowerCase();
+    if (!(ext === "gif" || ext === "jpg" || ext === "png" || ext === "jpeg")) {
+      dispatch(
+        showToast("이미지파일 (.jpg, .png, .gif ) 만 업로드 가능합니다.")
+      );
+      e.target.value = "";
+      return false;
+    }
+    const file = fileList[0];
+
+    let imgUrl = await handleImageReader(file);
+    let tempImage = {
+      imgUrl: imgUrl,
+      files: [file],
+    };
+    getImage(tempImage);
+  }
+
+  function handleLocationClick() {
+    dispatch(updateUserObj(changedData));
+    history.push({
+      pathname: "/search/location",
+      state: { isProfileUpdate: true },
+    });
+  }
+
   async function submitUserData() {
-    await dispatch(updateUserObj(changedData));
+    dispatch(updateUserObj(changedData));
     dispatch(showToast("프로필이 수정되었습니다."));
     await dispatch(getUserObj(LOGIN_USER_ID));
     history.push(`/profile/${LOGIN_USER_ID}`);
   }
 
+  function handleLogoutClick() {
+    localStorage.removeItem("loginUser");
+    history.push(`/signin`);
+  }
+
+  async function handleDeleteAccountClick() {
+    await request("patch", "/users/deactivate");
+    history.push(`/signin`);
+  }
+
   return (
     <>
       <Header isBack title="프로필 수정" />
-      <Wrapper>
+      <Wrapper height={listHeight}>
         <div className="user-image">
-          <img src={userImg} alt="profile" />
+          <img
+            src={userImg}
+            alt="profile"
+            onError={(e) => {
+              e.target.src =
+                "https://www.voakorea.com/themes/custom/voa/images/Author__Placeholder.png";
+            }}
+          />
           <label htmlFor="upload">프로필 사진 바꾸기 </label>
           <input
             id="upload"
             type="file"
             accept="image/*"
-            onChange={onFileChange}
+            onChange={handleImageCreate}
           />
         </div>
         <label htmlFor="nickname">닉네임</label>
@@ -126,11 +199,17 @@ const ProfileUpdate = () => {
           readOnly
         />
 
-        <Link to="/profile/update/password">
-          <button className="change-password">비밀번호 변경</button>
-        </Link>
-
-        <button className="delete-account">회원 탈퇴</button>
+        <button onClick={handleLocationClick} className="change-password">
+          비밀번호 변경
+        </button>
+        <div className="manage-account">
+          <button onClick={handleDeleteAccountClick} className="delete-account">
+            회원 탈퇴
+          </button>
+          <button onClick={handleLogoutClick} className="logout">
+            로그아웃
+          </button>
+        </div>
       </Wrapper>
       <FooterButton value="완료" onClick={submitUserData} />
     </>

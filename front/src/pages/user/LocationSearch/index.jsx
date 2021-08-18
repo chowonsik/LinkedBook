@@ -6,6 +6,7 @@ import { requestGet } from "../../../api.js";
 import { DongList, DongListItem, Wrapper } from "./style";
 import { useDispatch } from "react-redux";
 import { addArea } from "../../../actions/Users";
+import { updateUserObj } from "../../../actions/Profile";
 
 export default function LocationSearch() {
   const [search, setSearch] = useState("");
@@ -42,7 +43,6 @@ export default function LocationSearch() {
     const page = parseInt(searchList.length / 10);
     fetchData(page);
   }
-
   function handleAreaClick(selectedArea) {
     if (location.state) {
       if (location.state.isSignUp) {
@@ -50,6 +50,11 @@ export default function LocationSearch() {
       }
       if (location.state.isAreaAdd) {
         dispatch(addArea(selectedArea));
+        history.goBack();
+      }
+      if (location.state.isProfileUpdate) {
+        console.log(selectedArea);
+        dispatch(updateUserObj({ areaId: selectedArea.areaId }));
         history.goBack();
       }
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { BookmarkCheckFill, GearFill } from "react-bootstrap-icons";
 import { Wrapper } from "./styles";
@@ -37,9 +37,13 @@ const UserInfo = ({ userObj, isFollow, toggleFollowBtn }) => {
               <MannerScore score={userObj.mannerScore} />
             </div>
             {LOGIN_USER_ID !== userObj.userId ? (
-              <button onClick={toggleFollowBtn} isFollow className="follow-btn">
-                {isFollow ? "팔로잉" : "팔로우"}
-              </button>
+              <div onClick={toggleFollowBtn} isFollow className="follow-btn">
+                {isFollow ? (
+                  <button className="following"> 팔로잉</button>
+                ) : (
+                  <button className="follower">팔로우</button>
+                )}
+              </div>
             ) : (
               ""
             )}

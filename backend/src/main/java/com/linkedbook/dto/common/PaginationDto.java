@@ -1,4 +1,4 @@
-package com.linkedbook.dto;
+package com.linkedbook.dto.common;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
