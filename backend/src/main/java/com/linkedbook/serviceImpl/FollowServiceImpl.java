@@ -49,6 +49,11 @@ public class FollowServiceImpl implements FollowService {
                 log.error("[users/get] NOT FOUND TARGET USER error");
                 return new PageResponse<>(BAD_ID_VALUE);
             }
+            int loginUserId = jwtService.getUserId();
+            if(loginUserId < 0) {
+                log.error("[users/get] NOT FOUND LOGIN USER error");
+                return new PageResponse<>(BAD_ID_VALUE);
+            }
 
             Pageable paging = PageRequest.of(followSearchInput.getPage(), followSearchInput.getSize(), Sort.Direction.DESC, "id");;
             Page<FollowDB> followDBList;
@@ -59,11 +64,8 @@ public class FollowServiceImpl implements FollowService {
             }
             // 3. 팔로우 리스트에 필요한 최종 결과 가공
             followOutput = followDBList.map(followDB -> {
-                int fromUserId = info.equals("follower") ? userId : followDB.getToUser().getId();
-                int toUserId = info.equals("follower") ? followDB.getFromUser().getId() : userId;
-
                 UserDB targetUser = info.equals("follower") ? followDB.getFromUser() : followDB.getToUser();
-                FollowDB currentAndTargetDB = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
+                FollowDB loginAndTargetDB = followRepository.findByFromUserIdAndToUserId(loginUserId, targetUser.getId());
 
                 return FollowSearchOutput.builder()
                         .id(followDB.getId())
@@ -77,9 +79,8 @@ public class FollowServiceImpl implements FollowService {
                                 .build()
                         )
                         .follow(CommonFollowOutput.builder()
-                                .f4f(currentAndTargetDB != null)
-                                .id(currentAndTargetDB == null ? 0 :
-                                        (info.equals("follower") ? currentAndTargetDB.getId() : followDB.getId()))
+                                .f4f(loginAndTargetDB != null)
+                                .id(loginAndTargetDB == null ? 0 : loginAndTargetDB.getId())
                                 .build()
                         )
                         .created_at(followDB.getCreated_at())
