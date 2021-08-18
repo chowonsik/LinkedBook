@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { connect } from "react-redux";
-
+import { useHistory } from "react-router";
 import { Wrapper, Container } from "./styles";
 import Header from "../../../components/Layout/Header";
 
@@ -20,6 +20,8 @@ function FollowerList({
   createFollow,
 }) {
   const [height, setHeight] = useState(0);
+  const history = useHistory();
+  const [pUserId, setPuserId] = useState("");
   const currentPage = useSelector((state) => state.followReducer.currentPage);
   const totalPages = useSelector((state) => state.followReducer.totalPages);
   const totalElements = useSelector(
@@ -29,6 +31,9 @@ function FollowerList({
 
   useEffect(() => {
     handleSetHeight();
+    const paths = history.location.pathname.split("/");
+    setPuserId(parseInt(paths[paths.length - 1]));
+
     const params = {
       page: 0,
       size: 15,

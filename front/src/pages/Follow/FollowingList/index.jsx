@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { connect } from "react-redux";
-
+import { useHistory } from "react-router";
 import { getFollowingList, deleteFollowing } from "../../../actions/Follow";
 import { Wrapper, Container } from "./styles";
 import Header from "../../../components/Layout/Header";
@@ -9,7 +9,8 @@ import FollowItem from "../../../components/Follow/FollowItem";
 
 function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   const [height, setHeight] = useState(0);
-
+  const history = useHistory();
+  const [pUserId, setPuserId] = useState("");
   const currentPage = useSelector((state) => state.followReducer.currentPage);
   const totalPages = useSelector((state) => state.followReducer.totalPages);
   const totalElements = useSelector(
@@ -17,8 +18,9 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   );
 
   useEffect(() => {
-    //dispatch(setFollowReset());
     handleSetHeight();
+    const paths = history.location.pathname.split("/");
+    setPuserId(parseInt(paths[paths.length - 1]));
     const params = {
       page: 0,
       size: 15,
@@ -42,9 +44,6 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
     deleteFollowing(parseInt(e.target.id));
   }
 
-  async function handleDeleteFollowing(id) {
-    return await Promise.resolve(deleteFollowing(id));
-  }
   function handleScroll(e) {
     if (
       parseInt(e.target.scrollTop) + parseInt(e.target.clientHeight) ===

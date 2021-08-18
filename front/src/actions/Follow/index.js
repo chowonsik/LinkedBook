@@ -43,9 +43,8 @@ export const updateFollowingList = (followId) => {
   };
 };
 export const createFollow = (data) => {
-  return (dispatch) => {
+  return () => {
     const response = request("post", "/follow", data);
-    dispatch(createFollowAlarm(data.toUserId));
   };
 };
 // 팔로워 리스트 불러오기
@@ -88,26 +87,5 @@ export const setFollowReset = () => {
 export const setLoginUserInfo = () => {
   return {
     type: SET_LOGIN_USER_INFO,
-  };
-};
-
-export const createFollowAlarm = (userId) => {
-  const params = {
-    page: 0,
-    size: 10,
-  };
-  return (dispatch) => {
-    const response = requestGet("/follow/following", params);
-    response.then((res) => {
-      const followId = res.result.filter((data) => data.user.id === userId);
-
-      if (followId.length !== 0) {
-        const data = {
-          type: "FOLLOW",
-          followId: followId[0].follow.id,
-        };
-        dispatch(createAlarm(data));
-      }
-    });
   };
 };

@@ -1,4 +1,3 @@
-import { PersonCircle } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import {
   Wrapper,
