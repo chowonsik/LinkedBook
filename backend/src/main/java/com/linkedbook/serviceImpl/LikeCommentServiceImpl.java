@@ -4,17 +4,16 @@ import com.linkedbook.configuration.ValidationCheck;
 import com.linkedbook.dao.CommentRepository;
 import com.linkedbook.dao.FollowRepository;
 import com.linkedbook.dao.LikeCommentRepository;
+import com.linkedbook.dto.alert.AlertStatus;
 import com.linkedbook.dto.comment.like.LikeCommentInput;
 import com.linkedbook.dto.comment.like.LikeCommentSearchOutput;
 import com.linkedbook.dto.comment.like.LikeCommentSearchInput;
 import com.linkedbook.dto.common.CommonFollowOutput;
 import com.linkedbook.dto.common.CommonUserOutput;
-import com.linkedbook.entity.CommentDB;
-import com.linkedbook.entity.FollowDB;
-import com.linkedbook.entity.LikeCommentDB;
-import com.linkedbook.entity.UserDB;
+import com.linkedbook.entity.*;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
+import com.linkedbook.service.AlertService;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.LikeCommentService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +36,7 @@ public class LikeCommentServiceImpl implements LikeCommentService {
     private final CommentRepository commentRepository;
     private final FollowRepository followRepository;
     private final JwtService jwtService;
+    private final AlertService alertService;
 
     @Override
     @Transactional
@@ -62,11 +62,25 @@ public class LikeCommentServiceImpl implements LikeCommentService {
                 return new Response<>(EXISTS_INFO);
             }
 
-            likeCommentDB = LikeCommentDB.builder()
+            likeCommentRepository.save(
+                    LikeCommentDB.builder()
                     .user(loginUserDB)
                     .comment(commentDB)
-                    .build();
-            likeCommentRepository.save(likeCommentDB);
+                    .build());
+
+            // 자신의 한줄평 좋아요 알림(comment_id, to_user_id)
+            if(!alertService.checkDuplicateUncheckedAlert(AlertStatus.LIKE_COMMENT, commentDB, null, null,
+                    loginUserDB, commentDB.getUser()) && loginUserDB.getId() != commentDB.getUser().getId()) {
+                AlertDB alertDB = AlertDB.builder()
+                        .type(AlertStatus.LIKE_COMMENT)
+                        .comment(commentDB)
+                        .fromUser(loginUserDB)
+                        .toUser(commentDB.getUser())
+                        .status("UNCHECKED")
+                        .build();
+                alertService.createAlertInfo(alertDB);
+            }
+
         } catch (Exception e) {
             log.error("[like-comments/post] database error", e);
             return new Response<>(DATABASE_ERROR);

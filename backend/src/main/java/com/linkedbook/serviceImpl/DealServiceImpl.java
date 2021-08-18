@@ -1,11 +1,8 @@
 package com.linkedbook.serviceImpl;
 
 import com.linkedbook.configuration.ValidationCheck;
-import com.linkedbook.dao.BookRepository;
-import com.linkedbook.dao.DealImageRepository;
-import com.linkedbook.dao.DealRepository;
-import com.linkedbook.dao.ImageRepository;
-import com.linkedbook.dao.UserRepository;
+import com.linkedbook.dao.*;
+import com.linkedbook.dto.alert.AlertStatus;
 import com.linkedbook.dto.deal.createDeal.CreateDealImage;
 import com.linkedbook.dto.deal.createDeal.CreateDealInput;
 import com.linkedbook.dto.deal.createDeal.CreateDealOutput;
@@ -15,13 +12,10 @@ import com.linkedbook.dto.deal.selectDealDetail.SelectDealDetailOutput;
 import com.linkedbook.dto.deal.selectDealDetail.SelectDealImage;
 import com.linkedbook.dto.deal.updateDeal.UpdateDealImage;
 import com.linkedbook.dto.deal.updateDeal.UpdateDealInput;
-import com.linkedbook.entity.DealDB;
-import com.linkedbook.entity.DealImageDB;
-import com.linkedbook.entity.ImageDB;
-import com.linkedbook.entity.UserDB;
-import com.linkedbook.entity.BookDB;
+import com.linkedbook.entity.*;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
+import com.linkedbook.service.AlertService;
 import com.linkedbook.service.DealService;
 import com.linkedbook.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +27,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.linkedbook.response.ResponseStatus.*;
 
@@ -44,14 +40,17 @@ public class DealServiceImpl implements DealService {
 
     private final DealRepository dealRepository;
     private final BookRepository bookRepository;
+    private final LikeBookRepository likeBookRepository;
+    private final FollowRepository followRepository;
     private final ImageRepository imageRepository;
     private final DealImageRepository dealImageRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final AlertService alertService;
 
     @Override
     public PageResponse<SelectDealOutput> selectDealList(SelectDealInput selectDealInput, Pageable pageable) {
-        // 1. 값 형식 체크
+        // 값 형식 체크
         if (selectDealInput == null)
             return new PageResponse<>(NO_VALUES);
 
@@ -62,7 +61,7 @@ public class DealServiceImpl implements DealService {
             log.error("[GET]/deals database error", e);
             return new PageResponse<>(DATABASE_ERROR);
         }
-        // 4. 결과 return
+        // 결과 return
         return new PageResponse<>(selectDealOutput, SUCCESS_SELECT_DEAL_LIST);
     }
 
@@ -94,7 +93,8 @@ public class DealServiceImpl implements DealService {
             DealDB dealDB = DealDB.builder().user(user).book(book).title(createDealInput.getTitle())
                     .price(createDealInput.getPrice()).quality(createDealInput.getQuality())
                     .content(createDealInput.getContent()).status("ACTIVATE").build();
-            dealDB = dealRepository.save(dealDB);
+            dealRepository.save(dealDB);
+
             createDealOutput = CreateDealOutput.builder().dealId(dealDB.getId()).build();
             List<CreateDealImage> images = createDealInput.getImages();
             if (images.size() != 0) {
@@ -106,6 +106,44 @@ public class DealServiceImpl implements DealService {
                     dealImageRepository.save(dealImage);
                 }
             }
+
+            List<AlertDB> alertDBList = new ArrayList<>();
+            List<UserDB> toUserDBList;
+            // 팔로우한 책방의 신규 입고 알림(deal_id, to_user_id)
+            toUserDBList = followRepository.findByToUserIdAndFromUserStatus(user.getId(), "ACTIVATE")
+                    .stream().map(FollowDB::getFromUser).collect(Collectors.toList());
+            for (UserDB toUserDB : toUserDBList) {
+                if (!alertService.checkDuplicateUncheckedAlert(AlertStatus.NEW_DEAL_FOLLOW, null, dealDB, null,
+                        user, toUserDB)) {
+                    alertDBList.add(
+                            AlertDB.builder()
+                                    .type(AlertStatus.NEW_DEAL_FOLLOW)
+                                    .deal(dealDB)
+                                    .fromUser(user)
+                                    .toUser(toUserDB)
+                                    .status("UNCHECKED")
+                                    .build()
+                    );
+                }
+            }
+            // 관심 등록한 책의 신규 입고 알림(deal_id, to_user_id)
+            toUserDBList = likeBookRepository.findByBookAndUserStatus(book, "ACTIVATE")
+                    .stream().map(LikeBookDB::getUser).collect(Collectors.toList());
+            for (UserDB toUserDB : toUserDBList) {
+                if (!alertService.checkDuplicateUncheckedAlert(AlertStatus.NEW_DEAL_BOOK, null, dealDB, null,
+                        user, toUserDB) && toUserDB.getId() != user.getId()) {
+                    alertDBList.add(
+                            AlertDB.builder()
+                                    .type(AlertStatus.NEW_DEAL_BOOK)
+                                    .deal(dealDB)
+                                    .fromUser(user)
+                                    .toUser(toUserDB)
+                                    .status("UNCHECKED")
+                                    .build()
+                    );
+                }
+            }
+            alertService.createAlertInfo(alertDBList);
 
         } catch (IllegalArgumentException e) {
             log.error("[POST]/deals undefined status exception", e);
@@ -122,7 +160,6 @@ public class DealServiceImpl implements DealService {
     @Transactional
     public Response<Object> updateDeal(UpdateDealInput updateDealInput, int dealId) {
         try {
-
             // deal 정보 가져오기
             DealDB dealDB = dealRepository.findById(dealId).orElse(null);
             if (dealDB == null)
@@ -172,9 +209,7 @@ public class DealServiceImpl implements DealService {
                     dealImageRepository.save(dealImageDB);
                 }
             }
-
             dealDB = dealRepository.save(dealDB);
-
         } catch (IllegalArgumentException e) {
             log.error("[PATCH]/deals undefined status exception", e);
             return new Response<>(BAD_STATUS_VALUE);
@@ -194,7 +229,6 @@ public class DealServiceImpl implements DealService {
             selectDealDetailOutput = dealRepository.findDealDetail(dealId, jwtService.getUserId());
             List<SelectDealImage> dealImageDB = dealImageRepository.findByDealImages(dealId);
             selectDealDetailOutput.setDealImages(dealImageDB);
-            System.out.println(selectDealDetailOutput);
         } catch (Exception e) {
             log.error("[GET]/deals/" + dealId + " database error", e);
             return new Response<>(DATABASE_ERROR);
