@@ -57,7 +57,6 @@ const Profile = ({ match }) => {
     };
     await request("post", "/follow", data);
     await dispatch(getUserObj(USER_ID));
-    await dispatch(createAlarm({ type: "FOLLOW", followId: userObj.isFollow }));
   }
 
   async function unFollow() {
@@ -99,8 +98,8 @@ const Profile = ({ match }) => {
             <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
             <DealList height={listHeight} onScroll={handleScroll}>
               {userTabInfo &&
-                userTabInfo.map((deal) => (
-                  <DealItem key={deal.dealId} dealObj={deal} />
+                userTabInfo.map((deal, idx) => (
+                  <DealItem key={idx} dealObj={deal} />
                 ))}
             </DealList>
           </>
