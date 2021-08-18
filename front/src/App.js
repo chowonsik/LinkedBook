@@ -75,8 +75,12 @@ function App() {
           exact={true}
           component={ChangePassword}
         />
-        <Route path="/following/list" exact={true} component={FollowingList} />
-        <Route path="/follower/list" exact={true} component={FollowerList} />
+        <Route
+          path="/following/:userId"
+          exact={true}
+          component={FollowingList}
+        />
+        <Route path="/follower/:userId" exact={true} component={FollowerList} />
         <Route path="/alarm" exact={true} component={Alarm} />
         <Route path="/redbell/:dealId" exact={true} component={Report} />
         <Route path="/search/user" exact={true} component={SearchUser} />

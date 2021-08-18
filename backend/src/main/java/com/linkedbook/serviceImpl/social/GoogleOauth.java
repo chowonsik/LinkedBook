@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linkedbook.dao.UserRepository;
 import com.linkedbook.dto.user.signin.OauthOutput;
 import com.linkedbook.dto.user.signin.SignInOutput;
+import com.linkedbook.dto.user.signin.SocialLoginType;
 import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
@@ -88,7 +89,7 @@ public class GoogleOauth implements SocialOauth {
                         SignInOutput.builder()
                                 .oauth(
                                         OauthOutput.builder()
-                                                .type("GOOGLE")
+                                                .type(SocialLoginType.GOOGLE)
                                                 .id(googleId)
                                                 .email(email)
                                                 .nickname(nickname)
@@ -97,7 +98,7 @@ public class GoogleOauth implements SocialOauth {
                 return new Response<>(oauthOutput, NEED_SIGNUP);
             }
             if (!StringUtils.isNotEmpty(userDBs.get(0).getOauthId())) { // 기존에 이메일로 가입했을 경우
-                userDBs.get(0).setOauth("GOOGLE");
+                userDBs.get(0).setOauth(SocialLoginType.GOOGLE);
                 userDBs.get(0).setOauthId(googleId);
                 userDB = userRepository.save(userDBs.get(0));
             } else {
@@ -123,7 +124,7 @@ public class GoogleOauth implements SocialOauth {
                 .accessToken(accessToken)
                 .oauth(
                         OauthOutput.builder()
-                                .type("GOOGLE")
+                                .type(SocialLoginType.GOOGLE)
                                 .id(googleId)
                                 .email(email)
                                 .nickname(nickname)

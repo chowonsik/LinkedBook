@@ -36,6 +36,9 @@ export const LogoAndTitle = styled.div`
 
   .title {
     display: ${(props) => (props.isTitle ? "block" : "none")};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .logo {
     display: ${(props) => (props.isLogo && !props.isTitle ? "block" : "none")};
