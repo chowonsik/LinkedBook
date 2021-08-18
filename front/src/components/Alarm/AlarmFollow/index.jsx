@@ -48,6 +48,7 @@ function AlarmFollow({ height }) {
     };
     dispatch(getFollowAlarm(params));
   }
+
   function handleTimeLog(date) {
     const now = new Date();
     const past = new Date(date);
