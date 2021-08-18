@@ -6,6 +6,7 @@ import {
   SET_SCROLL,
   SET_LIKE_BOOKS,
   SET_LIKE_PAGE,
+  SET_BOOK_DEALS,
 } from "../../actions/Books";
 
 const INIT_STATE = {
@@ -17,6 +18,7 @@ const INIT_STATE = {
   likeCurrentPage: 0,
   likeTotalPages: 0,
   likeTotalElements: 0,
+  bookDeals: [],
 };
 
 export const bookReducer = (state = INIT_STATE, action) => {
@@ -59,6 +61,11 @@ export const bookReducer = (state = INIT_STATE, action) => {
         likeCurrentPage: action.currentPage,
         likeTotalPages: action.totalPages,
         likeTotalElements: action.totalElements,
+      };
+    case SET_BOOK_DEALS:
+      return {
+        ...state,
+        bookDeals: action.bookDeals,
       };
     default:
       return state;

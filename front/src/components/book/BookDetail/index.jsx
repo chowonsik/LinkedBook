@@ -30,12 +30,12 @@ const BookDetail = ({ bookInfo }) => {
               </strong>
             )}
             <strong className="bookmark">
-              <span className="bookmark-cnt">
-                {bookInfo.like && bookInfo.like.totalLikeCnt}
-              </span>
               <Link to={{ pathname: `/book/likes/${bookInfo.id}` }}>
                 <BookmarkFill className="icon" />
               </Link>
+              <span className="bookmark-cnt">
+                {bookInfo.like && bookInfo.like.totalLikeCnt}
+              </span>
             </strong>
           </div>
         </div>

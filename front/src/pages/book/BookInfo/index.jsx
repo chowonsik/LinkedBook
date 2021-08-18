@@ -1,7 +1,7 @@
 // import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BookmarkFill, Bookmark, PencilFill } from "react-bootstrap-icons";
 import { Wrapper, BookComments, Footer } from "./styles";
 import { request, requestGet, requestDelete } from "../../../api";
@@ -13,6 +13,7 @@ import RoundButton from "../../../components/common/Buttons/RoundButton";
 import ToastMessage from "../../../components/common/ToastMessage";
 import { showToast } from "../../../actions/Notification";
 import { createAlarm } from "../../../actions/Alarm";
+import { getBookDeals } from "../../../actions/Books";
 
 const BookInfo = ({ match, history }) => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const BookInfo = ({ match, history }) => {
   const {
     params: { isbn },
   } = match;
+  const areaId = useSelector((state) => state.userReducer.selectedArea);
   const [bookInfo, setBookInfo] = useState([]);
   const [bookComments, setBookComments] = useState([]);
   const [modalActive, setModalActive] = useState(false);
@@ -103,12 +105,12 @@ const BookInfo = ({ match, history }) => {
     const { result } = await requestGet(`/books/${isbn}`);
     const bookData = {
       ...result,
-      price: result.price.toLocaleString(),
-      commentAvgScore: result.commentAvgScore,
-      date: `${result.dateTime.substr(0, 4)}년 ${result.dateTime.substr(
+      price: result?.price.toLocaleString(),
+      commentAvgScore: result?.commentAvgScore,
+      date: `${result?.dateTime.substr(0, 4)}년 ${result?.dateTime.substr(
         5,
         2
-      )}월 ${result.dateTime.substr(8, 2)}일 출간`,
+      )}월 ${result?.dateTime.substr(8, 2)}일 출간`,
     };
     setBookInfo(bookData);
     setIsBookLike(bookData.like);
@@ -188,11 +190,11 @@ const BookInfo = ({ match, history }) => {
 
   const validCheck = () => {
     if (!newComment.score) {
-      alert("별점을 선택하세요.");
+      dispatch(showToast("별점을 선택하세요."));
       return false;
     }
     if (!newComment.content) {
-      alert("한줄평을 입력하세요.");
+      dispatch(showToast("한줄평을 입력하세요."));
       return false;
     }
     return true;
@@ -210,7 +212,7 @@ const BookInfo = ({ match, history }) => {
       if (selectedState[id]) {
         selectedState[id] = false;
       } else {
-        alert("태그는 최대 3개까지 등록가능합니다.");
+        dispatch(showToast("태그는 최대 3개까지 등록가능합니다."));
         return;
       }
     } else {
@@ -346,6 +348,11 @@ const BookInfo = ({ match, history }) => {
     getBookInfo();
   };
 
+  const handleShowBookDeals = async () => {
+    dispatch(getBookDeals(isbn, areaId));
+    history.push(`/books/${isbn}/deals`);
+  };
+
   return (
     <>
       <Header isBack isSearch isAlarm title={bookInfo.title} />
@@ -388,12 +395,16 @@ const BookInfo = ({ match, history }) => {
         />
       </Wrapper>
       <Footer>
-        {isBookLike.userLike && isBookLike.userLike ? (
+        {isBookLike?.userLike && isBookLike.userLike ? (
           <BookmarkFill onClick={unlikeBook} className="bookmark-icon" />
         ) : (
           <Bookmark onClick={likeBook} className="bookmark-icon" />
         )}
-        <RoundButton value="거래보기" width="70%" />
+        <RoundButton
+          onClick={handleShowBookDeals}
+          value="거래보기"
+          width="70%"
+        />
       </Footer>
     </>
   );

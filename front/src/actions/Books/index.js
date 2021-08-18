@@ -1,4 +1,4 @@
-import { request, requestGet, KakaoBook } from "../../api.js";
+import { requestGet } from "../../api.js";
 export const SET_QUERY = "SET_QUERY";
 export const RESET_BOOKLIST = "RESET_BOOKLIST";
 export const SET_BOOKLIST = "SET_BOOKLIST";
@@ -7,6 +7,8 @@ export const DO_REFRESH = "DO_REFRESH";
 export const SET_SCROLL = "SET_SCROLL";
 export const SET_LIKE_BOOKS = "SET_LIKE_BOOKS";
 export const SET_LIKE_PAGE = "SET_LIKE_PAGE";
+export const SET_BOOK_DEALS = "SET_BOOK_DEALS";
+
 // export const getBooksData = (query = "", page = 1) => {
 //   if (query.length === 0) return;
 //   return (getState, dispatch) => {
@@ -86,5 +88,30 @@ export const setLikePage = (currentPage, totalPages, totalElements) => {
     currentPage,
     totalPages,
     totalElements,
+  };
+};
+
+export const getBookDeals =
+  (bookId, areaId, page = 0) =>
+  async (dispatch, getState) => {
+    const params = {
+      bookId: bookId,
+      areaId: areaId,
+      page: page,
+      size: 10,
+      filter: "NEW",
+    };
+    const { result } = await requestGet(`/deals`, params);
+    if (page === 0) {
+      dispatch(setBookDeals(result));
+    } else {
+      const newBookDeals = getState().bookReducer.bookDeals.concat(result);
+      dispatch(setBookDeals(newBookDeals));
+    }
+  };
+export const setBookDeals = (bookDeals) => {
+  return {
+    type: SET_BOOK_DEALS,
+    bookDeals,
   };
 };

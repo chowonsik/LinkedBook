@@ -33,6 +33,8 @@ import LikeComments from "./pages/book/LikeComments";
 import OauthLogin from "./pages/user/SignIn/OAuth";
 
 import Onboarding from "./pages/Onboarding";
+import BookDeals from "./pages/book/BookDeals";
+
 function App() {
   return (
     <div className="App">
@@ -50,7 +52,8 @@ function App() {
           component={LocationSearch}
         />
         <Route path="/books" exact component={SearchBook} />
-        <Route path="/books/:isbn" component={BookInfo} />
+        <Route path="/books/:isbn" exact component={BookInfo} />
+        <Route path="/books/:isbn/deals" component={BookDeals} />
         <Route path="/recommend" exact={true} component={RecommendUser} />
         <Switch>
           <Route
