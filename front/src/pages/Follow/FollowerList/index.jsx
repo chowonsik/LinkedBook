@@ -39,10 +39,6 @@ function FollowerList({
   }, []);
 
   function handleClick(e) {
-    if (active) {
-      return;
-    }
-
     const type = e.target.innerText;
     if (type === "팔로우") {
       const data = {
@@ -56,23 +52,13 @@ function FollowerList({
       };
       getFollowerList(params);
     } else {
-      setFollowerUserId(e.target.id);
-      setActive(true);
-    }
-  }
-
-  function handleClickModal(e) {
-    const value = e.target.id;
-
-    if (value === "check") {
-      deleteFollowing(followerUserId);
+      deleteFollowing(e.target.id);
       const params = {
         page: 0,
         size: followerList.length,
       };
       getFollowerList(params);
     }
-    setActive(false);
   }
 
   function handleScroll(e) {
@@ -112,11 +98,6 @@ function FollowerList({
             />
           ))}
       </Container>
-      <CheckFollowCancle
-        title="팔로우를 취소하시겠습니까?"
-        isActive={active}
-        onClick={handleClickModal}
-      />
     </Wrapper>
   );
 }
