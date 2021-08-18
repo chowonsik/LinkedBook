@@ -15,14 +15,10 @@ import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
 
 public interface UserService {
     Response<SignInOutput> signIn(SignInInput signInInput);
-
     Response<SignUpOutput> signUp(SignUpInput signUpInput);
-
     Response<SelectProfileOutput> selectProfile(int id);
-
     Response<Object> updateProfile(UpdateProfileInput updateProfileInput);
-
     PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput);
-
     Response<EmailOutput> sendMail(EmailInput emailInput);
+    Response<Object> changeDeleteStatus();
 }

@@ -68,7 +68,7 @@ export default function SignUp() {
       dispatch(showToast("모든 항목을 입력하세요."));
       return;
     }
-    if (!oauthUserData && emailCheck.value !== auth) {
+    if (!oauthUserData?.authEmail && emailCheck.value !== auth) {
       dispatch(showToast("이메일 인증이 필요합니다."));
       return;
     }
@@ -104,13 +104,15 @@ export default function SignUp() {
     const data = {
       email: email.value,
     };
-    dispatch(showToast("이메일로 인증번호를 발송했습니다."));
     const response = await request("POST", "/users/email", data);
     if (response.isSuccess) {
       setAuth(response.result.auth);
+      dispatch(showToast("이메일로 인증번호를 발송했습니다."));
     } else {
       if (response.status === 400) {
         dispatch(showToast(response.message));
+      } else {
+        dispatch(showToast("인증 메일을 발송하는데 실패하였습니다."));
       }
       return;
     }
@@ -137,9 +139,10 @@ export default function SignUp() {
         ..._oauthUserData
       } = location.state.oauthUser;
 
-      nickname.setValue(_nickname);
-      email.setValue(_email);
+      nickname.setValue(_nickname ?? "");
+      email.setValue(_email ?? "");
       setOAuthUserData({
+        authEmail: !!_email,
         oauth: _oauthUserData.type,
         oauthId: _oauthUserData.id,
         image: _oauthUserData.image,
@@ -165,18 +168,18 @@ export default function SignUp() {
             onChange={email.onChange}
             isValid={email.isValid}
             errorMessage={email.errorMessage}
-            readonly={!!oauthUserData}
+            readonly={!!oauthUserData?.authEmail}
           />
-          {!oauthUserData && (
+          {!oauthUserData?.authEmail && (
             <RoundButton
-              value="이메일 인증"
+              value="인증"
               onClick={handleEmailAuth}
               width="125px"
               fontSize="15px"
             />
           )}
         </div>
-        {!oauthUserData && (
+        {!oauthUserData?.authEmail && (
           <>
             <Input
               type="text"
@@ -221,7 +224,7 @@ export default function SignUp() {
               state: { isSignUp: true },
             });
           }}
-          placeholder={area.areaFullName ? area.areaFullName : "지역 선택"}
+          placeholder={area.areaFullName ? area.areaFullName : "거래지역 선택"}
         />
       </Wrapper>
       <FooterButton value="회원가입" onClick={handleSignUp} />

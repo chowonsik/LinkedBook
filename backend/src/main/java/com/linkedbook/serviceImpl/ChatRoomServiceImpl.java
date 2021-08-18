@@ -1,6 +1,5 @@
 package com.linkedbook.serviceImpl;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +17,6 @@ import com.linkedbook.dto.chat.createChatRoom.CreateChatRoomInput;
 import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomInput;
 import com.linkedbook.dto.chat.selectChatRoom.SelectChatRoomOutput;
 import com.linkedbook.entity.ChatRoomDB;
-import com.linkedbook.entity.DealDB;
 
 import static com.linkedbook.response.ResponseStatus.*;
 

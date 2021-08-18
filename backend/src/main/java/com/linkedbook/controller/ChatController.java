@@ -9,7 +9,6 @@ import com.linkedbook.response.Response;
 import com.linkedbook.service.ChatService;
 import com.linkedbook.service.JwtService;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +42,7 @@ public class ChatController {
      */
     @MessageMapping("/chat/message")
     public void message(@RequestBody ChatMessage chatMessage) {
+        log.info("[GET] /chat/message");
         chatService.sendChatMessage(chatMessage); // 메서드 일원화
     }
 }

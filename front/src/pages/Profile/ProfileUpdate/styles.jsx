@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding: 30px 50px 0;
+    margin-bottom: 100px;
     .user-image {
       display: flex;
       flex-direction: column;
@@ -45,9 +46,19 @@ export const Wrapper = styled.div`
       font-size: ${fonts.md};
       color: ${colors.yellow};
     }
-    .delete-account {
-      font-size: ${fonts.md};
-      color: ${colors.gray};
+    .manage-account {
+      display: flex;
+      .delete-account {
+        padding: 2px;
+        font-size: ${fonts.md};
+        color: ${colors.gray};
+        margin-right: 14px;
+      }
+      .logout {
+        padding: 2px;
+        font-size: ${fonts.md};
+        color: ${colors.gray};
+      }
     }
   }
 `;

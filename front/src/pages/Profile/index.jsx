@@ -28,7 +28,7 @@ const Profile = ({ match }) => {
     (state) => state.userProfileReducer.userTabInfo
   );
   const activeTab = useSelector((state) => state.userProfileReducer.activeTab);
-  const [isFollow, setIsFollow] = useState(false);
+  const [isFollow, setIsFollow] = useState(userObj.isFollow);
   const [listHeight, setListHeight] = useState(window.innerHeight - 260);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const Profile = ({ match }) => {
   }
 
   function toggleFollowBtn() {
-    if (isFollow) {
+    if (userObj.isFollow) {
       setIsFollow(false);
       unFollow();
     } else {
@@ -77,16 +77,21 @@ const Profile = ({ match }) => {
 
   return (
     <>
-      <Header isLogo isSearch isAlarm />
+      {LOGIN_USER_ID === USER_ID ? (
+        <Header isLogo isSearch isAlarm />
+      ) : (
+        <Header isBack title="프로필" isSearch isAlarm />
+      )}
       <Wrapper>
         {userObj && (
           <>
             <UserInfo
               userObj={userObj}
-              isFollow={userObj.isFollow}
+              isFollow={isFollow}
               toggleFollowBtn={toggleFollowBtn}
             />
             <UserActivity
+              userId={USER_ID}
               dealCnt={userObj.dealCnt}
               followingCnt={userObj.followingCnt}
               followerCnt={userObj.followerCnt}

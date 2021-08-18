@@ -1,9 +1,7 @@
 package com.linkedbook.configuration.security;
 
-import java.util.List;
-
 import com.linkedbook.dao.UserRepository;
-import com.linkedbook.dto.UserDetail;
+import com.linkedbook.dto.common.UserDetail;
 import com.linkedbook.entity.UserDB;
 
 import org.springframework.security.core.userdetails.UserDetails;
