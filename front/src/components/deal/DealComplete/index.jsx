@@ -28,7 +28,6 @@ export default function DealComplete({
       userId: selectedUser.id,
       score: rating,
     });
-    console.log(response);
     if (response.isSuccess) {
       const userDealId = response.result.userDealId;
       dispatch(createAlarm({ type: "EVAL", evalId: userDealId }));
@@ -37,7 +36,6 @@ export default function DealComplete({
       history.push("/");
       if (!flag) history.push("/alarm");
     } else {
-      console.log(response);
       dispatch(showToast("실패함!"));
     }
   }
@@ -79,12 +77,7 @@ export default function DealComplete({
       getChatList();
     }
   }, [dealId]);
-  useEffect(() => {
-    console.log(selectedUser);
-  }, [selectedUser]);
-  useEffect(() => {
-    console.log(rating);
-  }, [rating]);
+
   return (
     <>
       <Wrapper confirmShow={show}></Wrapper>

@@ -32,9 +32,7 @@ export const setFollowingList = (followings, currentPage) => {
 export const deleteFollowing = (followingId) => {
   return (dispatch) => {
     const response = requestDelete(`/follow/${followingId}`);
-    response.then((res) => {
-      dispatch(updateFollowingList(followingId));
-    });
+    dispatch(updateFollowingList(followingId));
   };
 };
 
@@ -103,7 +101,6 @@ export const createFollowAlarm = (userId) => {
     response.then((res) => {
       const followId = res.result.filter((data) => data.user.id === userId);
       if (followId.length !== 0) {
-        // console.log(followId);
         const data = {
           type: "FOLLOW",
           followId: followId[0].follow.id,

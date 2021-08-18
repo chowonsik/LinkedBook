@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
+
 import { BrowserRouter as Router, Switch } from "react-router-dom"; // 히스토리 모드 제거
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
@@ -25,7 +25,6 @@ import ToastMessage from "./components/common/ToastMessage";
 import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
-import { checkNewAlarm } from "./actions/Alarm";
 import LikeBooks from "./pages/book/LikeBooks";
 import MyComments from "./pages/Profile/MyComments";
 
@@ -33,6 +32,7 @@ import LikeComments from "./pages/book/LikeComments";
 import OauthLogin from "./pages/user/SignIn/OAuth";
 
 import Onboarding from "./pages/Onboarding";
+import BookDeals from "./pages/book/BookDeals";
 import PublicRoute from "./lib/PublicRoute.js";
 import PrivateRoute from "./lib/PrivateRoute";
 import SizeAlert from "./pages/SizeAlert";
@@ -74,13 +74,14 @@ function App() {
             exact={true}
             component={SignUp}
           />
-          <PrivateRoute
+          <PublicRoute
             path="/search/location"
             exact={true}
             component={LocationSearch}
           />
           <PrivateRoute path="/books" exact component={SearchBook} />
-          <PrivateRoute path="/books/:isbn" component={BookInfo} />
+          <PrivateRoute path="/books/:isbn" exact component={BookInfo} />
+          <PrivateRoute path="/books/:isbn/deals" exact component={BookDeals} />
           <PrivateRoute
             path="/recommend"
             exact={true}
@@ -150,7 +151,7 @@ function App() {
             exact={true}
             component={LikeComments}
           />
-          <PrivateRoute
+          <PublicRoute
             path="/auth/:type/callback"
             exact={true}
             component={OauthLogin}

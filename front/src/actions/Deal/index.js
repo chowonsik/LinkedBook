@@ -30,7 +30,6 @@ export const setScroll = (scroll) => {
 };
 
 export const addLikeDeal = (dealId) => async (dispatch, getState) => {
-  console.log(dealId);
   const newNEW = getState().dealReducer.deals.NEW.map((deal) =>
     deal.dealId === dealId ? { ...deal, isLikeDeal: 1 } : deal
   );
@@ -50,7 +49,6 @@ export const addLikeDeal = (dealId) => async (dispatch, getState) => {
   dispatch(setSelectDeals(getState().dealReducer.filter));
   const response = await request("POST", "/like-deals", { dealId: dealId });
   if (response.isSuccess) {
-    console.log("Success");
     dispatch(createAlarm({ type: "LIKE_DEAL", dealId: dealId }));
   }
 };
@@ -71,11 +69,12 @@ export const deleteLikeDeal = (dealId) => async (dispatch, getState) => {
       QUALITY: newQUALITY,
     })
   );
-  dispatch(setSelectDeals(getState().dealReducer.filter));
   const response = await request("DELETE", `/like-deals?dealId=${dealId}`, {
     dealId: dealId,
   });
-  console.log(response);
+  if (response.isSuccess) {
+    dispatch(setSelectDeals(getState().dealReducer.filter));
+  }
 };
 
 export const setIsLoading = (loading) => {

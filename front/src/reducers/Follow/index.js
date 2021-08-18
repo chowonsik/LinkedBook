@@ -56,7 +56,7 @@ export const followReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         followingList: state.followingList.filter(
-          (following) => following.follow.id !== action.followId
+          (following) => following.id !== action.followId
         ),
       };
     default:

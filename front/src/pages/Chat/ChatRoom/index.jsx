@@ -5,52 +5,32 @@ import Stomp from "stompjs";
 import SockJS from "sockjs-client";
 import Header from "../../../components/Layout/Header";
 import { Wrapper, Container } from "./styles";
-import ChatLogBox from "../../../components/Chat/ChatLogBox";
 import InputMessage from "../../../components/Chat/InputMessage";
 import MyChat from "../../../components/Chat/MyChat";
 import OtherChat from "../../../components/Chat/OtherChat";
 import DateLine from "../../../components/Chat/DateLine";
-import { request, requestGet } from "../../../api";
-import { useDispatch, useSelector } from "react-redux";
-import { showToast } from "../../../actions/Notification";
+import { useDispatch } from "react-redux";
 
 function ChatRoom() {
   const sock = new SockJS(`${process.env.REACT_APP_API_URL}/api/ws-stomp`);
   const ws = Stomp.over(sock);
-  const [content, setContent] = useState("");
   const [value, setValue] = useState("");
   const [chatLogs, setChatLogs] = useState([]);
   const [reversedChatLogs, setReversedChatLogs] = useState([]);
   const [chatListHeight, setChatListHeight] = useState(
     window.innerHeight - 110
   );
-  const [stateToUser, setStateToUser] = useState({});
   const inputRef = useRef(null);
   const history = useHistory();
-  const dispatch = useDispatch();
   const loginUser = JSON.parse(localStorage.getItem("loginUser"));
-  const toUserId = parseInt(history.location?.toUserId);
+  const fromUser = history.location.state.fromUser;
+  const toUser = history.location.state.toUser;
   let roomId = history.location.pathname.split("/");
   roomId = roomId[roomId.length - 1];
 
   useEffect(() => {
     setReversedChatLogs(chatLogs.slice().reverse());
   }, [chatLogs]);
-  useEffect(() => {
-    if (toUserId) {
-      window.location.reload();
-    }
-  });
-
-  function isDayChanged(date1, date2) {
-    if (
-      date1.getDate() !== date2.getDate() ||
-      date1.getMonth() !== date2.getMonth() ||
-      date1.getYear() !== date2.getYear()
-    )
-      return true;
-    return false;
-  }
 
   function getListHeight() {
     setChatListHeight(window.innerHeight - 110);
@@ -73,7 +53,7 @@ function ChatRoom() {
       roomId,
       message: value,
       userName: loginUser.email,
-      toUserId: toUserId ? toUserId : stateToUser.id,
+      toUserId: history.location.state.toUser.toUserId,
       fromUserId: loginUser.id,
     };
     ws.send(
@@ -91,50 +71,9 @@ function ChatRoom() {
   useEffect(() => {
     window.addEventListener("resize", getListHeight);
     const token = loginUser.accessToken;
-    let fromUser = {};
-    let toUser = {};
-    // fromuser touser 가져오기
-    let params = {
-      url: `/api/chat/rooms?userId=${loginUser.id}`,
-      method: "GET",
-      headers: {
-        "X-ACCESS-TOKEN": loginUser.accessToken,
-      },
-    };
-    axios(params)
-      .then((response) => {
-        const thisRoom = response.data.result.find(
-          (room) => room.room_id === roomId
-        );
-        if (thisRoom.fromUserId === loginUser.id) {
-          fromUser = {
-            id: thisRoom.fromUserId,
-            nickname: thisRoom.fromUserNickname,
-            image: thisRoom.fromUserImage,
-          };
-          toUser = {
-            id: thisRoom.toUserId,
-            nickname: thisRoom.toUserNickname,
-            image: thisRoom.toUserImage,
-          };
-        } else {
-          fromUser = {
-            id: thisRoom.toUserId,
-            nickname: thisRoom.toUserNickname,
-            image: thisRoom.toUserImage,
-          };
-          toUser = {
-            id: thisRoom.fromUserId,
-            nickname: thisRoom.fromUserNickname,
-            image: thisRoom.fromUserImage,
-          };
-        }
-        setStateToUser(toUser);
-      })
-      .catch((err) => console.log(err));
 
     const chat_logs = chatLogs;
-    params = {
+    const params = {
       url: `/api/chat-messages?roomId=${roomId}`,
       method: "GET",
     };
@@ -146,7 +85,17 @@ function ChatRoom() {
               ...chat,
               createdAt: new Date(chat.created_at),
               userId:
-                chat.userId === loginUser.id ? stateToUser.id : loginUser.id,
+                chat.userId === toUser.toUserId
+                  ? fromUser.fromUserId
+                  : toUser.toUserId,
+              image:
+                chat.image === toUser.toUserId
+                  ? fromUser.fromUserImage
+                  : toUser.toUserImage,
+              nickname:
+                chat.nickname === toUser.toUserNickname
+                  ? fromUser.fromUserNickname
+                  : toUser.toUserNickname,
             });
           }
         });
@@ -159,16 +108,16 @@ function ChatRoom() {
         token: token,
       },
       () => {
-        if (toUserId) {
+        if (history.location.state.create) {
           ws.send(
             `/pub/chat/message`,
             { token: token },
             JSON.stringify({
               type: "ENTER",
               roomId,
-              message: content,
+              message: `${fromUser.fromUserNickname}님이 입장했습니다.`,
               userName: loginUser.email,
-              toUserId: toUserId ? toUserId : toUser.id,
+              toUserId: history.location.state.toUser.toUserId,
               fromUserId: loginUser.id,
               //userProfile: user_profile,
             })
@@ -183,9 +132,9 @@ function ChatRoom() {
                 type: "TALK",
                 createdAt: new Date(),
                 userId: loginUser.id,
-                image: fromUser.image,
+                image: fromUser.fromUserImage,
                 message: newMsg.message,
-                nickname: fromUser.nickname,
+                nickname: fromUser.fromUserNickname,
               };
               chat_logs.push(newChat);
               setChatLogs([...chat_logs]);
@@ -196,9 +145,9 @@ function ChatRoom() {
                 type: "TALK",
                 createdAt: new Date(),
                 userId: toUser.id,
-                image: toUser.image,
+                image: toUser.toUserImage,
                 message: newMsg.message,
-                nickname: toUser.nickname,
+                nickname: toUser.toUserNickname,
               };
               chat_logs.push(newChat);
               setChatLogs([...chat_logs]);
@@ -210,17 +159,7 @@ function ChatRoom() {
 
     return () => {
       window.removeEventListener("resize", getListHeight);
-      ws.send(
-        `/pub/api/chat/message`,
-        { token: token },
-        JSON.stringify({
-          type: "QUIT",
-          roomId,
-          message: content,
-          userName: loginUser.email,
-          //userProfile: user_profile,
-        })
-      );
+
       ws.disconnect(
         () => {
           ws.unsubscribe("sub-0");
@@ -232,11 +171,10 @@ function ChatRoom() {
 
   return (
     <Wrapper>
-      <Header isBack={true} title={stateToUser.nickname} />
+      <Header isBack={true} title={toUser.toUserNickname} />
       <Container height={chatListHeight}>
         {reversedChatLogs &&
           reversedChatLogs.map((chat, i) => {
-            console.log(chat);
             if (chat.type === "TALK") {
               if (isMe(chat.userId)) {
                 if (
@@ -277,7 +215,6 @@ function ChatRoom() {
                         profileImage={chat.image}
                         message={chat.message}
                         createdAt={chat.createdAt}
-                        userId={stateToUser.id}
                       />
                       <DateLine date={chat.createdAt} />
                     </>
@@ -290,28 +227,12 @@ function ChatRoom() {
                       profileImage={chat.image}
                       message={chat.message}
                       createdAt={chat.createdAt}
-                      userId={stateToUser.id}
                     />
                   );
                 }
               }
             }
           })}
-        {/* {chatLogs &&
-          chatLogs.map((chat) => {
-            // console.log(chat);
-            if (chat.type === "TALK") {
-              return (
-                <ChatLogBox
-                  userType={isMe(chat.userId)}
-                  userName={chat.userName}
-                  profileImage={chat.profileImage}
-                  message={chat.message}
-                  createdAt={chat.createdAt}
-                />
-              );
-            }
-          })} */}
       </Container>
       <InputMessage
         onChange={handleChange}

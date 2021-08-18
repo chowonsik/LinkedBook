@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 
 import { Wrapper, Container } from "./styles";
 import Header from "../../../components/Layout/Header";
-import CheckFollowCancle from "../../../components/Follow/CheckFollowCancle";
+
 import FollowItem from "../../../components/Follow/FollowItem";
-import { setFollowReset, setLoginUserInfo } from "../../../actions/Follow";
+
 import {
   getFollowerList,
   deleteFollowing,
@@ -19,8 +19,6 @@ function FollowerList({
   deleteFollowing,
   createFollow,
 }) {
-  const [followerUserId, setFollowerUserId] = useState("");
-  const [active, setActive] = useState(false);
   const [height, setHeight] = useState(0);
   const currentPage = useSelector((state) => state.followReducer.currentPage);
   const totalPages = useSelector((state) => state.followReducer.totalPages);
@@ -80,6 +78,7 @@ function FollowerList({
     const innerHeight = window.innerHeight;
     setHeight(innerHeight - 55);
   }
+
   return (
     <Wrapper>
       <Header isBack={true} isAlarm={true} title={"팔로워"} />

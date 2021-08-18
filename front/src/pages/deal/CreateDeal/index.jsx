@@ -3,15 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { showToast } from "../../../actions/Notification";
-import {
-  Check,
-  Check2,
-  Plus,
-  Search,
-  Square,
-  Upc,
-  X,
-} from "react-bootstrap-icons";
+import { Check, Plus, Search, Square, Upc, X } from "react-bootstrap-icons";
 import FooterButton from "../../../components/common/Buttons/FooterButton";
 import BookItem from "../../../components/deal/BookItem";
 import Header from "../../../components/Layout/Header";
@@ -67,7 +59,6 @@ export default function CreateDeal() {
 
   function calcPrice() {
     let price = bookInfo.price;
-    console.log("정가 : " + price);
     let discountPercent = 0;
     const today = new Date();
     const bookDate = new Date(bookInfo.datetime);
@@ -93,7 +84,6 @@ export default function CreateDeal() {
       discountPercent += 60;
       setQuality("하");
     }
-    console.log("할인율 : " + discountPercent);
     price = parseInt((price * (100 - discountPercent)) / 100);
     price -= price % 100;
     dealPrice.setValue(price);

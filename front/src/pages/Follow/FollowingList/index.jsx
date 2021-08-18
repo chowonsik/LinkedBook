@@ -1,23 +1,21 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 
 import { getFollowingList, deleteFollowing } from "../../../actions/Follow";
 import { Wrapper, Container } from "./styles";
 import Header from "../../../components/Layout/Header";
 import FollowItem from "../../../components/Follow/FollowItem";
-import CheckFollowCancle from "../../../components/Follow/CheckFollowCancle";
-import { updateFollowingList } from "../../../actions/Follow";
+
 function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
-  const [followingUserId, setFollowingUserId] = useState("");
   const [height, setHeight] = useState(0);
-  const [active, setActive] = useState(false);
+
   const currentPage = useSelector((state) => state.followReducer.currentPage);
   const totalPages = useSelector((state) => state.followReducer.totalPages);
   const totalElements = useSelector(
     (state) => state.followReducer.totalElements
   );
-  const dispatch = useDispatch();
+
   useEffect(() => {
     //dispatch(setFollowReset());
     handleSetHeight();
@@ -30,14 +28,23 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
 
   // 팔로잉 버튼을 클릭했을 때 실행되는 함수
   function handleClick(e) {
+    /*handleDeleteFollowing(parseInt(e.target.id))
+      .then(() => {
+        const params = {
+          page: 0,
+          size: followingList.length,
+        };
+        getFollowingList(params);
+      })
+      .catch((err) => {
+        console.log("err");
+      });*/
     deleteFollowing(parseInt(e.target.id));
-    const params = {
-      page: 0,
-      size: followingList.length,
-    };
-    getFollowingList(params);
   }
 
+  async function handleDeleteFollowing(id) {
+    return await Promise.resolve(deleteFollowing(id));
+  }
   function handleScroll(e) {
     if (
       parseInt(e.target.scrollTop) + parseInt(e.target.clientHeight) ===

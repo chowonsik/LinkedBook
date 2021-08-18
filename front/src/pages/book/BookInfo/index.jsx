@@ -1,18 +1,29 @@
 // import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BookmarkFill, Bookmark, PencilFill } from "react-bootstrap-icons";
-import { Wrapper, BookComments, Footer } from "./styles";
+import {
+  Wrapper,
+  BookComments,
+  Footer,
+  Spinner,
+  SpinnerContainer,
+} from "./styles";
 import { request, requestGet, requestDelete } from "../../../api";
 import BookDetail from "../../../components/book/BookDetail";
 import BookCommentItem from "../../../components/book/BookCommentItem";
 import BookCommentModal from "../../../components/book/BookCommentModal";
 import Header from "../../../components/Layout/Header";
 import RoundButton from "../../../components/common/Buttons/RoundButton";
-import ToastMessage from "../../../components/common/ToastMessage";
 import { showToast } from "../../../actions/Notification";
 import { createAlarm } from "../../../actions/Alarm";
+import {
+  getBookDeals,
+  getBookComments,
+  setBookComments,
+  setIsLoading,
+} from "../../../actions/Books";
 
 const BookInfo = ({ match, history }) => {
   const dispatch = useDispatch();
@@ -20,8 +31,10 @@ const BookInfo = ({ match, history }) => {
   const {
     params: { isbn },
   } = match;
+  const areaId = useSelector((state) => state.userReducer.selectedArea.areaId);
+  const bookComments = useSelector((state) => state.bookReducer.bookComments);
+  const loading = useSelector((state) => state.bookReducer.isLoading);
   const [bookInfo, setBookInfo] = useState([]);
-  const [bookComments, setBookComments] = useState([]);
   const [modalActive, setModalActive] = useState(false);
   const [newComment, setNewComment] = useState({});
   const [editing, setEditing] = useState(false);
@@ -89,7 +102,7 @@ const BookInfo = ({ match, history }) => {
 
   useEffect(() => {
     getBookInfo();
-    getBookComments();
+    dispatch(getBookComments(isbn));
   }, []);
 
   useEffect(() => {
@@ -103,35 +116,25 @@ const BookInfo = ({ match, history }) => {
     const { result } = await requestGet(`/books/${isbn}`);
     const bookData = {
       ...result,
-      price: result.price.toLocaleString(),
-      commentAvgScore: result.commentAvgScore,
-      date: `${result.dateTime.substr(0, 4)}년 ${result.dateTime.substr(
+      price: result?.price.toLocaleString(),
+      commentAvgScore: result?.commentAvgScore,
+      date: `${result?.dateTime.substr(0, 4)}년 ${result?.dateTime.substr(
         5,
         2
-      )}월 ${result.dateTime.substr(8, 2)}일 출간`,
+      )}월 ${result?.dateTime.substr(8, 2)}일 출간`,
     };
     setBookInfo(bookData);
+    dispatch(setIsLoading(false));
     setIsBookLike(bookData.like);
   };
 
   const infiniteScroll = () => {
     let { scrollHeight, scrollTop, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight === scrollHeight) {
-      getBookComments();
-    }
-  };
-
-  const getBookComments = async () => {
-    const { result } = await requestGet("/comments", {
-      bookId: isbn,
-      page: parseInt(bookComments.length / 5),
-      size: 5,
-    });
-    if (bookComments.length < 5) {
-      setBookComments(result);
-    } else {
-      setBookComments([...bookComments, ...result]);
-    }
+    if (parseInt(scrollTop) + parseInt(clientHeight) !== parseInt(scrollHeight))
+      return;
+    if (bookComments && bookComments.length % 5 !== 0) return;
+    const page = parseInt(bookComments.length / 5);
+    dispatch(getBookComments(isbn, page));
   };
 
   const modalToggle = () => {
@@ -188,11 +191,11 @@ const BookInfo = ({ match, history }) => {
 
   const validCheck = () => {
     if (!newComment.score) {
-      alert("별점을 선택하세요.");
+      dispatch(showToast("별점을 선택하세요."));
       return false;
     }
     if (!newComment.content) {
-      alert("한줄평을 입력하세요.");
+      dispatch(showToast("한줄평을 입력하세요."));
       return false;
     }
     return true;
@@ -210,7 +213,7 @@ const BookInfo = ({ match, history }) => {
       if (selectedState[id]) {
         selectedState[id] = false;
       } else {
-        alert("태그는 최대 3개까지 등록가능합니다.");
+        dispatch(showToast("태그는 최대 3개까지 등록가능합니다."));
         return;
       }
     } else {
@@ -241,7 +244,7 @@ const BookInfo = ({ match, history }) => {
       page: 0,
       size: 5,
     });
-    setBookComments(result);
+    dispatch(setBookComments(result));
     getBookInfo();
   };
 
@@ -277,7 +280,7 @@ const BookInfo = ({ match, history }) => {
             },
           }
     );
-    setBookComments(updatedBookComments);
+    dispatch(setBookComments(updatedBookComments));
     await request("patch", `/comments/${newComment.id}`, {
       ...newComment,
       categories: tagData,
@@ -288,27 +291,30 @@ const BookInfo = ({ match, history }) => {
 
   const deleteComment = async (commentId) => {
     await requestDelete(`/comments/${commentId}`);
-    setBookComments(
-      bookComments.filter((comment) => comment.comment.id !== commentId)
+    dispatch(
+      setBookComments(
+        bookComments.filter((comment) => comment.comment.id !== commentId)
+      )
     );
     getBookInfo();
   };
 
   const likeComment = async (commentId, commentLikeId) => {
-    console.log(commentId);
     await request("post", "/like-comments", { id: commentId });
-    setBookComments(
-      bookComments.map((comment) =>
-        comment.comment.id === commentId
-          ? {
-              ...comment,
-              like: {
-                id: comment.comment.id,
-                userLike: !comment.like.userLike,
-                totalLikeCnt: comment.like.totalLikeCnt + 1,
-              },
-            }
-          : comment
+    dispatch(
+      setBookComments(
+        bookComments.map((comment) =>
+          comment.comment.id === commentId
+            ? {
+                ...comment,
+                like: {
+                  id: comment.comment.id,
+                  userLike: !comment.like.userLike,
+                  totalLikeCnt: comment.like.totalLikeCnt + 1,
+                },
+              }
+            : comment
+        )
       )
     );
     dispatch(createAlarm({ type: "LIKE_COMMENT", commentId: commentId }));
@@ -316,18 +322,20 @@ const BookInfo = ({ match, history }) => {
 
   const unlikeComment = async (likeId) => {
     await requestDelete(`/like-comments/${likeId}`);
-    setBookComments(
-      bookComments.map((comment) =>
-        comment.like.id === likeId
-          ? {
-              ...comment,
-              like: {
-                id: comment.like.id,
-                userLike: !comment.like.userLike,
-                totalLikeCnt: comment.like.totalLikeCnt - 1,
-              },
-            }
-          : comment
+    dispatch(
+      setBookComments(
+        bookComments.map((comment) =>
+          comment.like.id === likeId
+            ? {
+                ...comment,
+                like: {
+                  id: comment.like.id,
+                  userLike: !comment.like.userLike,
+                  totalLikeCnt: comment.like.totalLikeCnt - 1,
+                },
+              }
+            : comment
+        )
       )
     );
   };
@@ -346,54 +354,71 @@ const BookInfo = ({ match, history }) => {
     getBookInfo();
   };
 
+  const handleShowBookDeals = async () => {
+    dispatch(getBookDeals(isbn, areaId));
+    history.push(`/books/${isbn}/deals`);
+  };
+
   return (
     <>
       <Header isBack isSearch isAlarm title={bookInfo.title} />
       <Wrapper>
-        <BookDetail bookInfo={bookInfo} />
-        <div className="book-comments-container">
-          <div className="section-header">
-            <h4>한줄평</h4>
-            <PencilFill onClick={modalToggle} />
-          </div>
-          <BookComments>
-            {bookComments &&
-              bookComments.map((commentInfo, idx) => (
-                <li key={idx}>
-                  <BookCommentItem
-                    commentInfo={commentInfo}
-                    LOGIN_USER={LOGIN_USER}
-                    deleteComment={deleteComment}
-                    onUpdateClick={onUpdateClick}
-                    likeComment={likeComment}
-                    unlikeComment={unlikeComment}
-                  />
-                </li>
-              ))}
-          </BookComments>
-        </div>
-        <BookCommentModal
-          modalToggle={modalToggle}
-          modalActive={modalActive}
-          handleModalOutsideClick={handleModalOutsideClick}
-          setNewComment={setNewComment}
-          newComment={newComment}
-          handleTagClick={handleTagClick}
-          starRatingState={starRatingState}
-          handleStarRating={handleStarRating}
-          createComment={createComment}
-          updateComment={updateComment}
-          editing={editing}
-          selectedTag={selectedTag}
-        />
+        {loading ? (
+          <SpinnerContainer>
+            <Spinner />
+          </SpinnerContainer>
+        ) : (
+          <>
+            <BookDetail bookInfo={bookInfo} />
+            <div className="book-comments-container">
+              <div className="section-header">
+                <h4>한줄평</h4>
+                <PencilFill onClick={modalToggle} />
+              </div>
+              <BookComments>
+                {bookComments &&
+                  bookComments.map((commentInfo, idx) => (
+                    <li key={idx}>
+                      <BookCommentItem
+                        commentInfo={commentInfo}
+                        LOGIN_USER={LOGIN_USER}
+                        deleteComment={deleteComment}
+                        onUpdateClick={onUpdateClick}
+                        likeComment={likeComment}
+                        unlikeComment={unlikeComment}
+                      />
+                    </li>
+                  ))}
+              </BookComments>
+            </div>
+            <BookCommentModal
+              modalToggle={modalToggle}
+              modalActive={modalActive}
+              handleModalOutsideClick={handleModalOutsideClick}
+              setNewComment={setNewComment}
+              newComment={newComment}
+              handleTagClick={handleTagClick}
+              starRatingState={starRatingState}
+              handleStarRating={handleStarRating}
+              createComment={createComment}
+              updateComment={updateComment}
+              editing={editing}
+              selectedTag={selectedTag}
+            />
+          </>
+        )}
       </Wrapper>
       <Footer>
-        {isBookLike.userLike && isBookLike.userLike ? (
+        {isBookLike?.userLike ? (
           <BookmarkFill onClick={unlikeBook} className="bookmark-icon" />
         ) : (
           <Bookmark onClick={likeBook} className="bookmark-icon" />
         )}
-        <RoundButton value="거래보기" width="70%" />
+        <RoundButton
+          onClick={handleShowBookDeals}
+          value="거래보기"
+          width="70%"
+        />
       </Footer>
     </>
   );
