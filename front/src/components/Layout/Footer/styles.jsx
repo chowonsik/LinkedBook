@@ -13,10 +13,6 @@ export const Wrapper = styled.div`
 
   border-top: 1px solid ${colors.lightGray};
   background-color: #fff;
-  .new-post {
-    color: ${colors.yellow};
-    font-size: 36px;
-  }
 `;
 
 export const IconBox = styled.div`
@@ -28,5 +24,26 @@ export const IconBox = styled.div`
   p {
     color: ${colors.black};
     font-size: 12px;
+  }
+  div {
+  }
+`;
+
+export const NewPostBtn = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.yellow};
+
+  &:hover {
+    cursor: pointer;
+  }
+  p {
+    color: white;
+    font-size: 42px;
+    margin-bottom: 0.2rem;
   }
 `;

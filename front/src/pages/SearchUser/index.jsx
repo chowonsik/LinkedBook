@@ -22,7 +22,7 @@ function SearchUser() {
 
   return (
     <>
-      <Header isBack={true} isLogo={true} />
+      <Header isBack isLogo />
       <SearchContainer
         value={search.value}
         users={search.users}

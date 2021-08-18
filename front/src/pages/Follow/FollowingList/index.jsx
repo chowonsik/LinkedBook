@@ -30,25 +30,12 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
 
   // 팔로잉 버튼을 클릭했을 때 실행되는 함수
   function handleClick(e) {
-    if (active) {
-      return;
-    }
-    // 알림창이 활성화 된다.
-    setActive(true);
-
-    // 팔로잉하는 유저의 id를 string 형태로 저장한다.
-    setFollowingUserId(parseInt(e.target.id));
-  }
-
-  // 알림창에서 취소 또는 확인 버튼을 클릭했을 때 실행되는 함수
-  function handleClickModal(e) {
-    const value = e.target.id;
-    // 팔로잉 취소했을 때 지금까지의 개수만큼 다시 불러옴
-    if (value === "check") {
-      deleteFollowing(followingUserId);
-    }
-    setActive(false);
-    setFollowingUserId("");
+    deleteFollowing(parseInt(e.target.id));
+    const params = {
+      page: 0,
+      size: followingList.length,
+    };
+    getFollowingList(params);
   }
 
   function handleScroll(e) {
@@ -80,17 +67,12 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
               nickName={following.user.nickname}
               isFollow={true}
               isF4F={following.f4f}
-              followId={following.follow.id}
+              followId={following.id}
               onClick={handleClick}
               key={idx}
             />
           ))}
       </Container>
-      <CheckFollowCancle
-        title="팔로우를 취소하시겠습니까?"
-        isActive={active}
-        onClick={handleClickModal}
-      />
     </Wrapper>
   );
 }

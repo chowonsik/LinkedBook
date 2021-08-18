@@ -58,12 +58,12 @@ function Header({
         <LogoAndTitle isLogo={isLogo} isTitle={title}>
           <Link to="/">
             <img
-              src="assets/images/logo/main-logo.png"
+              src={require("../../../assets/images/main-logo.png").default}
               alt="Linked Book"
               className="logo"
             />
           </Link>
-          <h3>{title}</h3>
+          <h3 className="title">{title}</h3>
         </LogoAndTitle>
 
         <IconsAndDone
