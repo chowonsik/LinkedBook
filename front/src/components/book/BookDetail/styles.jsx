@@ -34,25 +34,29 @@ export const Wrapper = styled.div`
         margin-bottom: 8px;
         .title {
           font-size: ${fonts.xxl};
+          margin-right: 10px;
         }
-        .score {
-          margin-right: 20px;
-          font-size: ${fonts.md};
-          font-weight: 400;
-        }
-        .bookmark {
-          .bookmark-cnt {
-            margin-right: 2px;
+        .icons {
+          min-width: 110px;
+          .score {
+            margin-right: 20px;
             font-size: ${fonts.md};
             font-weight: 400;
           }
-        }
-        .icon {
-          vertical-align: middle;
-          font-size: ${fonts.md};
-          color: ${colors.yellow};
-          margin-right: 4px;
-          margin-bottom: 4px;
+          .bookmark {
+            .bookmark-cnt {
+              margin-right: 2px;
+              font-size: ${fonts.md};
+              font-weight: 400;
+            }
+          }
+          .icon {
+            vertical-align: middle;
+            font-size: ${fonts.md};
+            color: ${colors.yellow};
+            margin-right: 4px;
+            margin-bottom: 4px;
+          }
         }
       }
       .sub-header {
