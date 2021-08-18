@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class FollowSearchInput {
+    private int id;
     private int page;
     private int size;
 }
