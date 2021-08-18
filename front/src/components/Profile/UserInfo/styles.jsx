@@ -41,6 +41,7 @@ export const Wrapper = styled.div`
           .user-detail {
             display: flex;
             align-items: center;
+            margin-bottom: 2px;
             .location {
               margin-right: 8px;
               font-size: ${fonts.md};
@@ -49,13 +50,22 @@ export const Wrapper = styled.div`
             }
           }
           .follow-btn {
-            width: 80px;
-            height: 18px;
-            border-radius: 10px;
-            background-color: ${colors.yellow};
-            color: #fff;
-            font-size: ${fonts.sm};
-            font-weight: 600;
+            .follower {
+              width: 80px;
+              height: 20px;
+              border-radius: 10px;
+              background-color: ${colors.yellow};
+              color: #fff;
+            }
+            .following {
+              font-weight: 500;
+              width: 80px;
+              height: 20px;
+              border-radius: 10px;
+              color: ${colors.yellow};
+              background-color: #fff;
+              border: 1px solid ${colors.yellow};
+            }
           }
         }
         .user-history {

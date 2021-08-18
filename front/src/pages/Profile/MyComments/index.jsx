@@ -24,7 +24,6 @@ const MyComments = ({ match }) => {
   useEffect(() => {
     dispatch(getUserComments(userId));
   }, []);
-  console.log(userComments);
   return (
     <>
       <Header isBack title="한줄평" />
