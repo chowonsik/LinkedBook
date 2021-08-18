@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import { useHistory } from "react-router";
-import { getFollowingList, deleteFollowing } from "../../../actions/Follow";
+import {
+  getFollowingList,
+  deleteFollowing,
+  createFollow,
+} from "../../../actions/Follow";
 import { Wrapper, Container } from "./styles";
 import Header from "../../../components/Layout/Header";
 import FollowItem from "../../../components/Follow/FollowItem";
@@ -10,40 +14,56 @@ import FollowItem from "../../../components/Follow/FollowItem";
 function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
   const [height, setHeight] = useState(0);
   const history = useHistory();
+  const dispatch = useDispatch();
   const [pUserId, setPuserId] = useState("");
   const currentPage = useSelector((state) => state.followReducer.currentPage);
   const totalPages = useSelector((state) => state.followReducer.totalPages);
   const totalElements = useSelector(
     (state) => state.followReducer.totalElements
   );
-
+  const loginUser = JSON.parse(window.localStorage.getItem("loginUser"));
   useEffect(() => {
     handleSetHeight();
     const paths = history.location.pathname.split("/");
     setPuserId(parseInt(paths[paths.length - 1]));
     const params = {
+      id: parseInt(paths[paths.length - 1]),
       page: 0,
       size: 15,
     };
+
     getFollowingList(params);
   }, []);
 
   // 팔로잉 버튼을 클릭했을 때 실행되는 함수
-  function handleClick(e) {
-    /*handleDeleteFollowing(parseInt(e.target.id))
-      .then(() => {
-        const params = {
-          page: 0,
-          size: followingList.length,
-        };
-        getFollowingList(params);
-      })
-      .catch((err) => {
-        console.log("err");
-      });*/
+  /* function handleClick(e) {
+    
     deleteFollowing(parseInt(e.target.id));
+  }*/
+  function handleClick(e) {
+    const type = e.target.innerText;
+    if (type === "팔로우") {
+      const data = {
+        toUserId: parseInt(e.target.id),
+        fromUserId: loginUser.id,
+      };
+      dispatch(createFollow(data));
+      const params = {
+        id: pUserId,
+        page: 0,
+        size: followingList.length,
+      };
+      getFollowingList(params);
+    } else {
+      deleteFollowing(e.target.id);
+      const params = {
+        id: pUserId,
+        page: 0,
+        size: followingList.length,
+      };
+      getFollowingList(params);
+    }
   }
-
   function handleScroll(e) {
     if (
       parseInt(e.target.scrollTop) + parseInt(e.target.clientHeight) ===
@@ -51,6 +71,7 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
     ) {
       if (currentPage < totalPages && followingList.length < totalElements) {
         const params = {
+          id: pUserId,
           page: currentPage + 1,
           size: 15,
         };
@@ -71,11 +92,12 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
             <FollowItem
               profileImage={following.user.image}
               nickName={following.user.nickname}
-              isFollow={true}
-              isF4F={following.f4f}
-              followId={following.id}
+              isFollow={false}
+              isF4F={following.follow.f4f}
+              followId={following.follow.id}
               userId={following.user.id}
               onClick={handleClick}
+              loginUserId={loginUser.id}
               key={idx}
             />
           ))}

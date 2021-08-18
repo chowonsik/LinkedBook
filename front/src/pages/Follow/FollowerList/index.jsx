@@ -35,6 +35,7 @@ function FollowerList({
     setPuserId(parseInt(paths[paths.length - 1]));
 
     const params = {
+      id: parseInt(paths[paths.length - 1]),
       page: 0,
       size: 15,
     };
@@ -50,6 +51,7 @@ function FollowerList({
       };
       createFollow(data);
       const params = {
+        id: pUserId,
         page: 0,
         size: followerList.length,
       };
@@ -57,6 +59,7 @@ function FollowerList({
     } else {
       deleteFollowing(e.target.id);
       const params = {
+        id: pUserId,
         page: 0,
         size: followerList.length,
       };
@@ -71,6 +74,7 @@ function FollowerList({
     ) {
       if (currentPage < totalPages && followerList.length < totalElements) {
         const params = {
+          id: pUserId,
           page: currentPage + 1,
           size: 15,
         };
@@ -98,6 +102,7 @@ function FollowerList({
               userId={follower.user.id}
               followId={follower.follow.id}
               onClick={handleClick}
+              loginUserId={loginUser.id}
               key={idx}
             />
           ))}

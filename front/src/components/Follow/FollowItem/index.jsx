@@ -15,6 +15,7 @@ function FollowItem({
   onClick,
   followId,
   userId,
+
   loginUserId,
 }) {
   return (
@@ -42,7 +43,7 @@ function FollowItem({
           <FollowingButton
             onClick={onClick}
             id={followId}
-            isEqualUser={userId !== loginUserId}
+            isEqualUser={userId === loginUserId}
           >
             팔로잉
           </FollowingButton>
@@ -50,7 +51,7 @@ function FollowItem({
           <FollowButton
             onClick={onClick}
             id={userId}
-            isEqualUser={userId !== loginUserId}
+            isEqualUser={userId === loginUserId}
           >
             팔로우
           </FollowButton>

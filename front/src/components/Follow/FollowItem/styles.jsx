@@ -40,12 +40,13 @@ export const FollowButton = styled.button`
   min-height: 30px;
   border: none;
   border-radius: 12px;
-  background-color: ${(props) => (props.isEqualUser ? colors.yellow : "#fff")};
+  background-color: ${colors.yellow};
   color: #fff;
   font-size: ${fonts.md};
   &:hover {
     cursor: pointer;
   }
+  opacity: ${(props) => (props.isEqualUser ? "0" : "1")};
 `;
 
 export const FollowingButton = styled.button`
@@ -62,4 +63,5 @@ export const FollowingButton = styled.button`
   &:hover {
     cursor: pointer;
   }
+  opacity: ${(props) => (props.isEqualUser ? "0" : "1")};
 `;
