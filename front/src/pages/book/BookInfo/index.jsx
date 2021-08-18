@@ -361,7 +361,7 @@ const BookInfo = ({ match, history }) => {
 
   return (
     <>
-      <Header isBack isSearch isAlarm title={bookInfo.title} />
+      <Header isBack isSearch isAlarm title="책 정보" />
       <Wrapper>
         {loading ? (
           <SpinnerContainer>

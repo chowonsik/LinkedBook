@@ -194,6 +194,7 @@ public class DealServiceImpl implements DealService {
             selectDealDetailOutput = dealRepository.findDealDetail(dealId, jwtService.getUserId());
             List<SelectDealImage> dealImageDB = dealImageRepository.findByDealImages(dealId);
             selectDealDetailOutput.setDealImages(dealImageDB);
+            System.out.println(selectDealDetailOutput);
         } catch (Exception e) {
             log.error("[GET]/deals/" + dealId + " database error", e);
             return new Response<>(DATABASE_ERROR);
