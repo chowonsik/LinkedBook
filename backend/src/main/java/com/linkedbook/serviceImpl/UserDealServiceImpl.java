@@ -117,7 +117,7 @@ public class UserDealServiceImpl implements UserDealService {
                 return new Response<>(BAD_ID_VALUE);
             }
             userDealDB.setScore(updateUserDealInput.getScore());
-            userDealDB = userDealRepository.save(userDealDB);
+            userDealRepository.save(userDealDB);
 
         } catch (IllegalArgumentException e) {
             log.error("[PATCH]]/user-deals/" + userDealId + " undefined status exception", e);

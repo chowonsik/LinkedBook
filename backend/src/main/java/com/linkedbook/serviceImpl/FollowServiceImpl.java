@@ -38,31 +38,32 @@ public class FollowServiceImpl implements FollowService {
         if(followSearchInput == null)  return new PageResponse<>(NO_VALUES);
         if (info == null || !ValidationCheck.isValidFollowInfo(info))
             return new PageResponse<>(BAD_FOLLOW_INFO_VALUE);
+        if (!ValidationCheck.isValidId(followSearchInput.getId()))  return new PageResponse<>(BAD_ID_VALUE);
         if(!ValidationCheck.isValidPage(followSearchInput.getPage())
                 || !ValidationCheck.isValidId(followSearchInput.getSize()))  return new PageResponse<>(BAD_REQUEST);
         // 2. follow 유저 정보 가져오기
         Page<FollowSearchOutput> followOutput;
         try {
-            int loginUserId = jwtService.getUserId();
-            if(loginUserId < 0) {
-                log.error("[users/get] NOT FOUND LOGIN USER error");
+            int userId = followSearchInput.getId();
+            if(!userRepository.existsById(userId)) {
+                log.error("[users/get] NOT FOUND TARGET USER error");
                 return new PageResponse<>(BAD_ID_VALUE);
             }
 
             Pageable paging = PageRequest.of(followSearchInput.getPage(), followSearchInput.getSize(), Sort.Direction.DESC, "id");;
             Page<FollowDB> followDBList;
-            if (info.equals("follower")) { // 로그인 유저의 팔로워 유저 불러오기
-                followDBList = followRepository.findByToUserIdAndFromUserStatus(loginUserId, "ACTIVATE", paging);
-            } else { // 로그인 유저가 팔로잉하는 유저 불러오기
-                followDBList = followRepository.findByFromUserIdAndToUserStatus(loginUserId, "ACTIVATE", paging);
+            if (info.equals("follower")) { // 유저의 팔로워 리스트
+                followDBList = followRepository.findByToUserIdAndFromUserStatus(userId, "ACTIVATE", paging);
+            } else { // 유저의 팔로잉 리스트
+                followDBList = followRepository.findByFromUserIdAndToUserStatus(userId, "ACTIVATE", paging);
             }
             // 3. 팔로우 리스트에 필요한 최종 결과 가공
             followOutput = followDBList.map(followDB -> {
-                int fromUserId = info.equals("follower") ? loginUserId : followDB.getToUser().getId();
-                int toUserId = info.equals("follower") ? followDB.getFromUser().getId() : loginUserId;
+                int fromUserId = info.equals("follower") ? userId : followDB.getToUser().getId();
+                int toUserId = info.equals("follower") ? followDB.getFromUser().getId() : userId;
 
                 UserDB targetUser = info.equals("follower") ? followDB.getFromUser() : followDB.getToUser();
-                FollowDB loginAndTargetDB = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
+                FollowDB currentAndTargetDB = followRepository.findByFromUserIdAndToUserId(fromUserId, toUserId);
 
                 return FollowSearchOutput.builder()
                         .id(followDB.getId())
@@ -76,9 +77,9 @@ public class FollowServiceImpl implements FollowService {
                                 .build()
                         )
                         .follow(CommonFollowOutput.builder()
-                                .f4f(loginAndTargetDB != null)
-                                .id(loginAndTargetDB == null ? 0 :
-                                        (info.equals("follower") ? loginAndTargetDB.getId() : followDB.getId()))
+                                .f4f(currentAndTargetDB != null)
+                                .id(currentAndTargetDB == null ? 0 :
+                                        (info.equals("follower") ? currentAndTargetDB.getId() : followDB.getId()))
                                 .build()
                         )
                         .created_at(followDB.getCreated_at())
