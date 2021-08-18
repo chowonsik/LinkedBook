@@ -1,5 +1,4 @@
 import { Wrapper } from "./styles";
-import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
 import { useHistory } from "react-router-dom";
 
 function DealItem({ dealObj }) {

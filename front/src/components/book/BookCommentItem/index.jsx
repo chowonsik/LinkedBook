@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Wrapper } from "./styles";
 import {
   StarFill,
@@ -6,7 +5,7 @@ import {
   SuitHeart,
   SuitHeartFill,
 } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const BookCommentItem = ({
   commentInfo,
@@ -16,6 +15,7 @@ const BookCommentItem = ({
   likeComment,
   unlikeComment,
 }) => {
+  const history = useHistory();
   function dateToString(date) {
     const today = new Date();
     const timeValue = new Date(date);
@@ -45,6 +45,10 @@ const BookCommentItem = ({
       <img
         src={commentInfo.user.image}
         alt="user"
+        onClick={() => {
+          window.scrollTo(0, 0);
+          history.push(`/profile/${commentInfo.user.id}`);
+        }}
         onError={(e) => {
           e.target.src =
             "https://www.voakorea.com/themes/custom/voa/images/Author__Placeholder.png";

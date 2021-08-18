@@ -32,6 +32,7 @@ import LikeComments from "./pages/book/LikeComments";
 import OauthLogin from "./pages/user/SignIn/OAuth";
 
 import Onboarding from "./pages/Onboarding";
+import BookDeals from "./pages/book/BookDeals";
 import PublicRoute from "./lib/PublicRoute.js";
 import PrivateRoute from "./lib/PrivateRoute";
 import SizeAlert from "./pages/SizeAlert";
@@ -79,7 +80,8 @@ function App() {
             component={LocationSearch}
           />
           <PrivateRoute path="/books" exact component={SearchBook} />
-          <PrivateRoute path="/books/:isbn" component={BookInfo} />
+          <PrivateRoute path="/books/:isbn" exact component={BookInfo} />
+          <PrivateRoute path="/books/:isbn/deals" exact component={BookDeals} />
           <PrivateRoute
             path="/recommend"
             exact={true}
