@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
+
 import { BrowserRouter as Router, Switch } from "react-router-dom"; // 히스토리 모드 제거
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
@@ -25,7 +25,6 @@ import ToastMessage from "./components/common/ToastMessage";
 import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
-import { checkNewAlarm } from "./actions/Alarm";
 import LikeBooks from "./pages/book/LikeBooks";
 import MyComments from "./pages/Profile/MyComments";
 

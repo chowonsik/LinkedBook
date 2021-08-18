@@ -28,12 +28,18 @@ function FollowingList({ followingList, getFollowingList, deleteFollowing }) {
 
   // 팔로잉 버튼을 클릭했을 때 실행되는 함수
   function handleClick(e) {
-    deleteFollowing(parseInt(e.target.id));
-    const params = {
-      page: 0,
-      size: followingList.length,
-    };
-    getFollowingList(params);
+    handleDeleteFollowing(e.target.id).then((res) => {
+      //deleteFollowing(parseInt(e.target.id));
+      console.log("delete done");
+      const params = {
+        page: 0,
+        size: followingList.length,
+      };
+      getFollowingList(params);
+    });
+  }
+  async function handleDeleteFollowing(id) {
+    return await Promise.resolve(deleteFollowing(id));
   }
 
   function handleScroll(e) {
