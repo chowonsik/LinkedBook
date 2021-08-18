@@ -9,12 +9,6 @@ export default function ToastMessage() {
   const toastMessage = useSelector(
     (state) => state.notificationReducer.toastMessage
   );
-  const toastColor = useSelector(
-    (state) => state.notificationReducer.toastColor
-  );
-  const toastBackgroundColor = useSelector(
-    (state) => state.notificationReducer.toastBackgroundColor
-  );
   const dispatch = useDispatch();
 
   useEffect(() => {
