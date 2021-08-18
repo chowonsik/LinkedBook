@@ -142,6 +142,7 @@ const ProfileUpdate = () => {
 
   async function handleDeleteAccountClick() {
     await request("patch", "/users/deactivate");
+    localStorage.removeItem("loginUser");
     history.push(`/signin`);
   }
 
