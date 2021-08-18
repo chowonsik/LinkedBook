@@ -4,6 +4,9 @@ import { useHistory } from "react-router-dom";
 function DealItem({ dealObj }) {
   let history = useHistory();
   const dealCreatedTime = timeForToday(dealObj.dealCreatedAt);
+  function priceToString(price) {
+    return price ? price.toLocaleString() : 0;
+  }
   function timeForToday(value) {
     const today = new Date();
     const timeValue = new Date(value);
@@ -59,13 +62,10 @@ function DealItem({ dealObj }) {
             <span className="publisher">{dealObj.bookPublisher}</span>
           </div>
           <div className="footer">
-            <strong className="price">{dealObj.dealPrice}원</strong>
+            <strong className="price">
+              {priceToString(dealObj.dealPrice)}원
+            </strong>
             <span className="created">{dealCreatedTime}</span>
-            {/* {dealObj.isLikeDeal ? (
-              <SuitHeartFill className="heart-filled" />
-            ) : (
-              <SuitHeart className="heart" />
-            )} */}
           </div>
         </div>
       </div>

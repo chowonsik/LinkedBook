@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { connect } from "react-redux";
 
 import { Wrapper, Container } from "./styles";
 import Header from "../../../components/Layout/Header";
-import CheckFollowCancle from "../../../components/Follow/CheckFollowCancle";
+
 import FollowItem from "../../../components/Follow/FollowItem";
-import { setFollowReset, setLoginUserInfo } from "../../../actions/Follow";
+
 import {
   getFollowerList,
   deleteFollowing,
@@ -19,8 +19,6 @@ function FollowerList({
   deleteFollowing,
   createFollow,
 }) {
-  const [followerUserId, setFollowerUserId] = useState("");
-  const [active, setActive] = useState(false);
   const [height, setHeight] = useState(0);
   const currentPage = useSelector((state) => state.followReducer.currentPage);
   const totalPages = useSelector((state) => state.followReducer.totalPages);
@@ -39,10 +37,6 @@ function FollowerList({
   }, []);
 
   function handleClick(e) {
-    if (active) {
-      return;
-    }
-
     const type = e.target.innerText;
     if (type === "팔로우") {
       const data = {
@@ -56,23 +50,13 @@ function FollowerList({
       };
       getFollowerList(params);
     } else {
-      setFollowerUserId(e.target.id);
-      setActive(true);
-    }
-  }
-
-  function handleClickModal(e) {
-    const value = e.target.id;
-
-    if (value === "check") {
-      deleteFollowing(followerUserId);
+      deleteFollowing(e.target.id);
       const params = {
         page: 0,
         size: followerList.length,
       };
       getFollowerList(params);
     }
-    setActive(false);
   }
 
   function handleScroll(e) {
@@ -112,11 +96,6 @@ function FollowerList({
             />
           ))}
       </Container>
-      <CheckFollowCancle
-        title="팔로우를 취소하시겠습니까?"
-        isActive={active}
-        onClick={handleClickModal}
-      />
     </Wrapper>
   );
 }

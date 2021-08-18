@@ -11,7 +11,6 @@ function AlarmFollowItem({
   nickname,
   createdAt,
   onClickCheck,
-  onClick,
   alarmId,
 }) {
   return (
@@ -19,11 +18,11 @@ function AlarmFollowItem({
       <Content>
         {nickname}님이 나의 서점을 팔로우 했어요.<span>{createdAt}</span>
       </Content>
-      <ButtonGroup onClick={(e) => onClickCheck(e, alarmId)}>
+      <ButtonGroup onClick={(e) => onClickCheck(e, alarmId, nickname)}>
         <CheckButton className="check" id={userId}>
-          확인
+          팔로우
         </CheckButton>
-        <CancleButton className="cancle">취소</CancleButton>
+        <CancleButton className="cancle">확인</CancleButton>
       </ButtonGroup>
     </Wrapper>
   );

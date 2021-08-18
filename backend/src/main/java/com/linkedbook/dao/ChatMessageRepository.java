@@ -16,6 +16,4 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessageDB, Inte
             + " from ChatMessageDB cm" + " join UserDB u on cm.toUser.id = u.id"
             + " join ChatRoomDB cr on cm.room.id = cr.id" + " where cr.room_id = ?1")
     List<SelectChatMessageOutput> findByRoomId(String roomId);
-
-    // List<ChatRoomDB> findBy
 }
