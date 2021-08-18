@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"; // 히스토리 모드 제거
 import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
@@ -25,7 +24,6 @@ import ToastMessage from "./components/common/ToastMessage";
 import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
 import BookInfo from "./pages/book/BookInfo";
-import { checkNewAlarm } from "./actions/Alarm";
 import LikeBooks from "./pages/book/LikeBooks";
 import MyComments from "./pages/Profile/MyComments";
 
@@ -33,73 +31,143 @@ import LikeComments from "./pages/book/LikeComments";
 import OauthLogin from "./pages/user/SignIn/OAuth";
 
 import Onboarding from "./pages/Onboarding";
+import BookDeals from "./pages/book/BookDeals";
+import PublicRoute from "./lib/PublicRoute.js";
+import PrivateRoute from "./lib/PrivateRoute";
+import SizeAlert from "./pages/SizeAlert";
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Route path="/" exact={true} component={Main} />
-        <Route path="/location" exact={true} component={LocationSetting} />
-        <Route path="/create/deal" exact={true} component={DealCreate} />
-        <Route path="/deal/:dealId" exact={true} component={DealDetail} />
-        <Route path="/update/deal" exact={true} component={DealCreate} />
-        <Route path="/signin" exact={true} component={SignIn} />
-        <Route path="/signup" exact={true} component={SignUp} />
-        <Route
-          path="/search/location"
-          exact={true}
-          component={LocationSearch}
-        />
-        <Route path="/books" exact component={SearchBook} />
-        <Route path="/books/:isbn" component={BookInfo} />
-        <Route path="/recommend" exact={true} component={RecommendUser} />
-        <Switch>
-          <Route
-            path="/profile/update"
+      <div id="app-content">
+        <Router>
+          <PrivateRoute path="/" exact={true} component={Main} />
+          <PrivateRoute
+            path="/location"
             exact={true}
-            component={ProfileUpdate}
+            component={LocationSetting}
           />
-          <Route path="/profile/:id" exact={true} component={Profile} />
-        </Switch>
-        <Route
-          path="/profile/:id/history"
-          exact={true}
-          component={UserHistory}
-        />
-        <Route
-          path="/profile/:id/history/comments"
-          exact={true}
-          component={MyComments}
-        />
-        <Route
-          path="/profile/update/password"
-          exact={true}
-          component={ChangePassword}
-        />
-        <Route
-          path="/following/:userId"
-          exact={true}
-          component={FollowingList}
-        />
-        <Route path="/follower/:userId" exact={true} component={FollowerList} />
-        <Route path="/alarm" exact={true} component={Alarm} />
-        <Route path="/redbell/:dealId" exact={true} component={Report} />
-        <Route path="/search/user" exact={true} component={SearchUser} />
-        <Route path="/chat" exact={true} component={ChatRoomList} />
-        <Route path="/chat/room/:id" exact={true} component={ChatRoom} />
-        <Route path="/book/likes/:isbn" exact={true} component={LikeBooks} />
-        <Route
-          path="/comment/:id/likes"
-          exact={true}
-          component={LikeComments}
-        />
-        <Route
-          path="/auth/:type/callback"
-          exact={true}
-          component={OauthLogin}
-        />
-        <Route path="/onboarding" exact={true} component={Onboarding} />
-      </Router>
-      <ToastMessage />
+          <PrivateRoute
+            path="/create/deal"
+            exact={true}
+            component={DealCreate}
+          />
+          <PrivateRoute
+            path="/deal/:dealId"
+            exact={true}
+            component={DealDetail}
+          />
+          <PrivateRoute
+            path="/update/deal"
+            exact={true}
+            component={DealCreate}
+          />
+          <PublicRoute
+            restricted={true}
+            path="/signin"
+            exact={true}
+            component={SignIn}
+          />
+          <PublicRoute
+            restricted={true}
+            path="/signup"
+            exact={true}
+            component={SignUp}
+          />
+          <PublicRoute
+            path="/search/location"
+            exact={true}
+            component={LocationSearch}
+          />
+          <PrivateRoute path="/books" exact component={SearchBook} />
+          <PrivateRoute path="/books/:isbn" exact component={BookInfo} />
+          <PrivateRoute path="/books/:isbn/deals" exact component={BookDeals} />
+          <PrivateRoute
+            path="/recommend"
+            exact={true}
+            component={RecommendUser}
+          />
+          <Switch>
+            <PrivateRoute
+              path="/profile/update"
+              exact={true}
+              component={ProfileUpdate}
+            />
+            <PrivateRoute
+              path="/profile/:id"
+              exact={true}
+              component={Profile}
+            />
+          </Switch>
+          <PrivateRoute
+            path="/profile/:id/history"
+            exact={true}
+            component={UserHistory}
+          />
+          <PrivateRoute
+            path="/profile/:id/history/comments"
+            exact={true}
+            component={MyComments}
+          />
+          <PrivateRoute
+            path="/profile/update/password"
+            exact={true}
+            component={ChangePassword}
+          />
+          <PrivateRoute
+            path="/following/:userId"
+            exact={true}
+            component={FollowingList}
+          />
+          <PrivateRoute
+            path="/follower/:userId"
+            exact={true}
+            component={FollowerList}
+          />
+          <PrivateRoute path="/alarm" exact={true} component={Alarm} />
+          <PrivateRoute
+            path="/redbell/:dealId"
+            exact={true}
+            component={Report}
+          />
+          <PrivateRoute
+            path="/search/user"
+            exact={true}
+            component={SearchUser}
+          />
+          <PrivateRoute path="/chat" exact={true} component={ChatRoomList} />
+          <PrivateRoute
+            path="/chat/room/:id"
+            exact={true}
+            component={ChatRoom}
+          />
+          <PrivateRoute
+            path="/book/likes/:isbn"
+            exact={true}
+            component={LikeBooks}
+          />
+          <PrivateRoute
+            path="/comment/:id/likes"
+            exact={true}
+            component={LikeComments}
+          />
+          <PublicRoute
+            path="/auth/:type/callback"
+            exact={true}
+            component={OauthLogin}
+          />
+          <PublicRoute
+            restricted={true}
+            path="/onboarding"
+            exact={true}
+            component={Onboarding}
+          />
+        </Router>
+        <ToastMessage />
+      </div>
+
+      <div id="alert">
+        <SizeAlert />
+      </div>
     </div>
   );
 }

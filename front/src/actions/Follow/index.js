@@ -103,7 +103,6 @@ export const createFollowAlarm = (userId) => {
     response.then((res) => {
       const followId = res.result.filter((data) => data.user.id === userId);
       if (followId.length !== 0) {
-        // console.log(followId);
         const data = {
           type: "FOLLOW",
           followId: followId[0].follow.id,

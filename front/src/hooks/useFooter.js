@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 const useFooter = () => {
   const history = useHistory();

@@ -11,7 +11,6 @@ function AlarmFollowItem({
   nickname,
   createdAt,
   onClickCheck,
-  onClick,
   alarmId,
 }) {
   return (
