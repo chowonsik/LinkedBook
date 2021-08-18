@@ -99,8 +99,8 @@ const Profile = ({ match }) => {
             <ProfileTab handleTabClick={handleTabClick} activeTab={activeTab} />
             <DealList height={listHeight} onScroll={handleScroll}>
               {userTabInfo &&
-                userTabInfo.map((deal) => (
-                  <DealItem key={deal.dealId} dealObj={deal} />
+                userTabInfo.map((deal, idx) => (
+                  <DealItem key={idx} dealObj={deal} />
                 ))}
             </DealList>
           </>

@@ -5,9 +5,11 @@ import { Wrapper, DealList } from "./styles";
 import { getBookDeals, setIsLoading } from "../../../actions/Books";
 import DealListItem from "../../../components/deal/DealListItem";
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 const BookDeals = ({ match }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const {
     params: { isbn },
   } = match;
@@ -34,8 +36,14 @@ const BookDeals = ({ match }) => {
       <Wrapper onScroll={handleScroll} height={listHeight}>
         <DealList>
           {bookDeals
-            ? bookDeals.map((dealObj, idx) => (
-                <DealListItem key={idx} dealObj={dealObj} />
+            ? bookDeals.map((deal, idx) => (
+                <DealListItem
+                  onClick={() => {
+                    history.push({ pathname: `/deal/${deal.dealId}` });
+                  }}
+                  key={idx}
+                  dealObj={deal}
+                />
               ))
             : ""}
         </DealList>

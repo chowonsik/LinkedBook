@@ -6,9 +6,7 @@ function MannerScore({ score }) {
     return (
       <Wrapper className="user-manner">
         <EmojiSmile className="good emoji" />
-        <span className="good">
-          {Math.ceil((score + Number.EPSILON) * 100) / 100}
-        </span>
+        <span className="good">{Math.ceil(score * 100) / 100}</span>
       </Wrapper>
     );
   } else if (score <= 4) {
