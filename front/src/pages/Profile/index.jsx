@@ -12,7 +12,7 @@ import UserActivity from "../../components/Profile/UserActivity";
 import DealItem from "../../components/DealItem";
 import ProfileTab from "../../components/Profile/ProfileTab";
 import { Wrapper, DealList } from "./styles";
-import { request, requestDelete, requestGet } from "../../api";
+import { request, requestDelete } from "../../api";
 import Footer from "../../components/Layout/Footer";
 import Header from "../../components/Layout/Header";
 import { createAlarm } from "../../actions/Alarm";
@@ -29,7 +29,7 @@ const Profile = ({ match }) => {
   );
   const activeTab = useSelector((state) => state.userProfileReducer.activeTab);
   const [isFollow, setIsFollow] = useState(userObj?.isFollow);
-  const listHeight = useState(window.innerHeight - 260);
+  const [listHeight, setListHeight] = useState(window.innerHeight - 260);
 
   useEffect(() => {
     dispatch(getUserObj(USER_ID));
