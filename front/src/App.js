@@ -74,7 +74,7 @@ function App() {
             exact={true}
             component={SignUp}
           />
-          <PrivateRoute
+          <PublicRoute
             path="/search/location"
             exact={true}
             component={LocationSearch}
@@ -151,7 +151,7 @@ function App() {
             exact={true}
             component={LikeComments}
           />
-          <PrivateRoute
+          <PublicRoute
             path="/auth/:type/callback"
             exact={true}
             component={OauthLogin}

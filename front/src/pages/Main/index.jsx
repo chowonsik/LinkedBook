@@ -42,7 +42,6 @@ export default function Main() {
 
   const dealListRef = useRef(null);
   const history = useHistory();
-  const location = useLocation();
   const dispatch = useDispatch();
 
   useEffect(() => {

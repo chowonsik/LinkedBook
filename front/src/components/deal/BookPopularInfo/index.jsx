@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  BookmarkFill,
-  Circle,
-  CircleFill,
-  StarFill,
-} from "react-bootstrap-icons";
+import { BookmarkFill, CircleFill, StarFill } from "react-bootstrap-icons";
 import { useHistory } from "react-router-dom";
 import { Content, Left, Right, Wrapper } from "./style";
 

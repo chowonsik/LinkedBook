@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Wrapper } from "./style";
 
 export default function DateLine({ date }) {

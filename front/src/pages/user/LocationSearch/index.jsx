@@ -53,7 +53,6 @@ export default function LocationSearch() {
         history.goBack();
       }
       if (location.state.isProfileUpdate) {
-        console.log(selectedArea);
         dispatch(updateUserObj({ areaId: selectedArea.areaId }));
         history.goBack();
       }
