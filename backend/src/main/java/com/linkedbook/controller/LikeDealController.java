@@ -8,13 +8,13 @@ import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.LikeDealService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/like-deals")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class LikeDealController {
 
@@ -26,7 +26,6 @@ public class LikeDealController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createLikeDeal(@RequestBody CreateLikeDealInput createLikeDealInput) {
         log.info("[POST] /like-deals");
@@ -40,7 +39,6 @@ public class LikeDealController {
      * @return PageResponse<SelectLikeDealOutput>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<SelectLikeDealOutput> selectLikeDeal(SelectLikeDealInput selectLikeDealInput) {
         log.info("[GET] /like-deals");
@@ -54,7 +52,6 @@ public class LikeDealController {
      * @return Response<Object>
      */
     // Params
-    @ResponseBody
     @DeleteMapping
     public Response<Object> deleteLikeDeal(DeleteLikeDealInput deleteLikeDealInput) {
         log.info("[DELETE] /like-deals");

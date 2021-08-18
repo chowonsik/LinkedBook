@@ -10,7 +10,7 @@ import com.linkedbook.entity.*;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.BookService;
 import com.linkedbook.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("BookService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class BookServiceImpl implements BookService {
 

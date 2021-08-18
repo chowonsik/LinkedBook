@@ -7,7 +7,7 @@ import com.linkedbook.dto.book.like.LikeBookSearchOutput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.LikeBookService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +15,7 @@ import static com.linkedbook.response.ResponseStatus.BAD_REQUEST;
 
 @RestController
 @RequestMapping("/like-books")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class LikeBookController {
 
@@ -27,7 +27,6 @@ public class LikeBookController {
      * @return PageResponse<LikeCommentSearchOutput>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<LikeBookSearchOutput> getLikeBookList(LikeBookSearchInput likeBookSearchInput) {
         if(!ValidationCheck.isValidId(likeBookSearchInput.getUserId()) && !ValidationCheck.isValid(likeBookSearchInput.getBookId())) {
@@ -50,7 +49,6 @@ public class LikeBookController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createLikeBook(@RequestBody LikeBookInput likeBookInput) {
         log.info("[POST] /like-books");
@@ -63,7 +61,6 @@ public class LikeBookController {
      * @return Response<Object>
      */
     // Path-Variable
-    @ResponseBody
     @DeleteMapping("/{id}")
     public Response<Object> deleteLikeBook(@PathVariable("id") int id) {
         log.info("[POST] /like-books/" + id);

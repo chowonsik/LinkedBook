@@ -25,12 +25,13 @@ import com.linkedbook.dto.user.signin.SignInOutput;
 import com.linkedbook.dto.user.signup.SignUpOutput;
 import com.linkedbook.dto.user.updateprofile.UpdateProfileInput;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -40,10 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import static com.linkedbook.response.ResponseStatus.*;
-import static com.linkedbook.configuration.ConstantConfig.*;
 
 @Service("UserService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
 
@@ -54,6 +54,9 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
 
     private final JavaMailSender mailSender;
+
+    @Value("${custom.constant.user.info.password.key}")
+    private String USER_INFO_PASSWORD_KEY;
 
     @Override
     public Response<SignInOutput> signIn(SignInInput signInInput) {

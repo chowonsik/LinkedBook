@@ -4,13 +4,13 @@ import com.linkedbook.dto.area.selectArea.SelectAreaInput;
 import com.linkedbook.dto.area.selectArea.SelectAreaOutput;
 import com.linkedbook.response.PageResponse;
 import com.linkedbook.service.AreaService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/areas")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class AreaController {
 

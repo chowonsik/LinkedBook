@@ -7,13 +7,13 @@ import com.linkedbook.dto.userArea.selectUserArea.SelectUserAreaOutput;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.UserAreaService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user-areas")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserAreaController {
 
@@ -25,7 +25,6 @@ public class UserAreaController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PostMapping
     public Response<Object> createUserArea(@RequestBody CreateUserAreaInput createUserAreaInput) {
         log.info("[POST] /user-areas");
@@ -38,7 +37,6 @@ public class UserAreaController {
      * @return Response<List<SelectUserAreaOutput>>
      */
     // Body
-    @ResponseBody
     @GetMapping
     public Response<List<SelectUserAreaOutput>> selectUserArea() {
         log.info("[GET] /user-areas");

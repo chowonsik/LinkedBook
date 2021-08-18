@@ -13,7 +13,7 @@ import com.linkedbook.dto.userArea.createUserArea.CreateUserArea;
 import com.linkedbook.dto.userArea.createUserArea.CreateUserAreaInput;
 import com.linkedbook.dto.userArea.selectUserArea.SelectUserAreaOutput;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ import java.util.List;
 import static com.linkedbook.response.ResponseStatus.*;
 
 @Service("UserAreaService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserAreaServiceImpl implements UserAreaService {
 
     private final UserRepository userRepository;

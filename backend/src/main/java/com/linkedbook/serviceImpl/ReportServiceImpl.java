@@ -11,7 +11,7 @@ import com.linkedbook.entity.UserDB;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.ReportService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ import static com.linkedbook.response.ResponseStatus.*;
 
 
 @Service("ReportService")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ReportServiceImpl implements ReportService {
 

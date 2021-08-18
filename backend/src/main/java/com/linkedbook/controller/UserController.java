@@ -15,7 +15,7 @@ import com.linkedbook.response.PageResponse;
 import com.linkedbook.response.Response;
 import com.linkedbook.service.JwtService;
 import com.linkedbook.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,7 @@ import static com.linkedbook.response.ResponseStatus.*;
 
 @RestController
 @RequestMapping("/users")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UserController {
 
@@ -36,7 +36,6 @@ public class UserController {
      * @return Response<SignUpOutput>
      */
     // Body
-    @ResponseBody
     @PostMapping("/signup")
     public Response<SignUpOutput> signUp(@RequestBody SignUpInput signUpInput) {
         log.info("[POST] /users/signup");
@@ -49,7 +48,6 @@ public class UserController {
      * @return Response<SignInOutput>
      */
     // Body
-    @ResponseBody
     @PostMapping("/signin")
     public Response<SignInOutput> signIn(@RequestBody SignInInput signInInput) {
         log.info("[POST] /users/signin");
@@ -75,8 +73,7 @@ public class UserController {
      * @return Response<SelectProfileOutput>
      */
     // Path-variable
-    @ResponseBody
-    @PatchMapping()
+    @PatchMapping
     public Response<Object> updateProfile(@RequestBody UpdateProfileInput updateProfileInput) {
         System.out.println("[PATCH] /user/{id}/profile");
         return userService.updateProfile(updateProfileInput);
@@ -88,7 +85,6 @@ public class UserController {
      * @return Response<List<SelectUserOutput>>
      */
     // Params
-    @ResponseBody
     @GetMapping
     public PageResponse<SelectUserOutput> selectUser(SelectUserInput selectUserInput) {
         log.info("[GET] /users");
@@ -101,14 +97,12 @@ public class UserController {
      * @return Response<Object>
      */
     // Body
-    @ResponseBody
     @PatchMapping("/deactivate")
     public Response<Object> changeDeleteStatus() {
         log.info("[PATCH] /users/deactivate");
         return userService.changeDeleteStatus();
     }
 
-    @ResponseBody
     @PostMapping("/jwt")
     public Response<JwtOutput> jwt() {
         System.out.println("[POST] /user/jwt");
@@ -129,7 +123,6 @@ public class UserController {
      * @return Response<EmailOutput>
      */
     // Body
-    @ResponseBody
     @PostMapping("/email")
     public Response<EmailOutput> mailSend(@RequestBody EmailInput emailInput) {
         log.info("[POST] /users/email");
