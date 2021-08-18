@@ -77,7 +77,11 @@ const Profile = ({ match }) => {
 
   return (
     <>
-      <Header isLogo isSearch isAlarm />
+      {LOGIN_USER_ID === USER_ID ? (
+        <Header isLogo isSearch isAlarm />
+      ) : (
+        <Header isBack title="프로필" isSearch isAlarm />
+      )}
       <Wrapper>
         {userObj && (
           <>

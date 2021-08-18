@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Wrapper } from "./styles";
 
 function UserActivity({ userId, dealCnt, followerCnt, followingCnt }) {
-  const history = useHistory;
+  const history = useHistory();
   return (
     <Wrapper>
       <dl className="user-activity">
@@ -11,11 +11,11 @@ function UserActivity({ userId, dealCnt, followerCnt, followingCnt }) {
           <dt>게시글</dt>
           <dd>{dealCnt}</dd>
         </div>
-        <div onClick={history.push(`follower/${userId}`)}>
+        <div onClick={() => history.push(`follower/${userId}`)}>
           <dt>팔로워</dt>
           <dd>{followerCnt}</dd>
         </div>
-        <div onClick={history.push(`following/${userId}`)}>
+        <div onClick={() => history.push(`following/${userId}`)}>
           <dt>팔로잉</dt>
           <dd>{followingCnt}</dd>
         </div>
