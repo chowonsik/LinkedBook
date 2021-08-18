@@ -7,6 +7,7 @@ import { passwordValidator } from "../../../validators.js";
 import Input from "../../../components/common/Input";
 import Header from "../../../components/Layout/Header";
 import { updateUserObj } from "../../../actions/Profile";
+import { showToast } from "../../../actions/Notification";
 
 const ChangePassword = () => {
   let history = useHistory();
@@ -25,7 +26,7 @@ const ChangePassword = () => {
 
   function updatePassword() {
     dispatch(updateUserObj({ password: password.value }));
-    // 비밀번호 변경 메세지 띄우기
+    dispatch(showToast("비밀번호가 변경되었습니다."));
     history.go(-1);
   }
 
