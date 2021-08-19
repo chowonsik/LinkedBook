@@ -13,10 +13,11 @@ export default function OauthLogin() {
 
   const authenticate = useCallback(async () => {
     const paths = window.location.pathname.split("/");
+    console.log(paths);
     const response = await requestGet(
       `/auth/${paths[2]}/callback` + window.location.search
     );
-    console.log(response);
+
     // reponse 처리
     if (response.isSuccess) {
       if (response.status === 400) {
@@ -34,6 +35,7 @@ export default function OauthLogin() {
           accessToken: response.result.accessToken,
         };
         localStorage.setItem("loginUser", JSON.stringify(loginUser));
+
         const needRecommend = localStorage.getItem("needRecommend");
         if (needRecommend === "false") {
           history.replace({ pathname: "/" });

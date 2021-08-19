@@ -120,6 +120,7 @@ public class AlertServiceImpl implements AlertService {
                                         .id(dealDB.getId())
                                         .title(dealDB.getTitle())
                                         .price(dealDB.getPrice())
+                                        .book(dealDB.getBook().getTitle())
                                         .created_at(dealDB.getCreated_at())
                                         .updated_at(dealDB.getUpdated_at())
                                         .build())

@@ -46,4 +46,5 @@ export const CancleButton = styled.button`
   border-radius: 12px;
   font-size: 12px;
   line-height: 10px;
+  margin-left: 3.5rem;
 `;

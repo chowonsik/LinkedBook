@@ -12,6 +12,8 @@ function AlarmActItem({
   createdAt,
   onClick,
   onClickDealDone,
+  evalId,
+  fromUser,
 }) {
   if (type === "LIKE_DEAL") {
     return (
@@ -34,7 +36,7 @@ function AlarmActItem({
     );
   } else if (type === "EVAL") {
     return (
-      <Wrapper onClick={() => onClickDealDone(alarmId, dealId)}>
+      <Wrapper onClick={() => onClickDealDone(alarmId, evalId, fromUser)}>
         <Content>
           '{bookTitle}'책의 구매가 확정되었습니다. 후기를 등록해볼까요?
         </Content>
