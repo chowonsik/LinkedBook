@@ -13,11 +13,11 @@ export default function OAuth() {
           </a>
         </div>
         <div className="icon">
-          <KaKaoButton>
-            <a href="/api/auth/kakao">
+          <a href="/api/auth/kakao">
+            <KaKaoButton>
               <ChatFill size={"18px"} />
+            </KaKaoButton>
             </a>
-          </KaKaoButton>
         </div>
       </div>
     </Wrapper>

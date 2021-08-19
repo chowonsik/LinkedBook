@@ -154,7 +154,7 @@ function App() {
             exact={true}
             component={LikeComments}
           />
-          <PrivateRoute
+          <PublicRoute
             path="/auth/:type/callback"
             exact={true}
             component={OauthLogin}
