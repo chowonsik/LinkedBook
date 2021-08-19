@@ -8,7 +8,8 @@ import { getActAlarm, updateAlarmStatus } from "../../../actions/Alarm";
 function AlarmAct({ height }) {
   const dispatch = useDispatch();
   const [completePageShow, setCompletePageShow] = useState(false);
-  const [dealId, setDealId] = useState(0);
+  const [evalId, setEvalId] = useState(0);
+  const [fromUser, setFromUser] = useState({});
   const currentPage = useSelector((state) => state.alarmReducer.actCurrentPage);
   const totalPages = useSelector((state) => state.alarmReducer.actTotalPages);
   const totalElements = useSelector(
@@ -75,20 +76,23 @@ function AlarmAct({ height }) {
     dispatch(getActAlarm(params));
   }
 
-  function handleClickDealDone(alarmId, dealId) {
+  function handleClickDealDone(alarmId, evalId, fromUser) {
     dispatch(updateAlarmStatus(alarmId));
-    setDealId(dealId);
+    setEvalId(evalId);
+    setFromUser(fromUser);
     setCompletePageShow(true);
   }
   function handleCancleButtonClick() {
     setCompletePageShow(false);
   }
+
   return (
     <Wrapper onScroll={handleScroll} height={height}>
       <DealComplete
         show={completePageShow}
         onCancleButtonClick={handleCancleButtonClick}
-        dealId={dealId}
+        evalId={evalId}
+        fromUser={fromUser}
         flag={false}
       ></DealComplete>
       {alarmActList &&
@@ -101,7 +105,9 @@ function AlarmAct({ height }) {
                 userId={alarm.fromUser.id}
                 dealId={alarm.deal && alarm.deal.id}
                 nickName={alarm.fromUser.nickname}
-                bookTitle={alarm.deal && alarm.deal.title}
+                bookTitle={alarm.deal && alarm.deal.book}
+                evalId={alarm.evalId}
+                fromUser={alarm.fromUser}
                 createdAt={handleTimeLog(alarm.created_at)}
                 onClick={handleClickAlarm}
                 key={alarm.id}

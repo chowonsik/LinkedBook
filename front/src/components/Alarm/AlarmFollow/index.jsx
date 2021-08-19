@@ -2,11 +2,14 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createFollow } from "../../../actions/Follow";
 import { getFollowAlarm, updateAlarmStatus } from "../../../actions/Alarm";
+
 import { showToast } from "../../../actions/Notification";
 import { Wrapper } from "./styles";
 import AlarmFollowItem from "./AlarmFollowItem";
 function AlarmFollow({ height }) {
   const dispatch = useDispatch();
+  const loginUser = JSON.parse(window.localStorage.getItem("loginUser"));
+
   useEffect(() => {
     const params = {
       type: "follow",
@@ -28,18 +31,8 @@ function AlarmFollow({ height }) {
     (state) => state.alarmReducer.followTotalElements
   );
 
-  const loginUser = JSON.parse(window.localStorage.getItem("loginUser"));
-
-  function handleClickCheck(e, alarmId, nickname) {
+  function handleClickCheck(e, alarmId) {
     const toUserId = parseInt(e.target.id);
-    if (e.target.classList.contains("check")) {
-      const data = {
-        toUserId,
-        fromUserId: loginUser.id,
-      };
-      dispatch(showToast(`${nickname}님을 팔로우했습니다.`));
-      dispatch(createFollow(data));
-    }
     dispatch(updateAlarmStatus(alarmId));
   }
 
