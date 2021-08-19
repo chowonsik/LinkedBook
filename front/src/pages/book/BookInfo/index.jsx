@@ -17,7 +17,6 @@ import BookCommentModal from "../../../components/book/BookCommentModal";
 import Header from "../../../components/Layout/Header";
 import RoundButton from "../../../components/common/Buttons/RoundButton";
 import { showToast } from "../../../actions/Notification";
-import { createAlarm } from "../../../actions/Alarm";
 import {
   getBookDeals,
   getBookComments,
@@ -317,7 +316,6 @@ const BookInfo = ({ match, history }) => {
         )
       )
     );
-    dispatch(createAlarm({ type: "LIKE_COMMENT", commentId: commentId }));
   };
 
   const unlikeComment = async (likeId) => {

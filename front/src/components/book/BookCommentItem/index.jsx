@@ -95,7 +95,7 @@ const BookCommentItem = ({
             <p className="comment">
               {commentInfo.comment.content}
               <span className="created-time">
-                {dateToString(commentInfo.user.created_at)}
+                {dateToString(commentInfo.comment.created_at)}
               </span>
             </p>
           </div>
