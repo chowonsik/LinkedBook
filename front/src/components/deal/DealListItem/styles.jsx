@@ -28,6 +28,11 @@ export const Wrapper = styled.div`
       .deal-title {
         font-size: ${fonts.lg};
         font-weight: 600;
+        width: ${(props) =>
+          props.titleWidth ? `${props.titleWidth}px` : "auto"};
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .book-title {
         font-size: ${fonts.md};

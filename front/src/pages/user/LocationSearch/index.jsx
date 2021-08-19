@@ -5,7 +5,7 @@ import Header from "../../../components/Layout/Header";
 import { requestGet } from "../../../api.js";
 import { DongList, DongListItem, Wrapper } from "./style";
 import { useDispatch } from "react-redux";
-import { addArea } from "../../../actions/Users";
+import { addArea, setSelectedAreaIndex } from "../../../actions/Users";
 import { updateUserObj } from "../../../actions/Profile";
 
 export default function LocationSearch() {
@@ -54,6 +54,7 @@ export default function LocationSearch() {
       }
       if (location.state.isProfileUpdate) {
         dispatch(updateUserObj({ areaId: selectedArea.areaId }, "location"));
+        dispatch(setSelectedAreaIndex(-1));
         history.goBack();
       }
     }

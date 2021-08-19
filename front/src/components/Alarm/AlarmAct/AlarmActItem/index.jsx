@@ -6,18 +6,18 @@ function AlarmActItem({
   type,
   alarmId,
   userId,
-  dealId,
   nickName,
   bookTitle,
   createdAt,
   onClick,
   onClickDealDone,
   evalId,
+  isbn,
   fromUser,
 }) {
   if (type === "LIKE_DEAL") {
     return (
-      <Link to={`/deal/${dealId}`} onClick={() => onClick(alarmId)}>
+      <Link to={`/profile/${userId}`} onClick={() => onClick(alarmId)}>
         <Wrapper>
           <Content>'{nickName}'님이 회원님의 글을 좋아합니다. </Content>
           <ItemAndIcon>
@@ -29,10 +29,15 @@ function AlarmActItem({
     );
   } else if (type === "LIKE_COMMENT") {
     return (
-      <Wrapper onClick={() => onClick(alarmId)}>
-        <Content>'{nickName}'님이 회원님의 한줄평을 좋아합니다.</Content>
-        <p className="created-at">{createdAt}</p>
-      </Wrapper>
+      <Link to={`/books/${isbn}`} onClick={() => onClick(alarmId)}>
+        <Wrapper>
+          <Content>'{nickName}'님이 회원님의 한줄평을 좋아합니다.</Content>
+          <ItemAndIcon>
+            <p className="created-at">{createdAt}</p>
+            <ArrowRightCircleFill className="icon" />
+          </ItemAndIcon>
+        </Wrapper>
+      </Link>
     );
   } else if (type === "EVAL") {
     return (
