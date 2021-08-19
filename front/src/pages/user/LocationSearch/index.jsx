@@ -53,7 +53,7 @@ export default function LocationSearch() {
         history.goBack();
       }
       if (location.state.isProfileUpdate) {
-        dispatch(updateUserObj({ areaId: selectedArea.areaId }));
+        dispatch(updateUserObj({ areaId: selectedArea.areaId }, "location"));
         dispatch(setSelectedAreaIndex(-1));
         history.goBack();
       }
@@ -75,16 +75,17 @@ export default function LocationSearch() {
         />
       </Wrapper>
       <DongList height={getListHeight()} onScroll={handleScroll}>
-        {searchList.map((area, i) => (
-          <DongListItem
-            onClick={() => {
-              handleAreaClick(area);
-            }}
-            key={i}
-          >
-            {area.areaFullName}
-          </DongListItem>
-        ))}
+        {searchList &&
+          searchList.map((area, i) => (
+            <DongListItem
+              onClick={() => {
+                handleAreaClick(area);
+              }}
+              key={i}
+            >
+              {area.areaFullName}
+            </DongListItem>
+          ))}
       </DongList>
     </>
   );
