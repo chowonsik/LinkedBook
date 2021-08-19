@@ -215,6 +215,7 @@ function ChatRoom() {
                         profileImage={chat.image}
                         message={chat.message}
                         createdAt={chat.createdAt}
+                        userId={chat.userId}
                       />
                       <DateLine date={chat.createdAt} />
                     </>
@@ -227,6 +228,7 @@ function ChatRoom() {
                       profileImage={chat.image}
                       message={chat.message}
                       createdAt={chat.createdAt}
+                      userId={chat.userId}
                     />
                   );
                 }
