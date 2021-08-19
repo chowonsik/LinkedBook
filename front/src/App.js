@@ -1,41 +1,38 @@
 import React from "react";
-
 import { BrowserRouter as Router, Switch } from "react-router-dom"; // 히스토리 모드 제거
-import SearchBook from "./pages/book/SearchBook";
 import "./App.css";
-import Main from "./pages/Main";
-import LocationSearch from "./pages/user/LocationSearch";
-import RecommendUser from "./pages/user/RecommendUser";
-import SignIn from "./pages/user/SignIn";
-import SignUp from "./pages/user/SignUp";
-import Profile from "./pages/Profile";
-import ProfileUpdate from "./pages/Profile/ProfileUpdate";
-import UserHistory from "./pages/Profile/UserHistory";
-import ChangePassword from "./pages/Profile/ChangePassword";
-import FollowerList from "./pages/Follow/FollowerList";
-import FollowingList from "./pages/Follow/FollowingList";
 import Alarm from "./pages/Alarm";
-import LocationSetting from "./pages/Main/LocationSetting";
-import DealDetail from "./pages/Main/DealDetail";
-import DealCreate from "./pages/deal/CreateDeal";
-
-import Report from "./pages/Report";
-import SearchUser from "./pages/SearchUser";
-import ToastMessage from "./components/common/ToastMessage";
+import BookInfo from "./pages/book/BookInfo";
+import BookDeals from "./pages/book/BookDeals";
 import ChatRoom from "./pages/Chat/ChatRoom";
 import ChatRoomList from "./pages/Chat/ChatRoomList";
-import BookInfo from "./pages/book/BookInfo";
-import LikeBooks from "./pages/book/LikeBooks";
-import MyComments from "./pages/Profile/MyComments";
-
+import ChangePassword from "./pages/Profile/ChangePassword";
+import DealDetail from "./pages/Main/DealDetail";
+import DealCreate from "./pages/deal/CreateDeal";
+import FollowerList from "./pages/Follow/FollowerList";
+import FollowingList from "./pages/Follow/FollowingList";
 import LikeComments from "./pages/book/LikeComments";
+import LikeBooks from "./pages/book/LikeBooks";
+import LocationSetting from "./pages/Main/LocationSetting";
+import LocationSearch from "./pages/user/LocationSearch";
+import Main from "./pages/Main";
+import MyComments from "./pages/Profile/MyComments";
 import OauthLogin from "./pages/user/SignIn/OAuth";
-
 import Onboarding from "./pages/Onboarding";
-import BookDeals from "./pages/book/BookDeals";
+import Profile from "./pages/Profile";
+import ProfileUpdate from "./pages/Profile/ProfileUpdate";
 import PublicRoute from "./lib/PublicRoute.js";
 import PrivateRoute from "./lib/PrivateRoute";
+import Report from "./pages/Report";
+import RecommendUser from "./pages/user/RecommendUser";
+import SearchBook from "./pages/book/SearchBook";
+import SignIn from "./pages/user/SignIn";
+import SignUp from "./pages/user/SignUp";
+import SearchUser from "./pages/SearchUser";
 import SizeAlert from "./pages/SizeAlert";
+import ToastMessage from "./components/common/ToastMessage";
+import UserHistory from "./pages/Profile/UserHistory";
+
 function App() {
   return (
     <div className="App">
