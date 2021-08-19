@@ -129,6 +129,7 @@ public class AlertServiceImpl implements AlertService {
                                         .id(commentDB.getId())
                                         .score(commentDB.getScore())
                                         .content(commentDB.getContent())
+                                        .bookId(commentDB.getBook().getId())
                                         .created_at(commentDB.getCreated_at())
                                         .updated_at(commentDB.getUpdated_at())
                                         .build())
