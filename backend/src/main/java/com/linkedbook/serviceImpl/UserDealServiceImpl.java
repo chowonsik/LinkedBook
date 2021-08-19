@@ -77,6 +77,7 @@ public class UserDealServiceImpl implements UserDealService {
                     saleUser, purchaseUser)) {
                 AlertDB alertDB = AlertDB.builder()
                         .type(AlertStatus.EVAL)
+                        .deal(deal)
                         .eval(saleUserDealDB)
                         .fromUser(saleUser)
                         .toUser(purchaseUser)

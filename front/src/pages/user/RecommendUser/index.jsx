@@ -6,29 +6,23 @@ import RecommendUserList from "../../../components/user/recommend/RecommendUserL
 
 import { Wrapper } from "./style";
 import { request, requestGet } from "../../../api.js";
-import { useDispatch } from "react-redux";
-import { createAlarm } from "../../../actions/Alarm";
 
 export default function RecommendUser() {
   const [userList, setUserList] = useState([]);
   const [dong, setDong] = useState("");
-  const [newFollowerList, setNewFollowerList] = useState([]);
   const history = useHistory();
-  const dispatch = useDispatch();
 
   function follow(userId) {
     const newUserList = userList.map((user) => {
       return user.userId === userId ? { ...user, isFollowing: true } : user;
     });
     setUserList(newUserList);
-    setNewFollowerList([...newFollowerList, userId]);
   }
   function unFollow(userId) {
     const newUserList = userList.map((user) => {
       return user.userId === userId ? { ...user, isFollowing: false } : user;
     });
     setUserList(newUserList);
-    setNewFollowerList(newFollowerList.filter((id) => id !== userId));
   }
 
   async function requestFollow() {
@@ -41,45 +35,12 @@ export default function RecommendUser() {
         });
       }
     }
-    makeAlarm();
-  }
-
-  async function makeAlarm() {
-    const response = await requestGet("/follow/following", {
-      page: 0,
-      size: 1000,
-    });
-    const followIdList = response.result
-      .filter((follow) => newFollowerList.includes(follow.user.id))
-      .map((follow) => follow.id);
-    for (const followId of followIdList) {
-      dispatch(createAlarm({ type: "FOLLOW", followId: followId }));
-    }
   }
 
   function handlePassButtonClick() {
     localStorage.setItem("needRecommend", "false");
     requestFollow();
     history.push({ pathname: "/" });
-  }
-
-  function getIsFollowing(bookStar, followings) {
-    for (const following of followings) {
-      if (following.id === bookStar.userId) return true;
-    }
-    return false;
-  }
-
-  async function addFollowings(bookStars) {
-    const response = await requestGet("/follow/following", {
-      page: 0,
-      size: 1000,
-    });
-    const followings = response.result.map((following) => following.user);
-    const bookStarsWithFollowing = bookStars.map((bookStar) => {
-      return { ...bookStar, isFollowing: getIsFollowing(bookStar, followings) };
-    });
-    return bookStarsWithFollowing;
   }
 
   async function fetchData() {
@@ -93,11 +54,12 @@ export default function RecommendUser() {
       size: 10,
     };
     const response = await requestGet("/users", params);
-    const result = await addFollowings(response.result);
-    if (!result || result.length === 0) {
+    if (response.result.length === 0) {
       history.push("/");
     }
-    setUserList(result);
+    setUserList(
+      response.result.map((user) => ({ ...user, isFollowing: false }))
+    );
   }
 
   useEffect(() => {

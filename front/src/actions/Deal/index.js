@@ -47,10 +47,7 @@ export const addLikeDeal = (dealId) => async (dispatch, getState) => {
     })
   );
   dispatch(setSelectDeals(getState().dealReducer.filter));
-  const response = await request("POST", "/like-deals", { dealId: dealId });
-  if (response.isSuccess) {
-    dispatch(createAlarm({ type: "LIKE_DEAL", dealId: dealId }));
-  }
+  request("POST", "/like-deals", { dealId: dealId });
 };
 export const deleteLikeDeal = (dealId) => async (dispatch, getState) => {
   const newNEW = getState().dealReducer.deals.NEW.map((deal) =>

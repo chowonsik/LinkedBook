@@ -22,7 +22,6 @@ import { request } from "../../../api.js";
 import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import { doRefresh } from "../../../actions/Deal";
-import { createAlarm } from "../../../actions/Alarm";
 
 export default function CreateDeal() {
   const [search, setSearch] = useState("");
@@ -204,13 +203,10 @@ export default function CreateDeal() {
         images: images,
       };
       const response = await request("POST", "/deals", data);
-      dispatch(showToast("판매 등록이 완료되었습니다."));
-      dispatch(
-        createAlarm({ type: "NEW_DEAL_FOLLOW", dealId: response.result.dealId })
-      );
-      dispatch(
-        createAlarm({ type: "NEW_DEAL_BOOK", dealId: response.result.dealId })
-      );
+      if (response.isSuccess) {
+        dispatch(showToast("판매 등록이 완료되었습니다."));
+      }
+
       history.push({ pathname: "/" });
     }
   }
