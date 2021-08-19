@@ -11,18 +11,24 @@ export const getUserObj = (userId) => async (dispatch) => {
   dispatch(setUserObj(response.result));
 };
 
-export const updateUserObj = (data) => async (dispatch) => {
-  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser")).id;
-  const res = await request("patch", `/users`, data);
-  if (res.status === 200) {
-    dispatch(getUserObj(LOGIN_USER_ID));
-    dispatch(showToast("프로필이 수정되었습니다."));
-    return 200;
-  } else {
-    dispatch(showToast(res.message));
-    return 400;
-  }
-};
+export const updateUserObj =
+  (data, type = "profile") =>
+  async (dispatch) => {
+    const LOGIN_USER_ID = JSON.parse(
+      window.localStorage.getItem("loginUser")
+    ).id;
+    const res = await request("patch", `/users`, data);
+    if (res.status === 200) {
+      await dispatch(getUserObj(LOGIN_USER_ID));
+      if (type !== "location") {
+        dispatch(showToast("프로필이 수정되었습니다."));
+      }
+      return 200;
+    } else {
+      dispatch(showToast(res.message));
+      return 400;
+    }
+  };
 
 export const getUserTabInfo =
   (userId, activeTabId, page = 0, label = "new") =>

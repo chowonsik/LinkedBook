@@ -121,7 +121,7 @@ const ProfileUpdate = () => {
   }
 
   function handleLocationClick() {
-    dispatch(updateUserObj(changedData));
+    dispatch(updateUserObj(changedData, "location"));
     history.push({
       pathname: "/search/location",
       state: { isProfileUpdate: true },
