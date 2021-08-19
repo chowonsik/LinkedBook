@@ -176,6 +176,7 @@ export const BookInfo = styled.div`
     margin-top: 10px;
     word-wrap: break-word;
     margin-bottom: 10px;
+    white-space: pre-line;
   }
 `;
 

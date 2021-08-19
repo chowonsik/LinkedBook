@@ -17,6 +17,7 @@ public class CommonCommentOutput {
     private double score;
     private String content;
     private List<CommonCategoryOutput> categories;
+    private String bookId;
     private Date created_at;
     private Date updated_at;
 }
