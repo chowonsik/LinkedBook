@@ -108,7 +108,7 @@ function AlarmAct({ height }) {
                 bookTitle={alarm.deal && alarm.deal.book}
                 evalId={alarm.evalId}
                 fromUser={alarm.fromUser}
-                isbn={alarm.comment.bookId}
+                isbn={alarm.comment && alarm.comment.bookId}
                 createdAt={handleTimeLog(alarm.created_at)}
                 onClick={handleClickAlarm}
                 key={alarm.id}
