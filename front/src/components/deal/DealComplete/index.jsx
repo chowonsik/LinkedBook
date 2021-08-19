@@ -7,12 +7,13 @@ import { useDispatch } from "react-redux";
 import { showToast } from "../../../actions/Notification";
 import { useHistory } from "react-router-dom";
 import { doRefresh } from "../../../actions/Deal";
-import { createAlarm } from "../../../actions/Alarm";
 export default function DealComplete({
   show,
   onCancleButtonClick,
   dealId,
   flag = true,
+  evalId,
+  fromUser,
 }) {
   const [chatList, setChatList] = useState([]);
   const [selectedUser, setSelectedUser] = useState({});
@@ -23,18 +24,23 @@ export default function DealComplete({
   const history = useHistory();
 
   async function complete() {
-    const response = await request("POST", "/user-deals", {
-      dealId: dealId,
-      userId: selectedUser.id,
-      score: rating,
-    });
+    let response;
+    if (!evalId) {
+      response = await request("POST", "/user-deals", {
+        dealId: dealId,
+        userId: selectedUser.id,
+        score: rating,
+      });
+    } else {
+      response = await request("PATCH", `/user-deals/${evalId}`, {
+        score: rating,
+      });
+    }
     if (response.isSuccess) {
-      const userDealId = response.result.userDealId;
-      dispatch(createAlarm({ type: "EVAL", evalId: userDealId }));
       dispatch(showToast("거래가 완료되었습니다."));
       dispatch(doRefresh());
       history.push("/");
-      if (!flag) history.push("/alarm");
+      if (evalId) history.push("/alarm");
     } else {
       dispatch(showToast("실패함!"));
     }
@@ -72,6 +78,12 @@ export default function DealComplete({
     setChatList(dealUserList);
   }
 
+  useEffect(() => {
+    if (evalId) {
+      setSelectedUser(fromUser);
+      setShowRatingPage(true);
+    }
+  }, [evalId]);
   useEffect(() => {
     if (dealId) {
       getChatList();
