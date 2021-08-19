@@ -288,7 +288,7 @@ export default function DealDetail() {
             <div className="book-price">
               정가 : {priceToString(dealData.bookPrice)}원
             </div>
-            <div className="deal-content">{dealData.dealContent}</div>
+            <p className="deal-content">{dealData.dealContent}</p>
           </BookInfo>
           <DealState>
             {dealData.userId === getLoginUser().id &&

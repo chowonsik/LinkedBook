@@ -1,5 +1,6 @@
 import { Wrapper } from "./styles";
 import { SuitHeart, SuitHeartFill } from "react-bootstrap-icons";
+import { useEffect, useState } from "react";
 
 function DealListItem({
   dealObj,
@@ -8,6 +9,19 @@ function DealListItem({
   deleteLikeDeal,
   width,
 }) {
+  const [dealTitleWidth, setDealTitleWidth] = useState(
+    window.innerWidth - 90 - 70
+  );
+  useEffect(() => {
+    window.addEventListener("resize", setTitleWidth);
+
+    return () => {
+      window.removeEventListener("resize", setTitleWidth);
+    };
+  });
+  function setTitleWidth() {
+    setDealTitleWidth(window.innerWidth - 90 - 70);
+  }
   function dateToString(date) {
     const today = new Date();
     const timeValue = new Date(date);
@@ -36,8 +50,8 @@ function DealListItem({
     return price.toLocaleString();
   }
   function textSlicer(text) {
-    if (text.length > 13) {
-      return text.slice(0, 10) + "...";
+    if (text.length > 16) {
+      return text.slice(0, 13) + "...";
     }
     return text;
   }
@@ -49,7 +63,7 @@ function DealListItem({
   }
 
   return (
-    <Wrapper onClick={onClick} width={width}>
+    <Wrapper onClick={onClick} width={width} titleWidth={dealTitleWidth}>
       <div className="image-container">
         <img
           className="book-image"
@@ -62,7 +76,7 @@ function DealListItem({
         />
       </div>
       <div className="content">
-        <div className="deal-title">{textSlicer(dealObj.dealTitle)}</div>
+        <div className="deal-title">{dealObj.dealTitle}</div>
         <div className="book-title">
           {textSlicer(dealObj.bookTitle)}
           <span className="quality">{dealObj.dealQuality}</span>
