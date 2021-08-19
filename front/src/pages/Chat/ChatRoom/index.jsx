@@ -175,7 +175,6 @@ function ChatRoom() {
       <Container height={chatListHeight}>
         {reversedChatLogs &&
           reversedChatLogs.map((chat, i) => {
-            console.log(chat);
             if (chat.type === "TALK") {
               if (isMe(chat.userId)) {
                 if (
