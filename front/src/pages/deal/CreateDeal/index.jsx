@@ -40,6 +40,7 @@ export default function CreateDeal() {
     location.state?.dealData
   );
   const [checkedList, setCheckedList] = useState([false, false, false, false]);
+  const [buttonEnable, setButtonEnable] = useState(true);
 
   useEffect(() => {
     if (isUpdatePage() && !location.state) {
@@ -166,8 +167,10 @@ export default function CreateDeal() {
   }
   // 상품 등록
   async function createDeal() {
+    if (!buttonEnable) return;
     const valid = validCheck();
     if (!valid) return;
+    setButtonEnable(false);
     const images = await getImages();
 
     if (isUpdatePage()) {
@@ -206,7 +209,7 @@ export default function CreateDeal() {
       if (response.isSuccess) {
         dispatch(showToast("판매 등록이 완료되었습니다."));
       }
-
+      setButtonEnable(true);
       history.push({ pathname: "/" });
     }
   }
