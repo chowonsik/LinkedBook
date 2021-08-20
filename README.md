@@ -1,4 +1,117 @@
-# LINKED BOOK
+<img src="./exec/assets/linkedbook_logo.png" width="500">
+<hr>
+
+## :bulb: Contributor
+### Frontend: 김민환, 남하은, 변대웅
+### Backend: 조원식, 진수연
+
+<br>
+
+## :heavy_check_mark: 개발 기간
+### 2021.07.12 ~ 2021.08.20 (6주)
+<br>
+
+## :heavy_check_mark: LinkedBook 서비스 개요
+- 자신의 책방을 온라인에서 운영하고 동네 사람들과 중고책을 거래하면서 책과 사람을 LINK 해주는 서비스.
+- 판매자가 중고책의 가격을 결정하는 것이 아닌 책 상태 정보에 따라 가격이 정해져 구매자와 판매자가 합리적인 가격으로 거래를 할 수 있다.
+- 카카오 책 API를 통해 책의 정확한 정보와 사람들의 한줄평을 통해 다양한 책의 정보를 확인할 수 있다.
+
+<br><br>
+
+## :heavy_check_mark: 기술 스택
+<img src="./exec/assets/linkedBook_tech_stack.png" width="700"><br><br>
+<img src="./exec/assets/linkedbook_build_deploy_env.png" width="700"><br><br>
+<img src="./exec/assets/linkedbook_architecture.png" width="700">
+
+<br><br>
+
+## :heavy_check_mark: 프로젝트 세팅 방법
+- [Frontend](./front/README.md)
+- [Backend](./backend/README.md)
+
+<br><br>
+
+## :heavy_check_mark: LinkedBook 주요 기능
+### 1. 중고책 거래 서비스
+<table>
+    <tbody>
+        <tr>
+            <td rowspan=4>
+            <img src="./exec/assets/deal.gif" width="200">
+            </td>
+        </tr>
+        <tr>
+            <td>1. 사용자의  지역 기반으로 거래 목록 확인</td>
+        </tr>
+        <tr>
+            <td>2. 채팅을 통해 사용자간 연결</td>
+        </tr>
+        <tr>
+            <td>3. 관심책 등록으로 해당 책에 대한 거래 알람 기능</td>
+        </tr>
+    </tbody>
+</table>
+
+### 2. 책 정보 커뮤니티
+<table>
+    <tbody>
+        <tr>
+            <td rowspan=4>
+            <img src="./exec/assets/search-book-1629376426238.gif" width="200">
+            </td>
+        </tr>
+        <tr>
+            <td>1. 책 정보 조회</td>
+        </tr>
+        <tr>
+            <td>2. 책 한줄평을 통해 유저간 소통</td>
+        </tr>
+        <tr>
+            <td>3. 사용자가 가장 많이 선택한 태그 3개가 해당 책을 대표하는 태그로 선정</td>
+        </tr>
+    </tbody>
+</table>
+
+### 3. 판매 게시글 작성
+<table>
+    <tbody>
+        <tr>
+            <td rowspan=4>
+            <img src="./exec/assets/create.gif" width="200">
+            </td>
+        </tr>
+        <tr>
+            <td>1. 판매게시글을 통해 거래글 작성</td>
+        </tr>
+        <tr>
+            <td>2. 책 정가제 도입</td>
+        </tr>
+        <tr>
+            <td>3. 책 상태와 출간일에 따라 책 등급과 가격 자동 산정</td>
+        </tr>
+    </tbody>
+</table>
+
+### 4. 사용자 프로필
+<table>
+    <tbody>
+        <tr>
+            <td rowspan=4>
+            <img src="./exec/assets/create.gif" width="200">
+            </td>
+        </tr>
+        <tr>
+            <td>1. 프로필을 통해 관심거래를 열람</td>
+        </tr>
+        <tr>
+            <td>2. 팔로워 팔로우 기능</td>
+        </tr>
+        <tr>
+            <td>3. 나의 활동을 확인</td>
+        </tr>
+    </tbody>
+</table>
+<br><br>
 
 ## :heavy_check_mark: 프로젝트 기여방법
 ### 1. Custom git flow
@@ -19,7 +132,7 @@
 - 모든 커밋 메시지는 다음과 같은 형식을 **반드시** 따르도록 한다.
 ```
 <type>: <message> (<issue number>)
-````
+```
 - ex) <br> `feat: Add user login api (S05P12B307-0)`
 <br> `fix: Fix bug to can't login using google login (S05P12B307-0)`
 <br> `docs: Update README.md`
@@ -30,15 +143,16 @@
 |feat|새로운 기능 구현에 대한 커밋|
 |fix|수정 사항에 대한 커밋(ex. bug, typo)|
 |docs|문서 작성에 대한 커밋(ex. 주석, README)|
+
 #### 2-3. Message
 - 커밋 메시지는 명령문으로 작성한다.
 - 첫 글자는 대문자가 되도록 한다.
+
 #### 2-4. Issue number
 - 커밋과 관련된 이슈는 커밋 메시지 마지막에 **반드시** 연결하도록 한다.
 - 지라에 등록된 이슈와 연동되도록 한다.
 
-### git Merge Request 
-
+### 3. git Merge Request 
 - `git pull origin develop`을 통해 최신 버전을 다운받는다.
 - 로컬에서 새로운 브랜치를 생성한다.
   - `git switch -c feature/#이슈번호`
