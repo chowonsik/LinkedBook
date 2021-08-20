@@ -19,9 +19,9 @@
 <br><br>
 
 ## :heavy_check_mark: 기술 스택
-![stack](./exec/assets/linkedBook_tech_stack.png)
-![env](./exec/assets/linkedbook_build_deploy_env.png)
-![architecture](./exec/assets/linkedbook_architecture.png)
+<img src="./exec/assets/linkedBook_tech_stack.png" width="700"><br><br>
+<img src="./exec/assets/linkedbook_build_deploy_env.png" width="700"><br><br>
+<img src="./exec/assets/linkedbook_architecture.png" width="700">
 
 <br><br>
 
