@@ -5,7 +5,7 @@
     <tbody>
         <tr>
             <td rowspan=5>
-            <img src="./assets/signup-1629375459378.gif">
+            <img src="./assets/signup-1629375459378.gif" width="200">
             </td>
         </tr>
         <tr>
@@ -128,7 +128,7 @@
     <tbody>
         <tr>
             <td rowspan=6>
-            <img src="./assets/profile.gif">
+            <img src="./assets/profile.gif" width="200">
             </td>
         </tr>
         <tr>
