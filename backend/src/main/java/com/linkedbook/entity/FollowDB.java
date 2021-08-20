@@ -1,9 +1,6 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.follow.FollowStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -12,10 +9,11 @@ import java.util.Date;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Getter @Setter
 @Entity
 @Table(name = "follow")
 public class FollowDB {
@@ -25,22 +23,18 @@ public class FollowDB {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "to_user_id")
+    @JoinColumn(name = "to_user_id", nullable = false)
     private UserDB toUser;
 
     @ManyToOne
-    @JoinColumn(name = "from_user_id")
+    @JoinColumn(name = "from_user_id", nullable = false)
     private UserDB fromUser;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 45, nullable = false)
-    private FollowStatus status;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date created_at;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private Date updated_at;
 }

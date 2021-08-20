@@ -1,21 +1,25 @@
 package com.linkedbook.entity;
 
-import com.linkedbook.dto.user.signup.SignUpInput;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.DynamicInsert;
+import com.linkedbook.dto.user.signin.SocialLoginType;
+import lombok.*;
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.Date;
+import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
-@Data
-@AllArgsConstructor
 @DynamicInsert
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Getter @Setter
 @Entity
 @Table(name = "user")
 public class UserDB {
@@ -23,6 +27,10 @@ public class UserDB {
     @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = IDENTITY)
     private int id;
+
+    @OneToMany(mappedBy = "user") // 양방향 매핑
+    @JsonManagedReference
+    private List<UserAreaDB> userAreaDBs;
 
     @Column(name = "email", nullable = false, length = 45)
     private String email;
@@ -39,8 +47,12 @@ public class UserDB {
     @Column(name = "image", nullable = false, length = 45)
     private String image;
 
-    @Column(name = "oauth", nullable = false, length = 45)
-    private String oauth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "oauth", length = 45)
+    private SocialLoginType oauth;
+
+    @Column(name = "oauth_id", length = 255)
+    private String oauthId;
 
     @Column(name = "status", nullable = false, length = 45)
     private String status;
@@ -50,17 +62,6 @@ public class UserDB {
     private Date created_at;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private Date updated_at;
-
-    public UserDB(SignUpInput signUpInput) {
-        this.email = signUpInput.getEmail();
-        this.password = signUpInput.getPassword();
-        this.nickname = signUpInput.getNickname();
-        this.info = signUpInput.getInfo();
-        this.image = signUpInput.getImage();
-        this.oauth = signUpInput.getOauth();
-        this.status = "ACTIVATE";
-
-    }
 }

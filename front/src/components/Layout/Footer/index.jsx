@@ -1,34 +1,72 @@
-import React from 'react';
-import './style.scss';
+import {
+  HouseDoor,
+  HouseDoorFill,
+  Book,
+  BookFill,
+  PlusCircleFill,
+  ChatDots,
+  ChatDotsFill,
+  Person,
+  PersonFill,
+} from "react-bootstrap-icons";
+import { useHistory } from "react-router-dom";
 
-// 추후에 Link를 통해 페이지 이동할 수 있도록 구성하기
-// 클릭 시에 현재 페이지의 위치를 푸터에 색으로 표시
-const Footer = () => {
-    
-    function onClick(e) {
-        const curIcon = document.querySelector('#current-page');
-        curIcon.id = '';
-        e.target.id = 'current-page';
-    }
-    return (
-        <div className="footer">
-           <div className="home" onClick={onClick}>
-                <i className="fas fa-home" id="current-page"></i>
-           </div>
-           <div className="book" onClick={onClick}>
-                <i className="fas fa-book"></i>
-           </div>
-           <div className="plus" onClick={onClick}>
-                <i className="fas fa-plus-circle"></i>
-           </div>
-           <div className="chat" onClick={onClick}>
-                <i className="far fa-comments"></i>
-           </div>
-           <div className="user" onClick={onClick}>
-                <i className="fas fa-user"></i>
-           </div>
-        </div>
-    )
+import useFooter from "../../../hooks/useFooter.js";
+import { Wrapper, IconBox, NewPostBtn } from "./styles";
+
+function Footer() {
+  const history = useHistory();
+  const footer = useFooter();
+  const LOGIN_USER_ID = JSON.parse(window.localStorage.getItem("loginUser"));
+  return (
+    <>
+      <Wrapper>
+        <IconBox onClick={footer.onClick} className="home-btn">
+          {history.location.pathname === "/" ? (
+            <HouseDoorFill />
+          ) : (
+            <HouseDoor className="home-btn" />
+          )}
+          <p className="home-btn">홈</p>
+        </IconBox>
+        <IconBox onClick={footer.onClick} className="search-book">
+          {history.location.pathname === "/books" ? (
+            <BookFill />
+          ) : (
+            <Book className="search-book" />
+          )}
+          <p className="search-book">책 검색</p>
+        </IconBox>
+        <IconBox className="new-post" onClick={footer.onClick}>
+          <NewPostBtn className="new-post" onClick={footer.onClick}>
+            <p className="new-post" onClick={footer.onClick}>
+              +
+            </p>
+          </NewPostBtn>
+        </IconBox>
+
+        <IconBox onClick={footer.onClick}>
+          {history.location.pathname === "/chat" ? (
+            <ChatDotsFill />
+          ) : (
+            <ChatDots className="chat" />
+          )}
+
+          <p className="chat">채팅</p>
+        </IconBox>
+
+        <IconBox onClick={footer.onClick} className="profile">
+          {LOGIN_USER_ID &&
+          history.location.pathname === `/profile/${LOGIN_USER_ID.id}` ? (
+            <PersonFill />
+          ) : (
+            <Person className="profile" />
+          )}
+          <p className="profile">프로필</p>
+        </IconBox>
+      </Wrapper>
+    </>
+  );
 }
 
-export default Footer
+export default Footer;
