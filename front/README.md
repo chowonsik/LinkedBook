@@ -1,70 +1,63 @@
-# Getting Started with Create React App
+# LinkedBook Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Generic badge](https://img.shields.io/badge/react-v17.0.2-green.svg) ![Generic badge](https://img.shields.io/badge/node-14.17.1-yellow.svg) ![sockjs](https://img.shields.io/npm/v/sockjs?color=critical&label=sockjs) ![stompjs](https://img.shields.io/npm/v/stompjs?color=orange&label=stompjs) ![node](https://img.shields.io/npm/v/node) ![redux](https://img.shields.io/npm/v/redux?color=blue&label=redux) ![styled-components](https://img.shields.io/npm/v/styled-components?color=ff69b4&label=styled-components) ![webpack](https://img.shields.io/npm/v/webpack?color=yellow&label=webpack)
 
-## Available Scripts
+<br>
 
-In the project directory, you can run:
+## ✔ How to start project in local environment
 
-### `yarn start`
+```
+// 레포지토리 클론
+$ git clone <https://lab.ssafy.com/s05-webmobile2-sub3/S05P13B307.git>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+// 경로 변경
+$ cd S05P13B307\\front
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+// npm package install
+$ npm install
 
-### `yarn test`
+// 프로젝트 실행
+$ npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ✔ Tech Stack
 
-### `yarn build`
+| Usage               | Stack            |
+| ------------------- | ---------------- |
+| `React`             | Fronted Library  |
+| `Redux`             | State  Container |
+| `Axios`             | HTTP Library     |
+| `HTML/JSX`          | Markup Language  |
+| `Styled-components` | Styling          |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ✔ Project Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `src/` 하위 폴더들은 다음과 같은 역할을 한다.
+- `pages/` : 최상위 컴포넌트들을 포함하며 로직 구현에 집중한다.
+- `components/` : `page/` 의 최상위 컴포넌트에 포함되는 하위 컴포넌트를 정의하며 표현에 집중한다.
+- `actions/` : 최상위 컴포넌트 별로 분리된 dispatch 요청이 정의되어 있다.
+- `reducers/` : 최상위 컴포넌트 별로 분리된 reducer가 정의되어 있다.
+- `store/` : 모든 reducer를 모으고 store가 정의되어 있다.
+- `hooks/` : 커스텀 훅들이 정의되어 있다.
+- `lib/` : URL 접근 제한을 위한 컴포넌트가 정의되어 있다.
+- `styles/` :  전역 스타일이 변수로 지정되어 있다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## ✔ How to use 'api.js'
 
-### `yarn eject`
+1. **get 요청**
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   - ex) ```http://localhost:8080/api/deals?search=어린&filter=NEW&page=0&size=10``` 으로 보낼때
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```jsx
+   // function requestGet(url, params);
+   requestGet("/deals", {search: '어린', filter: 'NEW', page: 0, size: 10})
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2. **나머지**
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+   - ex) ```http:/localhost:8080/api/reports``` 로 POST 요청 보낼 때
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+   ```jsx
+   // function request(method, url, data);
+   request('POST', '/reports', {dealId: 5, category: 'MANNER', content: '욕설'})
+   ```

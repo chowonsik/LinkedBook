@@ -2,17 +2,21 @@ import { useState } from "react";
 
 const useInput = (initialValue, validator) => {
   const [value, setValue] = useState(initialValue);
-  const [isValid, setIsValid] = useState(false);
+  const [isValid, setIsValid] = useState(
+    validator ? validator(initialValue).isValid : false
+  );
   const [errorMessage, setErrorMessage] = useState("");
 
   const onChange = (e) => {
     const value = e.target.value;
-    const result = validator(value);
     setValue(e.target.value);
-    setIsValid(result.isValid);
-    setErrorMessage(result.errorMessage);
+    if (validator) {
+      const result = validator(value);
+      setIsValid(result.isValid);
+      setErrorMessage(result.errorMessage);
+    }
   };
-  return { value, onChange, isValid, errorMessage };
+  return { value, onChange, isValid, errorMessage, setValue };
 };
 
 export default useInput;
